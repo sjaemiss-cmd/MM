@@ -1,0 +1,7162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>MM 중간고사 학습</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--pri:#2563eb;--ok:#16a34a;--no:#dc2626;--bg:#f1f5f9;--card:#fff;--txt:#1e293b;--sub:#64748b;--bdr:#e2e8f0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:var(--bg);color:var(--txt);min-height:100dvh;-webkit-tap-highlight-color:transparent}
+.screen{display:none;min-height:100dvh;padding:0 0 env(safe-area-inset-bottom)}
+.screen.active{display:flex;flex-direction:column}
+
+/* HOME */
+#home{align-items:center;justify-content:center;padding:24px;gap:16px}
+#home h1{font-size:24px;font-weight:800;text-align:center}
+#home .subtitle{color:var(--sub);font-size:14px;text-align:center;margin-bottom:8px}
+#home .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px}
+#home .stat{background:var(--card);border-radius:12px;padding:14px;text-align:center;border:1px solid var(--bdr)}
+#home .stat .num{font-size:28px;font-weight:800;color:var(--pri)}
+#home .stat .label{font-size:12px;color:var(--sub);margin-top:2px}
+.menu{width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px}
+.menu-btn{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:16px 20px;font-size:16px;font-weight:600;text-align:left;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s}
+.menu-btn:active{transform:scale(.97);background:#f8fafc}
+.menu-btn .icon{font-size:22px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.menu-btn .icon.blue{background:#dbeafe;color:var(--pri)}
+.menu-btn .icon.green{background:#dcfce7;color:var(--ok)}
+.menu-btn .icon.red{background:#fee2e2;color:var(--no)}
+.menu-btn .icon.purple{background:#ede9fe;color:#7c3aed}
+.menu-btn .icon.orange{background:#ffedd5;color:#ea580c}
+.menu-btn .info{display:flex;flex-direction:column}
+.menu-btn .info small{font-size:12px;color:var(--sub);font-weight:400}
+
+/* TOPIC SELECT */
+#topic-select{padding:24px;gap:12px}
+#topic-select h2{font-size:20px;font-weight:700}
+.topic-btn{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:14px 16px;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .15s}
+.topic-btn:active{transform:scale(.97)}
+.topic-btn .cnt{font-size:13px;color:var(--sub);font-weight:400}
+.back-btn{background:none;border:none;font-size:15px;color:var(--pri);cursor:pointer;padding:8px 0;font-weight:600;align-self:flex-start}
+
+/* QUIZ */
+#quiz{padding:0}
+.quiz-header{padding:12px 20px;background:var(--card);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10}
+.quiz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.quiz-top .qnum{font-size:14px;font-weight:700;color:var(--pri)}
+.quiz-top .topic-tag{font-size:12px;color:var(--sub);background:var(--bg);padding:3px 10px;border-radius:20px}
+.quit-btn{background:none;border:none;font-size:13px;color:var(--sub);cursor:pointer}
+.progress-bar{height:4px;background:var(--bdr);border-radius:4px;overflow:hidden}
+.progress-bar .fill{height:100%;background:var(--pri);border-radius:4px;transition:width .3s}
+.quiz-body{flex:1;padding:20px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;padding-bottom:100px}
+.question-text{font-size:17px;font-weight:600;line-height:1.6;word-break:keep-all}
+.question-text .blank-marker{display:inline-block;min-width:80px;border-bottom:2px solid var(--pri);margin:0 2px;text-align:center;color:var(--pri);font-weight:700}
+
+/* MC OPTIONS */
+.options{display:flex;flex-direction:column;gap:10px}
+.opt-btn{background:var(--card);border:2px solid var(--bdr);border-radius:12px;padding:14px 16px;font-size:15px;line-height:1.5;cursor:pointer;text-align:left;transition:all .15s;word-break:keep-all}
+.opt-btn:active{transform:scale(.98)}
+.opt-btn.selected{border-color:var(--pri);background:#eff6ff}
+.opt-btn.correct{border-color:var(--ok);background:#f0fdf4}
+.opt-btn.wrong{border-color:var(--no);background:#fef2f2}
+
+/* BLANK INPUT */
+.blank-input-wrap{display:flex;gap:8px}
+.blank-input{flex:1;border:2px solid var(--bdr);border-radius:12px;padding:14px 16px;font-size:16px;outline:none;transition:border .2s}
+.blank-input:focus{border-color:var(--pri)}
+.check-btn{background:var(--pri);color:#fff;border:none;border-radius:12px;padding:14px 20px;font-size:15px;font-weight:700;cursor:pointer;white-space:nowrap}
+.check-btn:active{opacity:.8}
+
+/* EXPLAIN */
+.explain-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.6;display:none;word-break:keep-all}
+.explain-box.wrong-explain{background:#fef2f2;border-color:#fecaca}
+.explain-box.visible{display:block}
+.explain-box .explain-title{font-weight:700;margin-bottom:4px;font-size:13px}
+
+/* QUIZ FOOTER */
+.quiz-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--bdr);display:flex;gap:10px}
+.quiz-footer button{flex:1;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.quiz-footer button:active{transform:scale(.97)}
+.next-btn{background:var(--pri);color:#fff}
+.next-btn:disabled{background:var(--bdr);color:var(--sub)}
+.skip-btn{background:var(--bg);color:var(--sub);flex:.4}
+
+/* RESULT */
+#result{align-items:center;justify-content:center;padding:24px;gap:20px}
+#result .score-circle{width:160px;height:160px;border-radius:50%;border:8px solid var(--pri);display:flex;flex-direction:column;align-items:center;justify-content:center}
+#result .score-circle .pct{font-size:42px;font-weight:800;color:var(--pri)}
+#result .score-circle .label{font-size:13px;color:var(--sub)}
+#result .detail{text-align:center;font-size:15px;color:var(--sub);line-height:1.8}
+#result .detail b{color:var(--txt)}
+
+/* REVIEW */
+#review{padding:16px}
+#review h2{font-size:18px;font-weight:700;margin-bottom:12px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+.review-card{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:16px;margin-bottom:12px}
+.review-card .rv-q{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:8px}
+.review-card .rv-ans{font-size:14px;color:var(--ok);margin-bottom:4px}
+.review-card .rv-my{font-size:14px;color:var(--no);margin-bottom:8px}
+.review-card .rv-exp{font-size:13px;color:var(--sub);line-height:1.5}
+
+/* UTILS */
+.mt8{margin-top:8px}.mt16{margin-top:16px}
+@media(min-width:500px){
+  .quiz-body,.quiz-header,.quiz-footer{max-width:500px;margin-left:auto;margin-right:auto}
+  #home,#topic-select,#result,#review{max-width:500px;margin-left:auto;margin-right:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- HOME SCREEN -->
+<div id="home" class="screen active">
+  <h1>MM 중간고사</h1>
+  <div class="subtitle">마케팅관리 | 류상희 교수 | Topic 1~5</div>
+  <div class="stats">
+    <div class="stat"><div class="num" id="s-total">0</div><div class="label">전체 문제</div></div>
+    <div class="stat"><div class="num" id="s-done">0</div><div class="label">풀어본 문제</div></div>
+    <div class="stat"><div class="num" id="s-rate">-</div><div class="label">정답률</div></div>
+    <div class="stat"><div class="num" id="s-wrong">0</div><div class="label">오답 문제</div></div>
+  </div>
+  <div class="menu">
+    <button class="menu-btn" onclick="startMode('all')">
+      <span class="icon blue">ALL</span>
+      <span class="info">전체 학습<small>모든 문제 순서대로</small></span>
+    </button>
+    <button class="menu-btn" onclick="showScreen('topic-select')">
+      <span class="icon purple">T</span>
+      <span class="info">토픽별 학습<small>원하는 토픽만 선택</small></span>
+    </button>
+    <button class="menu-btn" onclick="startMode('mock')">
+      <span class="icon orange">55</span>
+      <span class="info">모의고사<small>55문제 랜덤 (선다 85% + 주관 15%)</small></span>
+    </button>
+    <button class="menu-btn" onclick="startMode('blank')">
+      <span class="icon green">___</span>
+      <span class="info">빈칸만 학습<small>주관식 빈칸 집중</small></span>
+    </button>
+    <button class="menu-btn" onclick="startMode('wrong')">
+      <span class="icon red">X</span>
+      <span class="info">오답 복습<small>틀린 문제만 다시</small></span>
+    </button>
+  </div>
+</div>
+
+<!-- TOPIC SELECT -->
+<div id="topic-select" class="screen">
+  <button class="back-btn" onclick="showScreen('home')">&larr; 뒤로</button>
+  <h2>토픽 선택</h2>
+  <div id="topic-list"></div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-top">
+      <span class="qnum" id="q-num">1/250</span>
+      <span class="topic-tag" id="q-topic">Topic 1</span>
+      <button class="quit-btn" onclick="endQuiz()">나가기</button>
+    </div>
+    <div class="progress-bar"><div class="fill" id="q-progress"></div></div>
+  </div>
+  <div class="quiz-body">
+    <div class="question-text" id="q-text"></div>
+    <div id="q-options" class="options"></div>
+    <div id="q-blank-wrap" class="blank-input-wrap" style="display:none">
+      <input type="text" class="blank-input" id="q-blank-input" placeholder="답을 입력하세요" autocomplete="off">
+      <button class="check-btn" id="q-check-btn" onclick="checkBlank()">확인</button>
+    </div>
+    <div class="explain-box" id="q-explain">
+      <div class="explain-title" id="q-explain-title">정답!</div>
+      <div id="q-explain-text"></div>
+    </div>
+  </div>
+  <div class="quiz-footer">
+    <button class="skip-btn" id="btn-skip" onclick="skipQ()">건너뛰기</button>
+    <button class="next-btn" id="btn-next" onclick="nextQ()" disabled>다음</button>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result" class="screen">
+  <div class="score-circle">
+    <div class="pct" id="r-pct">0%</div>
+    <div class="label">정답률</div>
+  </div>
+  <div class="detail" id="r-detail"></div>
+  <div class="menu" style="max-width:300px">
+    <button class="menu-btn" onclick="showReview()" style="justify-content:center">
+      <span class="icon red">X</span>
+      <span class="info">오답 확인</span>
+    </button>
+    <button class="menu-btn" onclick="showScreen('home')" style="justify-content:center">
+      <span class="icon blue">H</span>
+      <span class="info">홈으로</span>
+    </button>
+  </div>
+</div>
+
+<!-- REVIEW SCREEN -->
+<div id="review" class="screen">
+  <button class="back-btn" onclick="showScreen('result')">&larr; 결과로</button>
+  <h2>오답 확인</h2>
+  <div id="review-list"></div>
+  <button class="menu-btn mt16" onclick="showScreen('home')" style="justify-content:center">
+    <span class="icon blue">H</span><span class="info">홈으로</span>
+  </button>
+</div>
+
+<script>
+// ===== QUESTION DATA (will be populated) =====
+const ALL_QUESTIONS = [
+{
+"id": 1,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "마케팅 활동에 종사하는 인력은 전체 노동인구의 약 몇 퍼센트인가?",
+"options": [
+"①10%~15%",
+"②15%~20%",
+"③25%~30%",
+"④35%~40%"
+],
+"answer": 2,
+"explain": "강의노트에 따르면, 25%~30%는 어떤 의미에서든지 마케팅 활동에 종사한다고 설명하고 있다."
+},
+{
+"id": 2,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "다음 중 마케팅 활동에 해당하지 않는 것은?",
+"options": [
+"①대인판매",
+"②제품개발",
+"③원자재 가공",
+"④마케팅조사"
+],
+"answer": 2,
+"explain": "원자재 가공은 생산(production) 활동에 해당한다. 대인판매, 광고, 포장, 운송, 마케팅조사, 제품개발, 도매업/소매업 등이 마케팅 활동에 포함된다."
+},
+{
+"id": 3,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "마케팅과 생산(Production)의 관계에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①마케팅은 생산과 독립적으로 운영된다",
+"②마케팅은 알맞는 제품을 생산할 수 있도록 소비자 만족도를 반영한다",
+"③생산이 마케팅의 하위 개념이다",
+"④마케팅은 재화 생산과 서비스 수행을 직접 담당한다"
+],
+"answer": 1,
+"explain": "마케팅은 소비자 만족도를 파악하여 알맞는 제품을 생산할 수 있도록 하는 역할을 한다. 재화 생산과 서비스 수행은 Production의 역할이다."
+},
+{
+"id": 4,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "마케팅이 극복하는 생산과 소비 사이의 불일치 및 분리에 해당하지 않는 것은?",
+"options": [
+"①공간 분리",
+"②시간 차이",
+"③기술 격차",
+"④정보 격차"
+],
+"answer": 2,
+"explain": "강의노트에 따르면 마케팅이 극복하는 분리는 수량의 불일치, 종류의 불일치, 공간 분리, 시간 차이, 정보 격차, 가치 차이, 소유권 차이이다. 기술 격차는 포함되지 않는다."
+},
+{
+"id": 5,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "마케팅이 극복해야 하는 생산과 소비 사이의 '분리(separation)'에 해당하는 것을 모두 고르면?",
+"options": [
+"①공간 분리, 시간 차이, 정보 격차",
+"②공간 분리, 시간 차이, 정보 격차, 가치 차이, 소유권 차이",
+"③수량의 불일치, 종류의 불일치, 공간 분리",
+"④수량의 불일치, 종류의 불일치, 공간 분리, 시간 차이, 정보 격차, 가치 차이, 소유권 차이"
+],
+"answer": 3,
+"explain": "강의노트에서 불일치(수량, 종류)와 분리(공간, 시간, 정보, 가치, 소유권) 모두를 마케팅이 극복한다고 설명하고 있다. 7가지 모두 포함하는 ④가 정답이다."
+},
+{
+"id": 6,
+"topic": 1,
+"section": "1.1",
+"type": "blank",
+"q": "마케팅은 생산과 소비의 수량 및 종류의 ______을(를) 극복한다.",
+"answer": "불일치",
+"accept": [
+"불일치",
+"discrepancy"
+],
+"explain": "마케팅의 보편적, 총괄적 기능은 수량 및 종류의 불일치(discrepancy)를 극복하는 것이다."
+},
+{
+"id": 7,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "다음 중 마케팅의 총괄적 기능(Universal Functions)에 해당하지 않는 것은?",
+"options": [
+"①구입, 판매, 운송",
+"②보관, 자금조달, 위험 부담",
+"③상품 표준화 및 품질, 시장 정보",
+"④인적자원 관리, 회계 감사"
+],
+"answer": 3,
+"explain": "마케팅의 8가지 총괄적 기능은 구입, 판매, 운송, 보관, 상품 표준화 및 품질, 자금조달, 위험 부담, 시장 정보이다. 인적자원 관리와 회계 감사는 마케팅의 총괄적 기능이 아니다."
+},
+{
+"id": 8,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "거시마케팅(Macro-marketing)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①개별 기업의 마케팅 전략을 의미한다",
+"②생산과 소비를 연결해주는 사회적 유통 현상이다",
+"③특정 제품의 가격 전략을 수립하는 활동이다",
+"④소비자 개인의 구매 행동을 분석하는 것이다"
+],
+"answer": 1,
+"explain": "거시마케팅은 다양한 자원과 다양한 소비자 니즈를 연결하는 가교 역할을 하며, 사회적 유통 현상을 의미한다. 이질적인(heterogeneous) 공급과 수요를 효과적으로 매칭하는 사회적 과정이다."
+},
+{
+"id": 9,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "거시마케팅의 정의에 포함되지 않는 요소는?",
+"options": [
+"①생산자에서 소비자로의 재화와 서비스의 흐름을 이끄는 사회적 과정",
+"②이질적인(heterogeneous) 공급과 수요의 매칭",
+"③사회의 목적 달성",
+"④개별 기업의 이윤 극대화"
+],
+"answer": 3,
+"explain": "거시마케팅은 'a social process that directs an economy's flow of goods and services from producers to consumers in a way that effectively matches heterogeneous supply and demand and accomplishes the objectives of society'로 정의된다. 개별 기업의 이윤 극대화는 미시마케팅의 영역이다."
+},
+{
+"id": 10,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "거시마케팅에서 중간상인(intermediaries)에 대한 설명으로 옳은 것은?",
+"options": [
+"①생산(production) 기능이 거래(trade) 기능보다 크다",
+"②거래(trade) 기능이 생산(production) 기능보다 크다",
+"③구매와 판매만 담당한다",
+"④마케팅 기능을 수행하지 않는다"
+],
+"answer": 1,
+"explain": "강의노트에 따르면 중간상인(intermediaries)은 trade > production, 즉 거래 기능이 생산 기능보다 크다. collaborators는 구매와 판매를 제외한 다른 교환에 도움을 준다."
+},
+{
+"id": 11,
+"topic": 1,
+"section": "1.1",
+"type": "blank",
+"q": "거시마케팅에서 물자와 용역이 생산, 분배, 소비되는 양식을 ______의 종류라 한다.",
+"answer": "경제체제",
+"accept": [
+"경제체제",
+"경제시스템",
+"경제 체제",
+"경제 시스템",
+"economic system"
+],
+"explain": "명령경제(command-oriented, planned) vs. 시장경제(market-directed)로 나뉘며, 무엇을 얼마나 생산할 것인가, 누가 언제 누구에게 왜 배분할 것인가를 결정하는 양식이다."
+},
+{
+"id": 12,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "명령경제(command-oriented economy)와 시장경제(market-directed economy)에 대한 설명으로 옳은 것은?",
+"options": [
+"①명령경제에서는 시장 참여자가 자원 배분을 결정한다",
+"②시장경제에서는 정부가 자원 배분을 결정한다",
+"③명령경제에서는 정부가 무엇을 얼마나 생산할지 결정한다",
+"④두 체제 간에 차이가 없다"
+],
+"answer": 2,
+"explain": "명령경제(command-oriented, planned)에서는 정부가, 시장경제(market-directed)에서는 시장 참여자가 무엇을 얼마나 생산하고 누구에게 배분할지를 결정한다."
+},
+{
+"id": 13,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "collaborators의 역할로 가장 적절한 것은?",
+"options": [
+"①재화를 직접 생산한다",
+"②구매와 판매를 직접 담당한다",
+"③구매와 판매를 제외한 다른 교환에 도움을 준다",
+"④소비자에게 최종 판매를 한다"
+],
+"answer": 2,
+"explain": "강의노트에 따르면 collaborators는 구매와 판매를 제외한 다른 교환에 도움을 주는 역할을 한다. 중간상인(intermediaries)과 구별된다."
+},
+{
+"id": 14,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "AMA(2017)의 마케팅 정의에서 마케팅이 가치를 제공하는 대상에 포함되지 않는 것은?",
+"options": [
+"①고객(customers)",
+"②파트너(partners)",
+"③경쟁사(competitors)",
+"④사회 전체(society at large)"
+],
+"answer": 2,
+"explain": "AMA(2017) 정의: 'Marketing is the activity, set of institutions, and processes for creating, communicating, delivering, and exchanging offerings that have value for customers, clients, partners, and society at large.' 경쟁사는 포함되지 않는다."
+},
+{
+"id": 15,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "AMA(2017) 마케팅 정의에서 마케팅의 핵심 활동 4가지로 올바른 것은?",
+"options": [
+"①생산, 유통, 판매, 소비",
+"②창조, 커뮤니케이션, 전달, 교환",
+"③계획, 실행, 통제, 평가",
+"④조사, 분석, 전략, 실행"
+],
+"answer": 1,
+"explain": "AMA 정의에 따르면 마케팅은 가치 있는 제공물(offerings)을 창조(creating), 커뮤니케이션(communicating), 전달(delivering), 교환(exchanging)하는 활동, 제도, 과정이다."
+},
+{
+"id": 16,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "마케팅 정의에서 거시적 관점과 미시적 관점의 관계로 옳은 것은?",
+"options": [
+"①거시마케팅은 미시마케팅에 포함된다",
+"②미시마케팅은 거시마케팅에 포함된다",
+"③두 관점은 완전히 독립적이다",
+"④거시마케팅은 기업 활동을 의미한다"
+],
+"answer": 1,
+"explain": "강의노트에 따르면 '거시(생산과 소비의 사회적 유통) < 미시(기업활동)'이 아니라, 거시 관점이 더 큰 범위이고 미시(기업활동)가 그 안에 포함된다. 미시마케팅이 거시마케팅에 포함되는 관계이다."
+},
+{
+"id": 17,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "마케팅의 핵심은 무엇인가?",
+"options": [
+"①이윤 극대화",
+"②고객(customer)",
+"③경쟁사 분석",
+"④기술 혁신"
+],
+"answer": 1,
+"explain": "강의노트에서 '마케팅의 핵심은 고객'이라고 명시하고 있다. 고객은 모든 마케팅 과정에서의 중심점이다."
+},
+{
+"id": 18,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "고객(customer)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①기업이 개발, 가격 책정, 유통, 판매하는 제품을 구매하는 사람들",
+"②모든 마케팅 과정에서의 중심점",
+"③제품 구매 과정에서 이익이나 보상 vs. 비용을 고려",
+"④기업의 생산 공정을 직접 관리하는 사람들"
+],
+"answer": 3,
+"explain": "고객은 기업이 개발하여 가격을 책정하고, 유통하고, 판매하는 제품을 구매하는 사람들로, 제품을 구매하는 과정에서 이익/보상 vs. 비용(가치 창출 기대)을 고려한다. 생산 공정 관리는 고객의 역할이 아니다."
+},
+{
+"id": 19,
+"topic": 1,
+"section": "1.1",
+"type": "blank",
+"q": "기업이 자사의 마케팅 활동을 전개하고자 하는 고객 집단을 ______(이)라 한다.",
+"answer": "목표시장",
+"accept": [
+"목표시장",
+"목표 시장",
+"target market",
+"타깃마켓",
+"타겟마켓",
+"타겟 마켓",
+"목표고객"
+],
+"explain": "목표시장(target market)은 기업이 자사의 마케팅 활동을 전개하고자 하는 특정 고객 집단을 의미한다."
+},
+{
+"id": 20,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "마케팅믹스(Marketing Mix)의 4P에 해당하지 않는 것은?",
+"options": [
+"①Product",
+"②Place",
+"③People",
+"④Price"
+],
+"answer": 2,
+"explain": "마케팅믹스 4P는 Product(제품), Place(유통), Promotion(촉진), Price(가격)이다. People은 7P 확장 모델에 포함되지만 기본 4P에는 해당하지 않는다."
+},
+{
+"id": 21,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "마케팅믹스에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①마케팅은 단순히 판매나 광고만을 의미한다",
+"②제품을 개발하고 관리하여 고객의 욕구를 충족시키는 총체적 관점에서 이해되어야 한다",
+"③4P 중 가격이 유일하게 중요한 요소이다",
+"④마케팅믹스는 기업 내부 관리에만 적용된다"
+],
+"answer": 1,
+"explain": "마케팅은 단순히 판매나 광고를 의미하는 것뿐만 아니라 제품을 개발하고 관리하여 고객의 욕구를 충족시키는 과정이라는 총체적인 관점에서 이해되어야 한다."
+},
+{
+"id": 22,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "마케팅 관리자가 취합하고 분석해야 하는 최신 정보에 해당하지 않는 것은?",
+"options": [
+"①기업의 목표고객",
+"②고객의 선호도",
+"③자사의 경쟁사",
+"④정부의 예산 편성"
+],
+"answer": 3,
+"explain": "마케팅 관리자는 기업의 목표고객, 고객의 선호도, 자사의 경쟁사에 대한 최신 정보를 취합하고 분석해야 한다. 정부의 예산 편성은 직접적 분석 대상으로 언급되지 않았다."
+},
+{
+"id": 23,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "제품(Product)의 구성 요소 중 '인간 및 기계 작동을 사용하여 고객에게 무형의 가치를 제공'하는 것은?",
+"options": [
+"①재화",
+"②서비스",
+"③아이디어",
+"④브랜드"
+],
+"answer": 1,
+"explain": "서비스는 인간 및 기계 작동을 사용하여 고객에게 무형의 가치를 제공하는 것이다. 재화는 물리적 개체, 아이디어는 개념/철학/이미지/쟁점이다."
+},
+{
+"id": 24,
+"topic": 1,
+"section": "1.2",
+"type": "blank",
+"q": "제품의 구성 요소 중 인간 및 기계 작동을 사용하여 고객에게 무형의 가치를 제공하는 것을 ______(이)라 한다.",
+"answer": "서비스",
+"accept": [
+"서비스",
+"service"
+],
+"explain": "제품은 재화(물리적 개체), 서비스(무형의 가치), 아이디어(개념, 철학, 이미지, 쟁점)로 구성된다."
+},
+{
+"id": 25,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "다음 중 '아이디어(idea)'에 해당하는 것은?",
+"options": [
+"①사람이 만질 수 있는 물리적 개체",
+"②인간 및 기계 작동을 통한 무형의 가치",
+"③개념, 철학, 이미지, 혹은 쟁점이나 사안",
+"④브랜드 이름과 패키징"
+],
+"answer": 2,
+"explain": "아이디어는 개념, 철학, 이미지, 혹은 쟁점이나 사안을 의미한다. ①은 재화, ②는 서비스, ④는 제품 변수에 해당한다."
+},
+{
+"id": 26,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "제품 변수에 포함되는 것은?",
+"options": [
+"①운송 및 저장",
+"②brand name & packaging 개발이나 수정, 품질보증, 수리, 보수",
+"③광고 및 인적 판매",
+"④가격 책정 및 할인 정책"
+],
+"answer": 1,
+"explain": "제품 변수에는 brand name & packaging 개발이나 수정, 품질보증, 수리, 보수가 포함된다."
+},
+{
+"id": 27,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "유통(Place)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①제품은 고객이 필요한 시점에 편리한 장소에서 제공되어야 한다",
+"②가능한 많은 목표고객이 자사의 제품을 구매할 수 있도록 해야 한다",
+"③재고, 운송, 저장 및 보관 관련 비용은 최대한 투자해야 한다",
+"④중간상인(도매업자, 소매업자) 선택이 포함된다"
+],
+"answer": 2,
+"explain": "유통에서는 재고, 운송, 저장 및 보관 관련 비용은 '절약'해야 한다고 강의노트에 명시되어 있다. 비용을 최대한 투자하는 것이 아니라 절약하는 것이 핵심이다."
+},
+{
+"id": 28,
+"topic": 1,
+"section": "1.2",
+"type": "blank",
+"q": "______의 출현은 전통적 방식의 유통에 큰 영향을 미쳤다.",
+"answer": "인터넷",
+"accept": [
+"인터넷",
+"전자상거래",
+"e-commerce",
+"internet",
+"온라인"
+],
+"explain": "인터넷(또는 전자상거래)의 출현이 전통적 방식의 유통에 큰 영향을 미쳤다."
+},
+{
+"id": 29,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "촉진(Promotion)의 기능으로 언급되지 않은 것은?",
+"options": [
+"①자사와 자사 제품의 인지도 제고",
+"②고객에게 자사 제품에 대한 교육",
+"③사람들에게 정치적, 사회적 입장을 고수하도록 유도",
+"④제품의 물리적 배송 관리"
+],
+"answer": 3,
+"explain": "촉진은 정보 제공, 설득, 관심 부여를 통해 자사와 제품을 알리는 활동이다. 물리적 배송 관리는 유통(Place)의 영역이다."
+},
+{
+"id": 30,
+"topic": 1,
+"section": "1.2",
+"type": "blank",
+"q": "촉진(Promotion)은 고객들에게 자사와 자사가 생산하는 제품을 알리는 모든 활동으로, ______, 설득, 관심 부여를 포함한다.",
+"answer": "정보제공",
+"accept": [
+"정보제공",
+"정보 제공",
+"informing"
+],
+"explain": "촉진의 세 가지 핵심 기능은 정보제공(informing), 설득(persuading), 관심 부여이다."
+},
+{
+"id": 31,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "가격(Price)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①가격은 마케팅믹스에서 중요하지 않은 요소이다",
+"②가격은 고객이 제품의 가치에 민감하기 때문에 매우 중요하다",
+"③가격은 경쟁과 무관한 요소이다",
+"④가격은 오직 비용에 의해서만 결정된다"
+],
+"answer": 1,
+"explain": "가격은 마케팅믹스에서 매우 중요한 영향력을 가지며, 이는 고객이 제품의 가치에 대해 민감하기 때문이다. 또한 가격은 종종 경쟁을 위한 도구로 사용된다."
+},
+{
+"id": 32,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "가치(Value)의 공식으로 올바른 것은?",
+"options": [
+"①가치 = 비용 + 혜택",
+"②가치 = 혜택 - 비용",
+"③가치 = 혜택 × 비용",
+"④가치 = 혜택 / 비용"
+],
+"answer": 1,
+"explain": "강의노트에 따르면 가치 = 혜택 - 비용이다. 고객이 가져가는 이득(혜택)에서 고객이 포기해야 하는 것(비용)을 뺀 것이 가치이다."
+},
+{
+"id": 33,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "고객의 비용에 포함되지 않는 것은?",
+"options": [
+"①돈(money)",
+"②시간(time)",
+"③사회적 명성",
+"④노력과 위험 부담"
+],
+"answer": 2,
+"explain": "고객의 비용에는 돈, 시간, 노력, 위험 부담 등 고객이 제품을 얻기 위해 포기해야 하는 일련의 모든 것이 포함된다. 사회적 명성은 강의노트에서 고객 비용으로 언급되지 않았다."
+},
+{
+"id": 34,
+"topic": 1,
+"section": "1.3",
+"type": "blank",
+"q": "가치는 비용과 이득 간의 ______ 평가이다.",
+"answer": "주관적",
+"accept": [
+"주관적",
+"subjective"
+],
+"explain": "가치는 비용과 이득 간의 주관적(subjective) 평가이다. 동일한 제품이라도 고객에 따라 느끼는 가치가 다를 수 있다."
+},
+{
+"id": 35,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "'우월한 고객가치'가 발생하는 경우는?",
+"options": [
+"①높은 비용, 높은 혜택",
+"②높은 비용, 낮은 혜택",
+"③낮은 비용, 높은 혜택",
+"④낮은 비용, 낮은 혜택"
+],
+"answer": 2,
+"explain": "강의노트의 가치 매트릭스에서 우월한 고객가치는 비용이 낮고(Low) 혜택이 높은(High) 경우에 발생한다. 반대로 열등한 고객가치는 비용이 높고 혜택이 낮은 경우이다."
+},
+{
+"id": 36,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅믹스(4P)의 역할로 가장 적절한 것은?",
+"options": [
+"①고객의 비용을 증가시킨다",
+"②제품이나 서비스에 대한 가치를 향상시킨다",
+"③경쟁사의 가치를 감소시킨다",
+"④시장의 불확실성을 증가시킨다"
+],
+"answer": 1,
+"explain": "강의노트에 따르면 마케팅믹스(4P)는 제품이나 서비스에 대한 가치를 향상시키는 역할을 한다."
+},
+{
+"id": 37,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅이 고객가치를 창출하는 과정에서 고려해야 할 요소가 아닌 것은?",
+"options": [
+"①혜택과 비용 반영",
+"②경쟁 상황",
+"③관계 유지에 미치는 영향",
+"④주주 배당금"
+],
+"answer": 3,
+"explain": "강의노트에서 고객가치 창출 과정에는 혜택, 비용, 혜택과 비용 반영, 가치 계산, 경쟁, 관계 유지에의 영향, 고객의 관점 등이 포함된다. 주주 배당금은 직접적 고려 요소로 언급되지 않았다."
+},
+{
+"id": 38,
+"topic": 1,
+"section": "1.3",
+"type": "blank",
+"q": "교환(exchange)의 조건 중, 두 명 이상의 이해 당사자들이 참여해야 하고, 이 중 한쪽은 다른 한쪽이 원하는 가치 있는 그 무엇을 소유해야 하며, 교환은 양쪽 이해 당사자들 모두에게 만족을 주어야 한다. 이러한 거래 관계의 핵심 개념을 ______(이)라 한다.",
+"answer": "교환",
+"accept": [
+"교환",
+"exchange"
+],
+"explain": "교환(exchange)은 기업이 제품, 서비스, 아이디어를 고객에게 제공하고 대신에 가치 있는 그 무엇을 얻는 거래 관계를 의미한다."
+},
+{
+"id": 39,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "교환(exchange)이 성립하기 위한 조건으로 적절하지 않은 것은?",
+"options": [
+"①두 명 이상의 이해 당사자들이 참여해야 한다",
+"②한쪽은 다른 한쪽이 원하는 가치 있는 것을 소유해야 한다",
+"③한쪽만 만족하면 교환이 성립한다",
+"④교환될 상대방 제품의 가치에 대한 확신이 필요하다"
+],
+"answer": 2,
+"explain": "교환이 성립하려면 양쪽 이해 당사자들 모두에게 만족을 주어야 한다. 한쪽만 만족하는 것으로는 충분하지 않다."
+},
+{
+"id": 40,
+"topic": 1,
+"section": "1.3",
+"type": "blank",
+"q": "기업이 제공하는 제품, 산업, 시장, 그 밖의 연관된 활동에 직간접적으로 관여하고 있는 고객, 종업원, 투자자, 공급업체 등 모든 관계자를 ______(이)라 한다.",
+"answer": "이해관계자",
+"accept": [
+"이해관계자",
+"stakeholder",
+"stakeholders",
+"이해 관계자"
+],
+"explain": "이해관계자(stakeholder)에는 고객, 종업원, 투자자와 주주, 공급자, 정부, 지역사회 등이 포함된다."
+},
+{
+"id": 41,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "이해관계자(stakeholder)에 해당하지 않는 것은?",
+"options": [
+"①고객, 종업원",
+"②투자자와 주주",
+"③경쟁사의 고객",
+"④공급자, 정부, 지역사회"
+],
+"answer": 2,
+"explain": "이해관계자에는 고객, 종업원, 투자자와 주주, 공급자, 정부, 지역사회 등이 포함된다. 경쟁사의 고객은 직접적인 이해관계자로 분류되지 않는다."
+},
+{
+"id": 42,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "역동적 마케팅 환경(marketing environment)에 포함되는 요소가 아닌 것은?",
+"options": [
+"①경쟁적, 경제적 요소",
+"②정치적, 법률적 요소",
+"③기술적, 사회문화적 요소",
+"④마케팅믹스 내부 변수"
+],
+"answer": 3,
+"explain": "마케팅 환경은 경쟁적, 경제적, 정치적, 법률적, 기술적, 사회문화적 요소로 구성된다. 마케팅믹스 내부 변수는 환경 요소가 아니라 기업이 통제할 수 있는 변수이다."
+},
+{
+"id": 43,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 환경에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①고객의 생활방식, 생활수준, 제품선호도에 영향을 미친다",
+"②마케팅 관리자의 의사결정에 영향을 미친다",
+"③환경 변화에 따라 이해관계자의 가치 평가가 달라진다",
+"④마케팅 관리자가 환경을 완전히 통제할 수 있다"
+],
+"answer": 3,
+"explain": "마케팅 환경은 통제할 수 없는 외부 요인이다. 마케팅믹스 변수와 달리 통제할 순 없어도 계획 및 대비는 할 수 있다."
+},
+{
+"id": 44,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 환경이 미래에 대한 예측을 불투명하게 만드는 특성을 무엇이라 하는가?",
+"options": [
+"①효율성(efficiency)",
+"②불확실성(uncertainty)",
+"③안정성(stability)",
+"④통제가능성(controllability)"
+],
+"answer": 1,
+"explain": "마케팅 환경은 미래에 대한 예측을 불투명하게 만드는 불확실성(uncertainty)을 가진다. 기업은 이를 통제할 순 없어도 계획 및 대비해야 한다."
+},
+{
+"id": 45,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념(marketing concept)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①제품 생산에만 초점을 맞추는 것",
+"②고객의 욕구를 충족시키고 기업의 목표치를 달성하기 위한 총체적이고 조직화된 기업의 활동",
+"③판매량 극대화만을 추구하는 것",
+"④경쟁사 모방을 통한 시장 진입 전략"
+],
+"answer": 1,
+"explain": "마케팅 개념은 '고객의 욕구 충족을 위한 가치 생성'에 초점을 맞추며, 고객의 욕구를 충족시키고 기업의 목표치를 달성하기 위한 총체적이고 조직화된 기업의 활동이다."
+},
+{
+"id": 46,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념의 세 가지 핵심 구성요소로 올바른 것은?",
+"options": [
+"①생산, 판매, 유통",
+"②기업의 목표실적, 기업의 총체적 활동, 고객만족",
+"③가격, 품질, 서비스",
+"④시장조사, 제품개발, 광고"
+],
+"answer": 1,
+"explain": "마케팅 개념의 세 가지 핵심 구성요소는 기업의 목표실적(profit or another measure of long-term success), 기업의 총체적 활동(total company effort), 고객만족(customer satisfaction)이다."
+},
+{
+"id": 47,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념에서 기업의 총체적인 활동을 지휘하는 관리 철학이 영향을 미치는 부서는?",
+"options": [
+"①마케팅 부서만",
+"②생산, 재무, 회계, 인적자원 부서",
+"③영업 부서만",
+"④외부 협력업체"
+],
+"answer": 1,
+"explain": "마케팅 개념은 기업의 총체적인 활동을 지휘하는 관리 철학으로서, 생산, 재무, 회계, 인적자원 부서 등 기업 전체에 영향을 미친다."
+},
+{
+"id": 48,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념의 발전 과정에서 '생산 관점(Production orientation)'의 시기와 특징으로 올바른 것은?",
+"options": [
+"①20세기 전반 - 판매 강조",
+"②19세기 후반 - 산업혁명, 대량생산, 속도와 효율성",
+"③20세기 중반 - 시장지향(market orientation)",
+"④21세기 - 디지털 마케팅"
+],
+"answer": 1,
+"explain": "생산 관점은 19세기 후반 산업혁명 시기로, 운송수단(전기, 철도), 분업, 생산라인, 대량생산을 통해 기업의 생산성에 속도와 효율성을 부여했다."
+},
+{
+"id": 49,
+"topic": 1,
+"section": "1.3",
+"type": "blank",
+"q": "마케팅 개념의 발전에서 19세기 후반 산업혁명 시기의 관점을 ______ 관점이라 한다.",
+"answer": "생산",
+"accept": [
+"생산",
+"production",
+"Production"
+],
+"explain": "생산 관점(Production orientation)은 19세기 후반 산업혁명으로 인한 대량생산 시대의 마케팅 관점이다."
+},
+{
+"id": 50,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "판매 관점(Sales orientation)의 시기와 특징으로 올바른 것은?",
+"options": [
+"①19세기 후반 - 대량생산 강조",
+"②20세기 전반 - 기업 간 경쟁 치열, 인적판매/광고/유통 강조",
+"③20세기 중반 - 고객 욕구 충족 강조",
+"④21세기 - 소셜 미디어 마케팅"
+],
+"answer": 1,
+"explain": "판매 관점은 20세기 전반에 기업 간 경쟁이 더욱 치열해지면서, 인적판매, 광고, 유통을 통한 제품 판매를 강조하던 시기이다. 이 시기에는 marketing = sales라는 인식이 있었다."
+},
+{
+"id": 51,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 관점(Marketing orientation)에서 시장지향(market orientation)이 필요한 이유로 적절하지 않은 것은?",
+"options": [
+"①현재와 미래의 고객 욕구를 이해하기 위해",
+"②기업 내부 모든 부서 간의 정보 공유를 위해",
+"③기업 전체 차원에서의 반응을 위해",
+"④생산 비용 절감만을 위해"
+],
+"answer": 3,
+"explain": "시장지향은 현재와 미래의 고객 욕구 이해, 기업 내부 모든 부서 간의 정보 공유, 기업 전체 차원에서의 반응을 위해 필요하다. 단순한 생산 비용 절감은 생산 관점의 특징이다."
+},
+{
+"id": 52,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념의 발전 순서로 올바른 것은?",
+"options": [
+"①판매 관점 → 생산 관점 → 마케팅 관점",
+"②마케팅 관점 → 판매 관점 → 생산 관점",
+"③생산 관점 → 판매 관점 → 마케팅 관점",
+"④생산 관점 → 마케팅 관점 → 판매 관점"
+],
+"answer": 2,
+"explain": "마케팅 개념은 생산 관점(19세기 후반) → 판매 관점(20세기 전반) → 마케팅 관점(20세기 중반) 순으로 발전했다."
+},
+{
+"id": 53,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "고객관계관리(CRM: Customer Relationship Management)의 목적으로 적절하지 않은 것은?",
+"options": [
+"①기존 고객 유지 및 충성도, 만족도 유도",
+"②신규 고객 유치",
+"③일관적이고 긍정적 고객 경험(touch points) 제공",
+"④경쟁사 고객 데이터 수집"
+],
+"answer": 3,
+"explain": "CRM의 목적에는 기존 고객 유지 및 충성도/만족도 유도, 신규 고객 유치, 일관적이고 긍정적 고객 경험, social media analytics, 내부/외부 데이터 취합 관리가 포함된다. 경쟁사 고객 데이터 수집은 CRM의 목적이 아니다."
+},
+{
+"id": 54,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "CRM에서 활용하는 방법으로 언급된 것은?",
+"options": [
+"①시장조사와 정보통신기술을 이용한 고객 데이터베이스 구축",
+"②제품의 대량생산 전략 수립",
+"③경쟁사 인수합병",
+"④직원 급여 관리"
+],
+"answer": 0,
+"explain": "CRM은 시장조사와 정보통신기술을 이용하여 고객 데이터베이스를 구축하고 이에 대한 분석을 통해 기업에서 필요로 하는 고객평생가치를 극대화한다."
+},
+{
+"id": 55,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "고객평생가치(Customer Lifetime Value)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①고객이 회사와 지속적인 거래 관계를 유지한다고 가정했을 때 회사에 가져올 수 있는 평생 이익 공헌도",
+"②기업에 이익을 가져다 줄 수 있는 고객의 구매 행동과 패턴 분석에 초점",
+"③단기간의 일회성 거래 수익만을 측정한다",
+"④평생 고객의 유지를 위한 마케팅 전략의 자원 배분에 영향을 준다"
+],
+"answer": 2,
+"explain": "고객평생가치는 단기간의 일회성 거래가 아니라, 고객이 회사와 지속적인 거래 관계를 유지한다고 가정했을 때의 평생 이익 공헌도를 측정하는 것이다."
+},
+{
+"id": 56,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "고객평생가치와 관련하여, 시장점유율에서 어떤 개념으로의 전환이 강조되는가?",
+"options": [
+"①시장점유율 → 매출점유율",
+"②시장점유율 → 고객점유율",
+"③시장점유율 → 이익점유율",
+"④시장점유율 → 브랜드점유율"
+],
+"answer": 1,
+"explain": "강의노트에서는 시장점유율에서 고객점유율로의 전환을 강조하고 있다. 이는 고객 한 명 한 명의 평생가치에 집중하는 관점의 변화를 의미한다."
+},
+{
+"id": 57,
+"topic": 1,
+"section": "1.3",
+"type": "blank",
+"q": "고객평생가치에서, 기업이 고객의 욕구와 선호도를 파악함으로써 발생하는 자산을 ______ 자산이라 한다.",
+"answer": "브랜드",
+"accept": [
+"브랜드",
+"brand"
+],
+"explain": "기업이 고객의 욕구와 선호도를 파악함으로써 발생하는 브랜드 자산(brand equity)은 고객평생가치의 중요한 구성요소이다."
+},
+{
+"id": 58,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "고객평생가치에서 강조하는 가치 전환의 방향으로 올바른 것은?",
+"options": [
+"①미래 잠재가치 → 현재 가치",
+"②특정 기간의 현재 가치 → 미래 잠재가치",
+"③개인 가치 → 사회적 가치",
+"④경제적 가치 → 문화적 가치"
+],
+"answer": 1,
+"explain": "강의노트에서는 '특정 기간 동안의 고객의 현재 가치 → 미래 잠재가치'로의 전환을 강조하고 있다."
+},
+{
+"id": 59,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "기업 제품에 대한 좋은 구전효과를 의미하는 용어는?",
+"options": [
+"①CRM",
+"②WOM(Word-of-Mouth)",
+"③CLV",
+"④ROI"
+],
+"answer": 1,
+"explain": "WOM(Word-of-Mouth)은 구전효과를 의미하며, 고객평생가치와 관련하여 기업 제품에 대한 좋은 구전효과가 중요하다고 강조하고 있다."
+},
+{
+"id": 60,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "세계 경제에서의 마케팅의 중요성에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①마케팅 비용은 구매자의 비용에서 많은 부분을 차지한다",
+"②마케팅은 영리 기업에서만 사용된다",
+"③마케팅은 기업과 경제 모두에 중요하다",
+"④마케팅은 세계 경제의 원동력이다"
+],
+"answer": 1,
+"explain": "마케팅은 영리 기업뿐만 아니라 비영리 단체(정부 & 비영리 단체의 사회 공익)에도 사용된다."
+},
+{
+"id": 61,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "세계 경제에서 마케팅이 원동력이 되는 요인으로 언급되지 않은 것은?",
+"options": [
+"①기술 발전",
+"②정치경제의 장벽(globalization)",
+"③군사력 확장",
+"④범세계적 통신망과 국제 여행"
+],
+"answer": 2,
+"explain": "세계 경제의 원동력으로 기술 발전, 정치경제의 장벽(globalization), 생활수준 향상, 범세계적 통신망, 국제 여행이 언급되었다. 군사력 확장은 포함되지 않았다."
+},
+{
+"id": 62,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "마케팅 지식이 소비자에게 제공하는 이점으로 올바른 것은?",
+"options": [
+"①소비자 이해도를 향상시킨다",
+"②제품 가격을 자동으로 낮춘다",
+"③기업의 생산성을 직접 높인다",
+"④경쟁사의 전략을 무력화한다"
+],
+"answer": 0,
+"explain": "마케팅 지식은 소비자 이해도를 향상시키며, 마케팅에 대한 연구를 통해 고객, 기업, 경제에 대한 이해를 높인다. 또한 고품질 정보(법률, 규정, 산업 지침)를 통해 불이익/부당대우를 감소시킨다."
+},
+{
+"id": 63,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "기술력을 통해 사람들을 연결하는 수단으로 언급된 것은?",
+"options": [
+"①TV, 라디오, 신문",
+"②이메일, 웹사이트, 앱",
+"③전단지, 카탈로그, DM",
+"④전화, 팩스, 우편"
+],
+"answer": 1,
+"explain": "강의노트에서는 이메일/웹사이트/앱을 기술력으로 사람들을 연결하는 수단으로 언급하며, 이를 통해 고객 이해 증진, 의사소통 활성화, 고객의 간접 경험(소비자 후기)이 가능하다고 설명한다."
+},
+{
+"id": 64,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "사회책임적 마케팅(socially responsible marketing)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①기업과 고객, 주주의 복지를 증진(공생관계)한다",
+"②윤리적이고 사회적 책임을 다하는 기업의 마케팅 활동이다",
+"③재정적 성과와 상관관계가 있을 수 있다",
+"④단기적 이윤 극대화만을 추구한다"
+],
+"answer": 3,
+"explain": "사회책임적 마케팅은 단기적 이윤 극대화가 아닌, 고객 및 주주와의 장기적인 안목에서 공생하는 가치 창조의 관계를 추구하며, 자연환경 보존까지 포함하는 전략적 마케팅 활동이다."
+},
+{
+"id": 65,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "사회책임적 마케팅이 추구하는 범위로 가장 포괄적인 설명은?",
+"options": [
+"①제품의 품질 향상만을 추구한다",
+"②고객 만족만을 추구한다",
+"③고객 및 주주와의 장기적 공생 가치 창조와 자연환경 보존을 포함하는 전략적 마케팅 활동",
+"④기업의 매출 증대만을 목표로 한다"
+],
+"answer": 2,
+"explain": "사회책임적 마케팅은 고객 및 주주와의 장기적인 안목에서 공생하는 가치 창조의 관계뿐만 아니라 우리가 살고 있는 자연환경을 잘 유지하고 보존하여 인간의 삶을 더욱 윤택하게 하는 전략적 마케팅 활동이다."
+},
+{
+"id": 66,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "마케팅이 혁신과 삶의 질, 생활방식에 영향을 미치는 방식은?",
+"options": [
+"①기존 제품의 가격을 인하한다",
+"②새로운 아이디어, 상품, 서비스를 개발한다",
+"③정부 규제를 완화한다",
+"④노동 시간을 단축한다"
+],
+"answer": 1,
+"explain": "마케팅은 새로운 아이디어, 상품, 서비스 개발을 통해 혁신과 삶의 질, 생활방식에 영향을 미친다."
+},
+{
+"id": 67,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "생산과 소비 사이의 '소유권 차이'를 극복하는 것은 마케팅의 어떤 역할에 해당하는가?",
+"options": [
+"①가격 책정 기능",
+"②생산과 소비의 불일치와 분리를 극복하는 기능",
+"③제품 디자인 기능",
+"④광고 기능"
+],
+"answer": 1,
+"explain": "마케팅은 수량의 불일치, 종류의 불일치, 공간 분리, 시간 차이, 정보 격차, 가치 차이, 소유권 차이 등 생산과 소비의 불일치와 분리를 극복하는 기능을 수행한다."
+},
+{
+"id": 68,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념에서 기업이 고객 가치를 충족시키기 위해 활용해야 하는 것으로 언급된 3가지는?",
+"options": [
+"①자본, 인력, 기술",
+"②고객에 대한 통찰력 있는 분석, 경쟁사의 능력 분석, 자사의 능력과 자원 활용",
+"③생산성, 효율성, 비용절감",
+"④광고, 판촉, PR"
+],
+"answer": 1,
+"explain": "마케팅 개념에서 기업은 고객에 대한 통찰력 있는 분석, 경쟁사의 능력 분석, 자사가 보유하고 있는 능력과 자원을 활용하여 고객 가치를 충족시켜야 한다."
+},
+{
+"id": 69,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념이 추구하는 기업의 장기적 목표에 해당하는 것은?",
+"options": [
+"①단기적 매출 증대만을 추구",
+"②장기적인 이윤, 시장점유율, 자사 제품의 매출",
+"③종업원 수 증가",
+"④공장 규모 확대"
+],
+"answer": 1,
+"explain": "마케팅 개념은 고객 만족과 동시에 장기적인 이윤, 시장점유율, 자사가 생산하는 제품의 매출 등 기업의 목표실적을 달성하는 것을 추구한다."
+},
+{
+"id": 70,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "20세기 전반 판매 관점(Sales orientation) 시기에 기업에서 사업의 핵심은 무엇이었는가?",
+"options": [
+"①생산(production)",
+"②판매(sales)",
+"③연구개발(R&D)",
+"④고객 관계(CRM)"
+],
+"answer": 1,
+"explain": "20세기 전반 판매 관점 시기에는 기업에서 사업의 핵심이 판매였고, 판매는 기업의 이익을 나타내는 기준이었다. 이 시기에는 marketing = sales라는 인식이 여전히 존재했다."
+},
+{
+"id": 71,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 관점(Marketing orientation)에서 '시장지향(market orientation)'의 핵심 요소가 아닌 것은?",
+"options": [
+"①현재와 미래의 고객의 욕구를 이해",
+"②고객 정보를 조직 전체에 공유",
+"③기업의 모든 조직이 하나의 목표를 추구",
+"④생산 비용 최소화를 최우선 목표로 설정"
+],
+"answer": 3,
+"explain": "시장지향은 현재와 미래의 고객 욕구 이해, 고객 정보의 조직 전체 공유, 기업 전체 차원의 반응을 핵심으로 한다. 생산 비용 최소화는 생산 관점의 특성이다."
+},
+{
+"id": 72,
+"topic": 1,
+"section": "1.3",
+"type": "blank",
+"q": "CRM은 시장조사와 정보통신기술을 이용하여 고객 데이터베이스를 구축하고 분석을 통해 기업에서 필요로 하는 ______을(를) 극대화한다.",
+"answer": "고객평생가치",
+"accept": [
+"고객평생가치",
+"고객 평생가치",
+"고객생애가치",
+"고객 생애가치",
+"Customer Lifetime Value",
+"CLV"
+],
+"explain": "CRM의 궁극적 목적은 시장조사와 정보통신기술을 이용한 고객 데이터베이스 구축 및 분석을 통해 고객평생가치(Customer Lifetime Value)를 극대화하는 것이다."
+},
+{
+"id": 73,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "마케팅믹스의 궁극적인 목적으로 가장 적절한 것은?",
+"options": [
+"①기업의 생산성 향상",
+"②고객의 욕구를 충족시키는 최적의 조합을 산출하는 것",
+"③경쟁사 대비 가격 우위 확보",
+"④광고 효과 극대화"
+],
+"answer": 1,
+"explain": "마케팅믹스의 궁극적 목적은 Product, Place, Price, Promotion의 고객의 욕구를 충족시키는 최적의 조합을 산출하는 것이다."
+},
+{
+"id": 74,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "다음 중 마케팅의 총괄적 기능(Universal Functions) 8가지에 모두 해당하는 것은?",
+"options": [
+"①구입, 판매, 운송, 보관, 상품표준화 및 품질, 자금조달, 위험부담, 시장정보",
+"②구입, 판매, 운송, 보관, 광고, 자금조달, 위험부담, 시장정보",
+"③구입, 판매, 운송, 보관, 상품표준화 및 품질, 인사관리, 위험부담, 시장정보",
+"④구입, 판매, 운송, 보관, 상품표준화 및 품질, 자금조달, 위험부담, 회계감사"
+],
+"answer": 0,
+"explain": "마케팅의 8가지 총괄적 기능은 구입, 판매, 운송, 보관, 상품 표준화 및 품질, 자금조달, 위험 부담, 시장 정보이다."
+},
+{
+"id": 75,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "교환(exchange)에서 신뢰를 얻기 위해 필요한 조건은?",
+"options": [
+"①한쪽만 기대치를 충족하면 된다",
+"②양쪽 모두 교환되는 제품이 서로의 기대치를 충족해야 한다",
+"③가격이 저렴하면 신뢰가 자동으로 형성된다",
+"④정부의 보증이 있으면 된다"
+],
+"answer": 1,
+"explain": "신뢰를 얻기 위해서는 양쪽 모두 교환되는 제품이 서로의 기대치를 충족해야 한다."
+},
+{
+"id": 76,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "기술력을 통해 사람들을 연결함으로써 가능해지는 것으로 언급되지 않은 것은?",
+"options": [
+"①고객 이해 증진",
+"②의사소통 활성화",
+"③고객의 간접 경험(소비자 후기)",
+"④제품의 자동 생산"
+],
+"answer": 3,
+"explain": "이메일/웹사이트/앱 등의 기술력을 통해 고객 이해 증진, 의사소통 활성화, 고객의 간접 경험(소비자 후기)이 가능해진다. 제품의 자동 생산은 언급되지 않았다."
+},
+{
+"id": 77,
+"topic": 1,
+"section": "1.1",
+"type": "mc",
+"q": "생산 관점 시기에 나타난 산업혁명의 특징으로 언급된 것이 아닌 것은?",
+"options": [
+"①운송수단(전기, 철도)",
+"②분업과 생산라인",
+"③대량생산",
+"④소셜 미디어 마케팅"
+],
+"answer": 3,
+"explain": "19세기 후반 산업혁명의 특징으로 운송수단(전기, 철도), 분업, 생산라인, 대량생산이 언급되었다. 소셜 미디어 마케팅은 현대의 특징이다."
+},
+{
+"id": 78,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "CRM에서 'touch points'란 무엇을 의미하는가?",
+"options": [
+"①제품의 물리적 접촉면",
+"②일관적이고 긍정적인 고객 경험 접점",
+"③기업 내부 직원 간의 접점",
+"④공급업체와의 계약 지점"
+],
+"answer": 1,
+"explain": "CRM에서 touch points는 일관적이고 긍정적인 고객 경험 접점을 의미한다. 기업은 이러한 접점에서의 경험을 관리하여 고객 만족도를 높인다."
+},
+{
+"id": 79,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 관점 시기(20세기 중반)에 강조된 '시시각각 변화하는 목표고객의 욕구'에 대응하기 위한 전략은?",
+"options": [
+"①대량 생산 전략",
+"②판매 촉진 전략",
+"③신제품 개발 전략",
+"④가격 인하 전략"
+],
+"answer": 2,
+"explain": "마케팅 관점 시기에는 시시각각 변화하는 목표고객의 욕구에 맞춘 신제품 개발 전략이 강조되었다."
+},
+{
+"id": 80,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "마케팅이 비영리 단체에서 사용될 때의 목적은?",
+"options": [
+"①이윤 극대화",
+"②정부 & 비영리 단체의 사회 공익",
+"③시장 점유율 확대",
+"④주가 상승"
+],
+"answer": 1,
+"explain": "비영리 단체에서의 마케팅은 정부 & 비영리 단체의 사회 공익을 위해 사용된다."
+},
+{
+"id": 81,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "'열등한 고객가치'가 발생하는 경우는?",
+"options": [
+"①낮은 비용, 높은 혜택",
+"②높은 비용, 낮은 혜택",
+"③낮은 비용, 낮은 혜택",
+"④높은 비용, 높은 혜택"
+],
+"answer": 1,
+"explain": "강의노트의 가치 매트릭스에서 열등한 고객가치는 비용이 높고(High) 혜택이 낮은(Low) 경우에 발생한다."
+},
+{
+"id": 82,
+"topic": 1,
+"section": "1.4",
+"type": "mc",
+"q": "고품질 정보(법률, 규정, 산업 지침)를 통해 기대되는 효과는?",
+"options": [
+"①기업의 매출 증가",
+"②소비자의 불이익/부당대우 감소",
+"③시장 규모 확대",
+"④경쟁사 감소"
+],
+"answer": 1,
+"explain": "마케팅에 대한 연구와 고품질 정보(법률, 규정, 산업 지침)를 통해 소비자의 불이익/부당대우를 감소시킬 수 있다."
+},
+{
+"id": 83,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 환경 변수와 마케팅믹스 변수의 차이점으로 올바른 것은?",
+"options": [
+"①마케팅 환경 변수는 통제 가능하고, 마케팅믹스 변수는 통제 불가능하다",
+"②마케팅 환경 변수는 통제할 수 없지만 계획 및 대비가 가능하다",
+"③두 변수 모두 기업이 완전히 통제할 수 있다",
+"④두 변수 모두 기업이 통제할 수 없다"
+],
+"answer": 1,
+"explain": "마케팅 환경 변수는 통제할 순 없어도 계획 및 대비가 가능하다. 반면 마케팅믹스 변수(4P)는 기업이 통제할 수 있는 변수이다."
+},
+{
+"id": 84,
+"topic": 1,
+"section": "1.2",
+"type": "mc",
+"q": "Place(유통)에서 고려해야 할 사항으로 언급된 것을 모두 고르면?",
+"options": [
+"①중간상인 선택, 재고관리, 운송 및 저장만",
+"②중간상인 선택만",
+"③중간상인(도매업자, 소매업자) 선택, 재고관리, 운송 및 저장, 보관 관리 수립",
+"④운송 및 저장, 보관 관리만"
+],
+"answer": 2,
+"explain": "Place(유통)에서는 중간상인(도매업자, 소매업자) 선택, 재고관리, 운송 및 저장, 보관 관리를 수립해야 한다."
+},
+{
+"id": 85,
+"topic": 1,
+"section": "1.3",
+"type": "mc",
+"q": "마케팅 개념에서 '제품 생산'과 대비되는 핵심 개념은?",
+"options": [
+"①판매 촉진",
+"②고객의 욕구 충족을 위한 가치 생성",
+"③비용 절감",
+"④경쟁사 모방"
+],
+"answer": 1,
+"explain": "마케팅 개념에서는 단순한 '제품 생산' 관점이 아닌 '고객의 욕구 충족을 위한 가치를 생성'하는 것이 핵심이다."
+},
+{
+"id": 86,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 마케팅 관리(strategic marketing management)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①단기적 관점에서 매출 극대화를 위한 활동",
+"②사업계획의 단계부터 실행, 성과 평가까지 모든 마케팅 활동을 통합적이며 체계적으로 운영하는 것",
+"③경쟁사의 마케팅 전략을 분석하는 것",
+"④마케팅 믹스 4P만을 관리하는 것"
+],
+"answer": 1,
+"explain": "전략적 마케팅 관리는 사업계획의 단계부터 실행, 성과에 대한 평가에 이르기까지 관련되는 모든 마케팅 활동을 통합적이며 체계적으로 운영하는 것이다."
+},
+{
+"id": 87,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "전략적 마케팅 관리란 사업계획의 단계부터 실행, 성과에 대한 평가에 이르기까지 관련되는 모든 마케팅 활동을 ______이며 ______으로 운영하는 것이다.",
+"answer": "통합적, 체계적",
+"accept": [
+"통합적, 체계적",
+"통합적이며 체계적"
+],
+"explain": "강의노트의 빈칸으로, 전략적 마케팅 관리의 핵심 특성은 '통합적'이며 '체계적'으로 운영하는 것이다."
+},
+{
+"id": 88,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 마케팅 관리의 목적으로 올바르지 않은 것은?",
+"options": [
+"①장기적인 관점에서 고객과의 관계가 조직의 목표와 부합하도록 한다",
+"②고객과의 관계에서 기업의 목표를 달성하기 위해 사용하는 자원을 최소화한다",
+"③단기적 매출 극대화를 위해 자원을 무제한 투입한다",
+"④사업계획부터 성과 평가까지 마케팅 활동을 체계적으로 운영한다"
+],
+"answer": 2,
+"explain": "전략적 마케팅 관리는 장기적 관점에서 고객관계가 조직 목표와 부합하도록 하고, 자원을 최소화하면서 목표를 달성하는 것이다. 단기적 매출 극대화를 위해 자원을 무제한 투입하는 것은 해당하지 않는다."
+},
+{
+"id": 89,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 계획(strategic planning)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①단기적 판매 목표를 설정하는 과정이다",
+"②조직의 미션과 목표를 수립하고, 기업의 전략을 세우고, 마케팅 목표와 전략을 수립하는 것이다",
+"③경쟁사의 전략만을 분석하는 과정이다",
+"④마케팅 믹스의 4P를 결정하는 것에 한정된다"
+],
+"answer": 1,
+"explain": "전략적 계획은 조직의 미션과 목표를 수립하고, 기업의 전략을 세우고, 마케팅 목표와 전략을 수립하는 것이다."
+},
+{
+"id": 90,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 계획에서 시장지향적 관점의 기본적 요소로 포함되는 것은?",
+"options": [
+"①경쟁사의 재무 상태",
+"②고객의 욕구 충족 여부",
+"③정부의 규제 정책",
+"④기업의 생산 설비 규모"
+],
+"answer": 1,
+"explain": "전략적 계획에는 시장지향적 관점에서 고객의 욕구 충족 여부가 기본적 요소로 포함된다."
+},
+{
+"id": 91,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 계획 과정의 올바른 순서는?",
+"options": [
+"①사명 → 기업 단계의 전략 → 사업 단계의 전략 → 마케팅 전략 → 마케팅 믹스(4P)",
+"②마케팅 전략 → 사명 → 기업 전략 → 사업 전략 → 4P",
+"③사업 전략 → 기업 전략 → 사명 → 마케팅 전략 → 4P",
+"④4P → 마케팅 전략 → 사업 전략 → 기업 전략 → 사명"
+],
+"answer": 0,
+"explain": "전략적 계획 과정은 사명 → 기업 단계의 전략(최고경영층) → 사업 단계의 전략(개별사업) → 마케팅 전략 → 마케팅 믹스 요소(4P) 순서로 진행된다."
+},
+{
+"id": 92,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "조직의 목표 수립 시 시작점이 되는 것은?",
+"options": [
+"①재무 목표",
+"②미션(사명)",
+"③시장 점유율",
+"④경쟁사 분석"
+],
+"answer": 1,
+"explain": "조직의 목표는 미션(사명)에서 시작한다. 장기적 안목에서 조직이 달성하고 추구하고 싶은 관점을 담고 있다."
+},
+{
+"id": 93,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "mission statement에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①조직의 미래 포지셔닝을 제시하는 것",
+"②현재 조직의 임무 목적(purpose for being)을 명시하는 것",
+"③조직의 윤리적 정책을 기술하는 것",
+"④조직의 재무 목표를 설정하는 것"
+],
+"answer": 1,
+"explain": "mission statement는 현재 조직의 임무 목적(purpose for being)을 명시하는 것이다."
+},
+{
+"id": 94,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "vision statement에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①현재 조직의 목적을 설명",
+"②조직의 근간을 이루는 가치 체계",
+"③조직의 미래(positioning의 시작)",
+"④조직의 윤리적 기준"
+],
+"answer": 2,
+"explain": "vision statement는 조직의 미래를 제시하며, positioning의 시작점이 된다."
+},
+{
+"id": 95,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "value statement에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①조직의 현재 임무 목적",
+"②조직의 미래 방향성",
+"③조직의 근간을 이루는 가치 체계(윤리적 정책)",
+"④조직의 마케팅 전략"
+],
+"answer": 2,
+"explain": "value statement는 조직의 근간을 이루는 가치 체계(윤리적 정책)를 의미한다."
+},
+{
+"id": 96,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "mission statement, vision statement, value statement에 대한 연결이 올바른 것은?",
+"options": [
+"①mission - 미래, vision - 현재 목적, value - 가치 체계",
+"②mission - 현재 목적, vision - 미래, value - 가치 체계(윤리적 정책)",
+"③mission - 가치 체계, vision - 현재 목적, value - 미래",
+"④mission - 재무 목표, vision - 시장 점유율, value - 매출 목표"
+],
+"answer": 1,
+"explain": "mission statement는 현재 조직의 임무 목적, vision statement는 조직의 미래(positioning의 시작), value statement는 조직의 근간을 이루는 가치 체계(윤리적 정책)이다."
+},
+{
+"id": 97,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "기업 아이덴티티(corporate identity)에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①고유의 symbol, 개성, 철학을 통해 모든 기업 활동에 반영된다",
+"②초기에는 기업의 로고, 명칭, 디자인 스타일을 중심으로 CI를 정의했다",
+"③graphic design에서 integrated communication paradigm으로 발전했다",
+"④특정 제품이나 서비스에만 집중하는 개념이다"
+],
+"answer": 3,
+"explain": "기업 아이덴티티(CI)는 조직 전체의 정체성을 의미하며, 특정 제품이나 서비스에 집중하는 것은 brand image의 영역이다."
+},
+{
+"id": 98,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "기업 아이덴티티(CI)는 이해관계자들에게 ______인 메시지를 전달한다.",
+"answer": "일관적",
+"accept": [
+"일관적",
+"일관된",
+"일관성 있는",
+"통일된"
+],
+"explain": "강의노트의 빈칸으로, CI는 이해관계자들에게 '일관적'인 메시지를 전달하는 것이 핵심이다."
+},
+{
+"id": 99,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "corporate identity와 brand image의 차이에 대한 설명으로 올바른 것은?",
+"options": [
+"①둘 다 특정 제품에 집중하는 개념이다",
+"②CI는 조직 전체의 정체성이고, brand image는 특정 제품 또는 서비스에 집중한다",
+"③brand image가 더 넓은 개념이다",
+"④둘은 동일한 개념이다"
+],
+"answer": 1,
+"explain": "CI는 조직 전체의 정체성을 정의하는 것이고, brand image는 특정 제품이나 서비스에 집중하는 개념이다."
+},
+{
+"id": 100,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "성공적인 CIM(corporate identity management)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①단순히 로고 디자인만 잘 만들면 된다",
+"②다학문적 접근을 통해 조직의 역사, 전략 및 기업문화와 연결되어야 한다",
+"③마케팅 부서만의 노력으로 충분하다",
+"④경쟁사의 CI를 모방하면 된다"
+],
+"answer": 1,
+"explain": "성공적인 CIM은 다학문적 접근을 통해 조직의 역사, 전략 및 기업문화와 연결되어야 한다."
+},
+{
+"id": 101,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "________(corporate strategy)란 기업의 각 업무 분야에 소요되는 자원을 적절하게 분배하여 기업의 목표치를 달성하는 것이다.",
+"answer": "기업전략",
+"accept": [
+"기업전략",
+"기업 전략"
+],
+"explain": "강의노트의 빈칸으로, corporate strategy(기업전략)는 마케팅, 생산, 재무, R&D, 인적자원 등에 자원을 적절히 분배하여 목표를 달성하는 것이다."
+},
+{
+"id": 102,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "기업전략(corporate strategy)의 핵심 요소가 아닌 것은?",
+"options": [
+"①자원(자본, 인력, 기술) 배치",
+"②경쟁 우위 확보",
+"③각각의 기능적 분야의 조직화",
+"④개별 소비자의 구매 행동 분석"
+],
+"answer": 3,
+"explain": "기업전략은 자원 배치, 경쟁우위, 각각의 기능적 분야의 조직화가 핵심이다. 개별 소비자의 구매 행동 분석은 마케팅 전략 수준의 활동이다."
+},
+{
+"id": 103,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "기업전략에서 자원 사용의 목적으로 가장 적절한 것은?",
+"options": [
+"①경쟁사를 인수합병하기 위해",
+"②외부 환경적 기회를 활용하고 위험 요소를 최소화하는 데 사용",
+"③모든 사업부에 균등하게 배분하기 위해",
+"④단기 수익 극대화를 위해"
+],
+"answer": 1,
+"explain": "기업전략에서 자원은 외부 환경적 기회를 활용하고 위험 요소를 최소화하는 데 사용한다."
+},
+{
+"id": 104,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 사업단위(SBU: Strategic Business Unit)에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①회사의 개별 부서 혹은 개별적인 이익 책임 단위이다",
+"②기업 전략 분석의 기본 단위이다",
+"③SBU의 이윤, 투자, 전략적 계획은 반드시 모회사와 동일한 구도로 진행되어야 한다",
+"④하나의 기업 내부에서 독립적인 전략을 수립하고 실행할 수 있도록 구분된 사업 단위이다"
+],
+"answer": 2,
+"explain": "SBU의 이윤, 투자, 전략적 계획은 모회사와는 별개의 구도로 진행될 수 있다."
+},
+{
+"id": 105,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SBU의 특성으로 올바른 것은?",
+"options": [
+"①모회사의 전략을 그대로 따라야 한다",
+"②자체적인 제품·시장 범위, 경쟁자, 목표(성과), 전략을 가진다",
+"③독립적인 재무 관리가 불가능하다",
+"④경쟁사와 무관하게 운영된다"
+],
+"answer": 1,
+"explain": "SBU는 자체적인 제품·시장 범위, 경쟁자, 목표(성과), 전략을 가진 독립적 사업 단위이다."
+},
+{
+"id": 106,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "시장(market)의 정의로 가장 적절한 것은?",
+"options": [
+"①제품이 판매되는 물리적 장소",
+"②개인이나 조직이 제품에 대한 필요성을 느끼고, 구매할 수 있는 능력, 의지, 권한을 가지고 있는 상태",
+"③기업이 광고를 집행하는 매체",
+"④특정 산업군에 속한 기업의 집합"
+],
+"answer": 1,
+"explain": "시장(market)은 개인이나 조직이 제품에 대한 필요성을 느끼고, 이러한 제품에 대해 구매할 수 있는 능력, 의지, 권한을 가지고 있는 상태를 의미한다."
+},
+{
+"id": 107,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "시장성장률(market growth)의 계산 공식으로 올바른 것은?",
+"options": [
+"①(시장 규모t - 시장 규모t-1) / 시장 규모t × 100",
+"②(시장 규모t - 시장 규모t-1) / 시장 규모t-1 × 100",
+"③시장 규모t / 시장 규모t-1 × 100",
+"④(시장 규모t + 시장 규모t-1) / 2 × 100"
+],
+"answer": 1,
+"explain": "시장성장률 = (market size t − market size t−1) / market size t−1 × 100이다."
+},
+{
+"id": 108,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "______(market share) = business sales / market sales × 100으로, 특정 기업이 해당 시장에서 차지하는 비율이다.",
+"answer": "시장점유율",
+"accept": [
+"시장점유율",
+"시장 점유율"
+],
+"explain": "강의노트의 빈칸으로, market share(시장점유율)는 특정 기업이 해당 시장에서 차지하는 비율이며, business sales / market sales × 100으로 계산한다."
+},
+{
+"id": 109,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "시장성장률이 높은 시장에 대한 설명으로 적절한 것은?",
+"options": [
+"①기존 기업에게만 유리하다",
+"②신규 진입이 유리하며, 기존 기업은 공격적인 투자와 확장을 고려한다",
+"③모든 기업이 철수를 고려해야 한다",
+"④시장 점유율이 자동으로 높아진다"
+],
+"answer": 1,
+"explain": "성장률이 높은 시장에서는 신규 진입이 유리하며, 기존 기업들은 공격적인 투자와 확장을 고려한다."
+},
+{
+"id": 110,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "높은 시장점유율을 가진 기업의 이점으로 가장 적절한 것은?",
+"options": [
+"①정부 보조금을 받을 수 있다",
+"②경쟁사와의 협력이 용이하다",
+"③대량 생산을 통해 단가를 낮추고 원가 우위를 확보할 수 있다",
+"④신규 시장에 쉽게 진입할 수 있다"
+],
+"answer": 2,
+"explain": "높은 점유율을 가진 기업은 대량 생산을 통해 단가를 낮추고, 원가 우위를 확보할 수 있다."
+},
+{
+"id": 111,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스(시장성장률/시장점유율 도표)에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①Boston Consulting Group의 Bruce Henderson이 1968년에 개발했다",
+"②시장의 성장률과 상대적 시장 점유율을 기준으로 사업 단위를 평가한다",
+"③개별 제품의 가격 결정을 위한 도구이다",
+"④SBU가 주요 분석 대상이며 포트폴리오 관리에 활용된다"
+],
+"answer": 2,
+"explain": "BCG 매트릭스는 개별 제품의 가격 결정 도구가 아니라, 기업 수준에서 각 SBU의 시장 성장률과 상대적 시장 점유율을 기준으로 사업단위의 성공 여부를 평가하고 포트폴리오 관리(존속, 처분, 유망)에 활용하는 진단 도구이다."
+},
+{
+"id": 112,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 Stars(유망/성장사업)의 특성으로 올바른 것은?",
+"options": [
+"①시장성장률 높음 + 시장점유율 높음: 시장 리더, 적극적인 투자",
+"②시장성장률 높음 + 시장점유율 낮음: 성장 가능성이 있으나 경쟁이 치열",
+"③시장성장률 낮음 + 시장점유율 높음: 안정적인 수익 창출",
+"④시장성장률 낮음 + 시장점유율 낮음: 수익성이 낮아 철수 고려"
+],
+"answer": 0,
+"explain": "Stars는 시장성장률이 높고 시장점유율도 높은 사업단위로, 시장 리더이며 적극적인 투자가 필요하다."
+},
+{
+"id": 113,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 Cash Cows(자금원천/수익사업)의 특성으로 올바른 것은?",
+"options": [
+"①시장성장률 높음 + 시장점유율 높음",
+"②시장성장률 높음 + 시장점유율 낮음",
+"③시장성장률 낮음 + 시장점유율 높음: 안정적인 수익 창출, 비용 절감 및 유지 전략",
+"④시장성장률 낮음 + 시장점유율 낮음"
+],
+"answer": 2,
+"explain": "Cash Cows는 시장성장률은 낮지만 시장점유율이 높은 사업단위로, 안정적인 수익을 창출하며 비용 절감 및 유지 전략을 취한다."
+},
+{
+"id": 114,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 Pets/Dogs(쇠퇴/사양사업)의 특성으로 올바른 것은?",
+"options": [
+"①시장성장률 높음 + 시장점유율 높음",
+"②시장성장률 높음 + 시장점유율 낮음",
+"③시장성장률 낮음 + 시장점유율 높음",
+"④시장성장률 낮음 + 시장점유율 낮음: 수익성이 낮아 철수 또는 구조조정 고려"
+],
+"answer": 3,
+"explain": "Pets/Dogs는 시장성장률과 시장점유율 모두 낮은 사업단위로, 수익성이 낮아 철수 또는 구조조정을 고려한다."
+},
+{
+"id": 115,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 Question Marks(문제/개발사업)의 특성으로 올바른 것은?",
+"options": [
+"①시장성장률 높음 + 시장점유율 높음",
+"②시장성장률 높음 + 시장점유율 낮음: 성장 가능성이 있으나 경쟁이 치열, 투자 필요",
+"③시장성장률 낮음 + 시장점유율 높음",
+"④시장성장률 낮음 + 시장점유율 낮음"
+],
+"answer": 1,
+"explain": "Question Marks는 시장성장률은 높지만 시장점유율이 낮은 사업단위로, 성장 가능성이 있으나 경쟁이 치열하여 투자가 필요하다."
+},
+{
+"id": 116,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 제품 가치는 궁극적으로 어떤 결과에 도달하는가?",
+"options": [
+"①반드시 Star로 성장한다",
+"②시장 성장이 느려지기 전에 시장 점유를 할 수 있느냐에 따라 결국 Cash Cow 또는 Pet이 된다",
+"③Question Mark로 머무른다",
+"④항상 Diversification으로 연결된다"
+],
+"answer": 1,
+"explain": "제품 가치는 시장 성장이 느려지기 전에 기업이 시장 점유를 할 수 있는지에 따라 결국 Cash Cow 또는 Pet이 된다."
+},
+{
+"id": 117,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스의 한계점으로 올바른 것을 모두 고르면?",
+"options": [
+"①마케팅 전략에 대한 처방전이 되지 못한다",
+"②시장점유율이 지속적 성과의 직접적 예측지표가 아닐 수 있다",
+"③①과 ② 모두 해당한다",
+"④한계점이 없다"
+],
+"answer": 2,
+"explain": "BCG 매트릭스는 마케팅 전략에 대한 처방전이 되지 못하고(X), 시장점유율이 지속적 성과의 직접적 예측지표(direct predictor of sustained performance)가 아닐 수 있으며(X), 급변하는 시장에 적응하는 능력이 부족하다."
+},
+{
+"id": 118,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 장기적인 안목의 제품군 형성 전략으로 가장 적절한 것은?",
+"options": [
+"①Star 사업만 집중 투자한다",
+"②Cash Cow만 유지한다",
+"③다양한 영역의 제품군을 구성한다 (비용이 발생하더라도 전망이 밝은 제품, 수익을 창출하는 제품 포함)",
+"④Pets는 모두 즉시 철수시킨다"
+],
+"answer": 2,
+"explain": "장기적인 안목에서 제품군을 형성하려면 하나의 영역만이 아니라, 지금은 비용이 발생하더라도 전망이 밝은 제품과 많은 수익을 창출하는 제품을 포함한 다양한 영역의 제품군을 구성해야 한다."
+},
+{
+"id": 119,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 계획 과정에서 외부 환경 분석에 포함되는 요소가 아닌 것은?",
+"options": [
+"①경제, 경쟁, 정치, 법적 규정",
+"②사회문화, 기술력",
+"③기업의 조직도 및 인사 정책",
+"④기업이 자사의 제품을 판매하고 경쟁하는 산업군"
+],
+"answer": 2,
+"explain": "외부 환경 분석에는 경제, 경쟁, 정치, 법적 규정, 사회문화, 기술력 등이 포함된다. 기업의 조직도 및 인사 정책은 내부 환경에 해당한다."
+},
+{
+"id": 120,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "핵심역량(core competencies)에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①기업이 경쟁사보다 월등히 뛰어나게 수행할 수 있는 특정 역량이나 기술이다",
+"②고객 가치를 창출한다",
+"③경쟁사가 쉽게 모방할 수 있다",
+"④다양한 시장에서의 응용이 가능하다"
+],
+"answer": 2,
+"explain": "핵심역량의 조건에는 고객 가치 창출, 경쟁사 모방의 어려움, 다양한 시장에서의 응용 가능이 포함된다. 경쟁사가 쉽게 모방할 수 있는 것은 핵심역량이 아니다."
+},
+{
+"id": 121,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "시장기회(market opportunity)를 발생시키는 요인이 아닌 것은?",
+"options": [
+"①소비자 니즈 변화",
+"②기술 혁신",
+"③법규 및 정책 변화",
+"④기업 내부의 조직 개편"
+],
+"answer": 3,
+"explain": "시장기회는 소비자 니즈 변화, 기술 혁신, 법규 및 정책 변화, 경쟁 환경 변화 등 외부적 요인으로 발생한다. 기업 내부의 조직 개편은 내부 요인이다."
+},
+{
+"id": 122,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "______(competitive advantage)란 기업의 핵심역량이 시장의 기회를 잘 맞출 수 있을 때, 기업이 시장에서 경쟁사보다 우월한 위치를 차지할 수 있도록 만드는 요인이다.",
+"answer": "경쟁우위",
+"accept": [
+"경쟁우위",
+"경쟁 우위"
+],
+"explain": "강의노트의 빈칸으로, competitive advantage(경쟁우위)는 기업의 핵심역량이 시장의 기회를 잘 맞출 수 있을 때 발생한다. 경쟁사보다 뛰어나게 잘하는 분야를 통해 시장 기회를 만드는 것이다."
+},
+{
+"id": 123,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "경쟁우위(competitive advantage)가 발생하는 조건으로 가장 적절한 것은?",
+"options": [
+"①기업의 자본금이 경쟁사보다 많을 때",
+"②기업의 핵심역량이 시장의 기회를 잘 맞출 수 있을 때",
+"③기업의 종업원 수가 많을 때",
+"④기업의 제품 가격이 가장 낮을 때"
+],
+"answer": 1,
+"explain": "경쟁우위는 기업의 핵심역량이 시장의 기회를 잘 맞출 수 있을 때 발생한다."
+},
+{
+"id": 124,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SWOT 분석의 네 가지 요소에 대한 설명으로 올바른 것은?",
+"options": [
+"①Strength, Weakness는 외부 요소이고, Opportunity, Threat는 내부 요소이다",
+"②Strength, Weakness는 내부 요소이고, Opportunity, Threat는 외부 요소이다",
+"③네 가지 모두 내부 요소이다",
+"④네 가지 모두 외부 요소이다"
+],
+"answer": 1,
+"explain": "강점(S)과 약점(W)은 내부 요소로 조직의 능력이 목표 고객을 만족시킬 수 있는 사안이며, 기회(O)와 위협(T)은 외부 요소로 조직뿐만 아니라 시장의 경쟁 구도와 상관없이 모든 조직이 당면한 사안이다."
+},
+{
+"id": 125,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "SWOT 분석에서 강점(S)과 약점(W)은 ______ 요소로써 조직의 능력이 얼마나 목표 고객을 만족시킬 수 있는 사안이다.",
+"answer": "내부",
+"accept": [
+"내부",
+"내부적"
+],
+"explain": "강의노트의 빈칸으로, 강점과 약점은 '내부' 요소이다."
+},
+{
+"id": 126,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SWOT 분석에서 '강점(Strength)'에 해당하는 것은?",
+"options": [
+"①목표 고객의 욕구를 만족시킬 수 있는 경쟁적 우위/핵심 능력",
+"②마케팅 전략을 개발하고 실현시킬 때 발생할 수 있는 모든 종류의 제약",
+"③기업에 유리한 외부 환경적 요소",
+"④목표를 달성함에 있어 방해가 되는 조건이나 요소"
+],
+"answer": 0,
+"explain": "강점은 목표 고객의 욕구를 만족시킬 수 있는 경쟁적 우위/핵심 능력을 의미한다."
+},
+{
+"id": 127,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SWOT 분석에서 '약점(Weakness)'에 해당하는 것은?",
+"options": [
+"①목표 고객의 욕구를 만족시킬 수 있는 경쟁적 우위",
+"②마케팅 전략을 개발하고 실현시킬 때 발생할 수 있는 모든 종류의 제약",
+"③기업에 유리한 외부 환경적 요소(이윤 가능성)",
+"④목표를 달성함에 있어 방해가 되는 외부 조건"
+],
+"answer": 1,
+"explain": "약점은 마케팅 전략을 개발하고 실현시킬 때 발생할 수 있는 모든 종류의 제약을 의미한다."
+},
+{
+"id": 128,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SWOT 분석에서 기회(Opportunity)와 위협(Threat)의 특성으로 올바른 것은?",
+"options": [
+"①특정 기업에만 해당하는 내부적 요소이다",
+"②조직과는 독립적인 문제로 해당 조직뿐만 아니라 시장의 경쟁 구도와 상관없는 모든 조직이 당면한 사안이다",
+"③기업이 통제할 수 있는 요소이다",
+"④기업의 핵심역량과 동일한 개념이다"
+],
+"answer": 1,
+"explain": "기회와 위협은 조직과는 독립적인(외부) 문제로 해당 조직뿐만 아니라, 시장의 경쟁 구도와 상관없는 모든 조직이 당면한 사안이다."
+},
+{
+"id": 129,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "매력적인 시장 기회의 조건으로 올바르지 않은 것은?",
+"options": [
+"①hit-or-miss 마케팅을 피해야 한다",
+"②경쟁우위(competitive advantage)를 확보해야 한다",
+"③hard-to-copy 마케팅 전략을 수립해야 한다",
+"④목표 고객 조사 없이 직감으로 판단해야 한다"
+],
+"answer": 3,
+"explain": "매력적인 시장 기회는 목표 고객에 대한 철저한 조사를 바탕으로 수립된 전략적 마케팅 계획 과정을 따라야 한다. 직감에 의한 판단은 hit-or-miss 마케팅에 해당한다."
+},
+{
+"id": 130,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "Breakthrough Opportunities에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①기존 경쟁사의 전략을 그대로 모방하는 기회",
+"②hard-to-copy 마케팅 전략으로, 경쟁사의 마케팅 믹스보다 우월한 기회",
+"③가격 인하만으로 시장을 장악하는 기회",
+"④기존 제품을 새로운 포장으로 출시하는 기회"
+],
+"answer": 1,
+"explain": "Breakthrough Opportunities는 hard-to-copy 마케팅 전략으로, 경쟁사의 마케팅 믹스보다 우월한 기회를 의미한다."
+},
+{
+"id": 131,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "Ansoff의 시장 기회 4유형 매트릭스에서 '기존 시장 + 기존 제품'에 해당하는 전략은?",
+"options": [
+"①시장침투(Market Penetration)",
+"②시장개발(Market Development)",
+"③제품개발(Product Development)",
+"④다각화(Diversification)"
+],
+"answer": 0,
+"explain": "시장침투(Market Penetration)는 현재 시장에서 자사의 기존 제품으로 공략하는 전략으로, 기존 시장 + 기존 제품에 해당한다."
+},
+{
+"id": 132,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "Ansoff의 시장 기회 4유형에서 '기존 시장 + 새 제품'에 해당하는 전략은?",
+"options": [
+"①시장침투(Market Penetration)",
+"②시장개발(Market Development)",
+"③제품개발(Product Development)",
+"④다각화(Diversification)"
+],
+"answer": 2,
+"explain": "제품개발(Product Development)은 현재 시장에 새로 개발되거나 향상된 자사의 제품으로 공략하는 전략이다."
+},
+{
+"id": 133,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "Ansoff의 시장 기회 4유형에서 '새 시장 + 기존 제품'에 해당하는 전략은?",
+"options": [
+"①시장침투(Market Penetration)",
+"②시장개발(Market Development)",
+"③제품개발(Product Development)",
+"④다각화(Diversification)"
+],
+"answer": 1,
+"explain": "시장개발(Market Development)은 새로운 시장에 자사의 기존 제품으로 공략하는 전략이다."
+},
+{
+"id": 134,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "Ansoff의 시장 기회 4유형에서 '새 시장 + 새 제품'에 해당하는 전략은?",
+"options": [
+"①시장침투(Market Penetration)",
+"②시장개발(Market Development)",
+"③제품개발(Product Development)",
+"④다각화(Diversification)"
+],
+"answer": 3,
+"explain": "다각화(Diversification)는 전혀 다른 사업 분야에 진입하는 전략으로, 새 시장 + 새 제품에 해당한다."
+},
+{
+"id": 135,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "다음 중 시장침투(Market Penetration) 전략에 해당하는 사례는?",
+"options": [
+"①기존 음료 브랜드가 국내 시장에서 기존 제품의 판매량을 늘리기 위해 프로모션 강화",
+"②기존 음료 브랜드가 새로운 맛의 음료를 국내 시장에 출시",
+"③기존 음료 브랜드가 기존 제품을 해외 시장에 수출",
+"④음료 브랜드가 전혀 다른 전자제품 사업에 진출"
+],
+"answer": 0,
+"explain": "시장침투는 현재 시장에서 기존 제품으로 공략하는 전략이다. 기존 시장에서 기존 제품의 판매량을 늘리는 프로모션 강화가 해당한다."
+},
+{
+"id": 136,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "선발(first-mover) 시장 진입 기업의 이점이 아닌 것은?",
+"options": [
+"①시장에 처음 출시하는 제품으로 장기간의 확고한 경쟁우위를 점할 수 있음",
+"②고객을 선점함으로써 브랜드 로열티가 형성됨",
+"③기업의 신기술이나 방법에 대한 특허 출원 가능",
+"④상대적으로 적은 초기 비용"
+],
+"answer": 3,
+"explain": "상대적으로 적은 초기 비용은 후발(late-mover) 시장 진입 기업의 이점이다. 선발 기업은 높은 개발 비용(시장조사, 제품개발, 생산, 구매자 교육)이 위험 요소이다."
+},
+{
+"id": 137,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "선발(first-mover) 시장 진입 기업의 위험(risk)에 해당하는 것은?",
+"options": [
+"①이미 특허받은 초기 진입자의 기술력",
+"②높은 개발 비용(시장조사, 제품개발, 생산, 구매자 교육)과 불확실한 시장 상황",
+"③초기 진입자의 고객 선점으로 인한 brand switching 어려움",
+"④이미 가능성이 확보된 시장에서의 경쟁"
+],
+"answer": 1,
+"explain": "선발 기업의 위험은 높은 개발 비용(시장조사, 제품개발, 생산, 구매자 교육)과 불확실한 시장 상황 및 예기치 못한 고객 반응이다."
+},
+{
+"id": 138,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "후발(late-mover) 시장 진입 기업의 이점이 아닌 것은?",
+"options": [
+"①이미 가능성이 확보된 시장에서 장기적인 안목으로 경쟁우위 확보",
+"②초기 진입자의 사례를 참고하여 더 나은 제품 디자인이나 마케팅 전략 수립",
+"③상대적으로 적은 초기 비용",
+"④시장 선두주자로서의 위치 확보"
+],
+"answer": 3,
+"explain": "시장 선두주자로서의 위치 확보는 선발 기업의 이점이다. 후발 기업의 이점은 검증된 시장, 선발 기업 사례 참고, 상대적으로 적은 초기 비용, 제품에 대한 확실성이다."
+},
+{
+"id": 139,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "후발(late-mover) 시장 진입 기업의 위험(risk)에 해당하는 것은?",
+"options": [
+"①높은 개발 비용과 불확실한 시장 상황",
+"②이미 특허받은 초기 진입자의 기술력과 고객 선점(brand switching 비용, 시간)",
+"③시장에 대한 정보가 전혀 없음",
+"④구매자 교육 비용이 매우 높음"
+],
+"answer": 1,
+"explain": "후발 기업의 위험은 이미 특허받은 초기 진입자의 기술력(유사 제품 출시 어려움)과 초기 진입자의 고객 선점(brand switching 비용, 시간)이다."
+},
+{
+"id": 140,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SMART 목표 설정에서 'S'에 해당하는 것은?",
+"options": [
+"①Sustainable: 지속 가능한 목표",
+"②Specific: 달성하고 싶은 목표가 정확하고 구체적인가",
+"③Simple: 단순한 목표",
+"④Strategic: 전략적 목표"
+],
+"answer": 1,
+"explain": "SMART에서 S는 Specific으로, 달성하고 싶은 목표가 정확하고 구체적인가를 의미한다."
+},
+{
+"id": 141,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SMART 목표 설정에서 'M'에 해당하는 것은?",
+"options": [
+"①Manageable: 관리 가능",
+"②Measurable: 정량화(quantify, indicator of progress)",
+"③Motivational: 동기 부여",
+"④Market-oriented: 시장 지향적"
+],
+"answer": 1,
+"explain": "SMART에서 M은 Measurable로, 정량화(quantify, indicator of progress)를 의미한다."
+},
+{
+"id": 142,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SMART 목표 설정에서 'A'에 해당하는 것은?",
+"options": [
+"①Affordable: 비용이 적절한",
+"②Applicable: 적용 가능한",
+"③Achievable: 실현 가능성(doable, attainable)",
+"④Attractive: 매력적인"
+],
+"answer": 2,
+"explain": "SMART에서 A는 Achievable로, 실현 가능성(doable, attainable)을 의미한다."
+},
+{
+"id": 143,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SMART 목표 설정에서 'R'에 해당하는 것은?",
+"options": [
+"①Rapid: 빠르게 달성 가능",
+"②Reliable: 신뢰성 있는",
+"③Realistic: relevant, within reach, sensibility of the goal",
+"④Revolutionary: 혁신적인"
+],
+"answer": 2,
+"explain": "SMART에서 R은 Realistic으로, relevant(관련성), within reach(달성 가능 범위), sensibility of the goal(목표의 합리성)을 의미한다."
+},
+{
+"id": 144,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "SMART 목표 설정에서 'T'에 해당하는 것은?",
+"options": [
+"①Technological: 기술적",
+"②Tactical: 전술적",
+"③Transparent: 투명한",
+"④Time-specific: 계획(timing plan)"
+],
+"answer": 3,
+"explain": "SMART에서 T는 Time-specific으로, 계획(timing plan)을 의미한다."
+},
+{
+"id": 145,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "마케팅 전략(marketing strategy)의 구성 요소로 올바른 것은?",
+"options": [
+"①목표 고객의 선정 + 마케팅 믹스",
+"②SWOT 분석 + 재무 분석",
+"③시장 점유율 + 시장 성장률",
+"④기업 전략 + 사업 전략"
+],
+"answer": 0,
+"explain": "마케팅 전략은 목표 고객을 선정하고, 마케팅 믹스를 활용하여 이들 목표 고객을 만족시킬 수 있는 활동들을 구현하는 것이다."
+},
+{
+"id": 146,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "마케팅 전략 수립 시 선행되어야 하는 분석은?",
+"options": [
+"①재무제표 분석",
+"②SWOT 분석",
+"③경쟁사 제품 분석",
+"④인구통계 분석"
+],
+"answer": 1,
+"explain": "마케팅 전략 수립 시 SWOT 분석이 선행되어야 하며, 자사의 강점을 기회와 연결시키고 약점이나 위협을 최소화해야 한다."
+},
+{
+"id": 147,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "목표 고객(target market)의 선정에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①전략적 계획 과정에서 가장 중요하게 고려해야 할 사항이다",
+"②목표 고객의 선정과 분석이 선행되어야 마케팅 믹스 전략을 개발할 수 있다",
+"③모든 소비자를 일률적으로 간주하는 것이 효과적이다",
+"④요구나 성향이 유사한 특정 그룹의 고객이다"
+],
+"answer": 2,
+"explain": "모든 소비자를 일률적으로 간주하는 것은 mass marketing(생산중심적 관점)에 해당한다. 시장중심적 관점에서는 소비자를 다양한 개인들로 간주하여 target marketing을 수행한다."
+},
+{
+"id": 148,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "mass marketing과 target marketing에 대한 설명으로 올바른 것은?",
+"options": [
+"①mass marketing은 시장중심적 관점, target marketing은 생산중심적 관점이다",
+"②mass marketing은 생산중심적 관점으로 모든 소비자를 일률적으로 간주하고, target marketing은 시장중심적 관점으로 소비자를 다양한 개인들로 간주한다",
+"③mass marketing이 target marketing보다 항상 효과적이다",
+"④둘은 동일한 개념이다"
+],
+"answer": 1,
+"explain": "생산중심적 관점을 가진 관리자는 모든 소비자를 일률적으로 간주하여 mass marketing을, 시장중심적 관점을 가진 관리자는 소비자를 다양한 개인들로 간주하여 target marketing을 수행한다."
+},
+{
+"id": 149,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "마케팅 믹스(marketing mix) 개발의 전제 조건으로 가장 적절한 것은?",
+"options": [
+"①경쟁사의 마케팅 전략을 먼저 분석해야 한다",
+"②기업은 이용 가능한 모든 정보를 동원하여 가장 적절한 목표 고객을 선정해야 한다",
+"③최저 가격으로 제품을 공급해야 한다",
+"④최대한 많은 유통 채널을 확보해야 한다"
+],
+"answer": 1,
+"explain": "기업은 이용 가능한 모든 정보를 동원하여 자사에 가장 적절한 목표 고객을 선정해야만 가장 효율적인 마케팅 믹스를 개발할 수 있다."
+},
+{
+"id": 150,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "지속가능한 경쟁우위(sustainable competitive advantage)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①단기적으로 가격을 낮추는 전략",
+"②경쟁사가 모방할 수 없는, 자사만이 가진 경쟁적 우위 요소",
+"③광고비를 가장 많이 투자하는 것",
+"④시장 점유율이 가장 높은 상태"
+],
+"answer": 1,
+"explain": "지속가능한 경쟁우위(sustainable competitive advantage)란 경쟁사가 모방할 수 없는, 자사만이 가진 경쟁적 우위 요소를 의미한다."
+},
+{
+"id": 151,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "마케팅 계획서(marketing plan)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①기업의 재무 목표를 설정하는 문서이다",
+"②조직의 마케팅 전략을 수행하기 위해 구체적인 수행 활동들을 서술한 가이드라인이다",
+"③경쟁사의 전략을 분석한 보고서이다",
+"④소비자 설문조사 결과를 정리한 문서이다"
+],
+"answer": 1,
+"explain": "마케팅 계획서(marketing plan)는 조직의 마케팅 전략을 수행하기 위해 구체적인 수행 활동들을 서술한 가이드라인이다."
+},
+{
+"id": 152,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "기업의 마케팅 프로그램(A Firm's Marketing Program)의 구성으로 올바른 것은?",
+"options": [
+"①Marketing Strategy + Marketing Plan + Other Marketing Plans",
+"②Target Market + Marketing Mix만으로 구성",
+"③SWOT 분석 + BCG 매트릭스",
+"④기업 전략 + 사업 전략 + 마케팅 전략"
+],
+"answer": 0,
+"explain": "기업의 마케팅 프로그램 = Marketing Strategy(Target Market + Marketing Mix) + Marketing Plan + Other Marketing Plans로 구성된다."
+},
+{
+"id": 153,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 계획 과정에서 '사명'의 역할로 가장 적절한 것은?",
+"options": [
+"①개별 제품의 가격을 결정한다",
+"②모든 전략 수립의 출발점이 된다",
+"③마케팅 믹스의 4P를 결정한다",
+"④SBU의 시장 점유율을 측정한다"
+],
+"answer": 1,
+"explain": "사명(mission)은 전략적 계획 과정의 최상위에 위치하며, 기업 전략, 사업 전략, 마케팅 전략 수립의 출발점이 된다."
+},
+{
+"id": 154,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "SWOT 분석에서 기회(O)와 위협(T)은 조직과는 ________ 문제로, 해당 조직뿐만 아니라 시장의 경쟁 구도와 상관없는 모든 조직이 당면한 사안이다.",
+"answer": "독립적인",
+"accept": [
+"독립적인",
+"무관한",
+"별개의"
+],
+"explain": "강의노트의 빈칸으로, 기회와 위협은 조직과는 '독립적인' 문제로 외부 환경에 해당한다."
+},
+{
+"id": 155,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 X축과 Y축이 나타내는 것으로 올바른 것은?",
+"options": [
+"①X축: 시장성장률, Y축: 시장점유율",
+"②X축: 상대적 시장점유율, Y축: 시장성장률",
+"③X축: 매출액, Y축: 이익률",
+"④X축: 제품 수명, Y축: 시장 규모"
+],
+"answer": 1,
+"explain": "BCG 매트릭스의 X축은 상대적 시장점유율(Market Share), Y축은 시장성장률(Market Growth)을 나타낸다. 강의 슬라이드에서 High-Low의 X축이 Market Share, Y축에 Star(High Growth, High Share)와 Cash Cow(Low Growth, High Share) 배치를 확인할 수 있다."
+},
+{
+"id": 156,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "기업이 각 SBU의 투자 전략을 결정할 때 비교하는 두 가지 핵심 지표는?",
+"options": [
+"①매출액과 이익률",
+"②시장 점유율과 시장 성장률",
+"③종업원 수와 자본금",
+"④생산량과 재고량"
+],
+"answer": 1,
+"explain": "기업은 각 SBU의 시장점유율과 시장성장률을 비교해 투자 전략을 결정한다."
+},
+{
+"id": 157,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "다음 중 BCG 매트릭스의 활용 목적으로 가장 적절한 것은?",
+"options": [
+"①개별 제품의 최적 가격 산출",
+"②각 사업부 간의 자원 배분에 대한 진단 도구(존속, 처분, 유망 판단)",
+"③소비자 행동 예측 모델 구축",
+"④마케팅 믹스 4P의 최적 조합 결정"
+],
+"answer": 1,
+"explain": "BCG 매트릭스는 각 사업부 간의 자원 배분에 대한 진단 도구로서, 존속, 처분, 유망 여부를 판단(prioritize)하는 데 활용된다."
+},
+{
+"id": 158,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "목표 고객(target market)이란 요구나 성향이 ______한 특정 그룹의 고객이다.",
+"answer": "유사",
+"accept": [
+"유사",
+"비슷"
+],
+"explain": "강의노트에서 목표 고객은 요구나 성향이 '유사한' 특정 그룹의 고객으로 정의된다."
+},
+{
+"id": 159,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "마케팅 관리자가 목표 고객 선정 시 먼저 평가해야 할 것은?",
+"options": [
+"①경쟁사의 약점",
+"②목표 고객의 욕구를 충족시키기 위한 풍부한 자원이 있는지",
+"③시장의 전체 규모",
+"④제품의 기술적 우수성"
+],
+"answer": 1,
+"explain": "기업의 마케팅 관리자는 목표 고객의 욕구를 충족시키기 위해 풍부한 자원이 있는지를 먼저 평가해야 한다."
+},
+{
+"id": 160,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "마케팅 목표에 포함될 수 있는 항목이 아닌 것은?",
+"options": [
+"①신제품 출시, 제품 개선/혁신",
+"②판매량, 이익률, 시장 점유율",
+"③가격, 유통, 광고, 종업원 교육",
+"④기업의 법인 등기 변경"
+],
+"answer": 3,
+"explain": "마케팅 목표에는 신제품 출시, 제품 개선/혁신, 판매량, 이익률, 시장 점유율, 가격, 유통, 광고, 종업원 교육 등이 포함된다. 법인 등기 변경은 마케팅 목표가 아니다."
+},
+{
+"id": 161,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "전략적 계획에서 기업 단계의 전략을 수립하는 주체는?",
+"options": [
+"①마케팅 부서",
+"②최고경영층",
+"③생산 부서",
+"④개별 사업부"
+],
+"answer": 1,
+"explain": "기업 단계의 전략(corporate strategy)은 최고경영층이 수립한다."
+},
+{
+"id": 162,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "기업전략에서 내부적으로 공유되는 핵심 질문 두 가지는?",
+"options": [
+"①'얼마나 팔 것인가' & '어디서 팔 것인가'",
+"②'우리의 고객은 누구인가' & '우리의 핵심역량은 무엇인가'",
+"③'경쟁사는 누구인가' & '시장 규모는 얼마인가'",
+"④'가격은 어떻게 정할 것인가' & '유통은 어떻게 할 것인가'"
+],
+"answer": 1,
+"explain": "기업전략에서 내부적으로 공유되는 핵심 질문은 '우리의 고객은 누구인가'와 '우리의 핵심역량은 무엇인가'이다."
+},
+{
+"id": 163,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "BCG 매트릭스에서 Cash Cow의 수익을 어디에 활용하는 것이 장기적으로 바람직한가?",
+"options": [
+"①Cash Cow 자체에 재투자",
+"②Pets/Dogs의 유지 비용으로 사용",
+"③Stars나 Question Marks에 투자하여 미래 성장 동력 확보",
+"④배당금으로 전액 주주에게 분배"
+],
+"answer": 2,
+"explain": "장기적인 제품군 형성을 위해 Cash Cow의 안정적 수익을 Stars나 Question Marks 같은 성장 가능성이 있는 사업에 투자하여 다양한 영역의 제품군을 구성하는 것이 바람직하다."
+},
+{
+"id": 164,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "다음 중 핵심역량(core competencies)의 세 가지 조건을 모두 올바르게 나열한 것은?",
+"options": [
+"①고객 가치 창출, 대량 생산 가능, 가격 경쟁력",
+"②고객 가치 창출, 경쟁사 모방의 어려움, 다양한 시장에서의 응용 가능",
+"③기술 혁신, 시장 점유율 확보, 비용 절감",
+"④브랜드 인지도, 유통망 확보, 광고 효과"
+],
+"answer": 1,
+"explain": "핵심역량의 세 가지 조건은 고객 가치 창출, 경쟁사 모방의 어려움, 다양한 시장에서의 응용 가능이다."
+},
+{
+"id": 165,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "선발 시장 진입 기업의 이점 중 '시장 경쟁에서 어느 정도 벗어날 수 있다'는 것은 무엇을 의미하는가?",
+"options": [
+"①정부의 보호를 받을 수 있다",
+"②경쟁사가 아직 존재하지 않아 독점적 위치를 누릴 수 있다",
+"③경쟁사와 담합할 수 있다",
+"④시장에서 완전히 퇴출될 수 없다"
+],
+"answer": 1,
+"explain": "선발 기업은 시장에 처음 출시하는 제품으로 인해 경쟁사가 아직 진입하지 않은 상태에서 독점적 위치를 누리며, 시장 경쟁에서 어느 정도 벗어날 수 있다."
+},
+{
+"id": 166,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "다음 보기를 BCG 매트릭스의 올바른 위치에 배치한 것은?\n(가) 시장성장률 High, 시장점유율 High\n(나) 시장성장률 High, 시장점유율 Low\n(다) 시장성장률 Low, 시장점유율 High\n(라) 시장성장률 Low, 시장점유율 Low",
+"options": [
+"①(가)Star, (나)Question Mark, (다)Cash Cow, (라)Pet",
+"②(가)Cash Cow, (나)Star, (다)Pet, (라)Question Mark",
+"③(가)Question Mark, (나)Star, (다)Pet, (라)Cash Cow",
+"④(가)Pet, (나)Cash Cow, (다)Question Mark, (라)Star"
+],
+"answer": 0,
+"explain": "BCG 매트릭스: Star(High Growth, High Share), Question Mark(High Growth, Low Share), Cash Cow(Low Growth, High Share), Pet(Low Growth, Low Share)이다."
+},
+{
+"id": 167,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "Competitive Advantage를 확보하는 것과 Breakthrough Opportunities의 관계에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①Competitive Advantage 없이도 Breakthrough Opportunities가 가능하다",
+"②Breakthrough Opportunities는 경쟁우위를 기반으로 경쟁사의 마케팅 믹스보다 우월하고 hard-to-copy한 전략이다",
+"③둘은 전혀 관련이 없다",
+"④Breakthrough Opportunities는 단순히 가격을 낮추는 전략이다"
+],
+"answer": 1,
+"explain": "매력적인 시장 기회에는 Competitive Advantage(경쟁우위)와 Breakthrough Opportunities가 있으며, Breakthrough Opportunities는 hard-to-copy 마케팅 전략으로 경쟁사의 마케팅 믹스보다 우월한 전략이다."
+},
+{
+"id": 168,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "마케팅 전략의 핵심은 무엇인가?",
+"options": [
+"①기업의 자원을 가장 효과적으로 활용하여 기업의 목표를 달성하는 것",
+"②가장 낮은 가격으로 제품을 판매하는 것",
+"③가장 많은 광고를 집행하는 것",
+"④모든 시장에 동일한 제품을 판매하는 것"
+],
+"answer": 0,
+"explain": "마케팅 전략의 핵심은 기업의 자원을 가장 효과적으로 활용하여 기업의 목표를 달성하는 것이다."
+},
+{
+"id": 169,
+"topic": 2,
+"section": "2.1",
+"type": "mc",
+"q": "목표 고객에 대한 심층 인터뷰를 통해 이해해야 하는 것은?",
+"options": [
+"①목표 고객의 재산 규모",
+"②목표 고객의 특징, 욕구, 선호도, 행동 양식과 자사 마케팅 믹스 전략의 부합 정도",
+"③경쟁사의 매출액",
+"④산업 전체의 기술 동향"
+],
+"answer": 1,
+"explain": "목표 고객에 대한 특징을 심층 인터뷰를 통해 이해하고, 목표 고객의 욕구, 선호도, 행동 양식과 자사의 마케팅 믹스 전략이 얼마나 부합되는지를 파악해야 한다."
+},
+{
+"id": 170,
+"topic": 2,
+"section": "2.1",
+"type": "blank",
+"q": "BCG 매트릭스에서 주요 분석 대상은 ______이며, 이를 통해 포트폴리오 관리(portfolio management)가 이루어진다.",
+"answer": "SBU",
+"accept": [
+"SBU",
+"전략적 사업단위",
+"strategic business unit"
+],
+"explain": "강의노트에서 BCG 매트릭스의 주요 분석 대상은 SBU(전략적 사업단위)이며, 개별 사업이 적절한지, 유지 또는 철수할지를 판단하는 포트폴리오 관리에 활용된다."
+},
+{
+"id": 171,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "시장(market)의 정의에 해당하지 않는 조건은?",
+"options": [
+"①욕구를 가지고 있는 개인 또는 조직",
+"②구매 능력을 가진 개인 또는 조직",
+"③구매 의지를 가진 개인 또는 조직",
+"④제품을 생산할 수 있는 능력을 가진 조직"
+],
+"answer": 3,
+"explain": "시장의 정의는 a)욕구, b)구매능력, c)구매의지, d)구매권한을 가진 개인 또는 조직의 집합이다. 생산 능력은 시장의 구성 조건이 아니다."
+},
+{
+"id": 172,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "소비자시장(consumer market)에 대한 설명으로 올바른 것은?",
+"options": [
+"①재판매를 목적으로 제품을 구매하는 시장",
+"②개인이나 가계가 자신의 소비와 편익을 위해 제품이나 서비스를 구매하는 시장",
+"③기업 간 거래로 이루어지는 산업시장",
+"④생산자와 정부 기관 간의 거래 시장"
+],
+"answer": 1,
+"explain": "소비자시장은 개인이나 가계가 자신의 소비(consumption)와 편익을 위해 제품이나 서비스를 구매하는 시장으로, B2C 거래형태이다."
+},
+{
+"id": 173,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "비즈니스시장(business market)의 구매 목적에 해당하지 않는 것은?",
+"options": [
+"①재판매(resale)",
+"②생산(production)",
+"③조직운영(operations)",
+"④개인적 소비(personal consumption)"
+],
+"answer": 3,
+"explain": "비즈니스시장은 재판매, 생산, 또는 조직운영을 목적으로 제품이나 서비스를 구매하는 시장이다. 개인적 소비는 소비자시장(consumer market)의 특성이다."
+},
+{
+"id": 174,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "비즈니스시장(B2B)의 구성원으로 적절하지 않은 것은?",
+"options": [
+"①생산자",
+"②재판매자",
+"③정부",
+"④최종소비자 개인"
+],
+"answer": 3,
+"explain": "비즈니스시장의 구성원은 생산자, 재판매자, 정부, 기관이다. 최종소비자 개인은 소비자시장(B2C)에 해당한다."
+},
+{
+"id": 175,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "3C 분석과 STP 전략에 대한 설명으로 올바른 것은?",
+"options": [
+"①3C는 Cost, Customer, Competition을 의미한다",
+"②STP는 Segmentation, Targeting, Pricing을 의미한다",
+"③3C는 Customer, Competitors, Company를 의미한다",
+"④STP는 Strategy, Targeting, Positioning을 의미한다"
+],
+"answer": 2,
+"explain": "3C는 Customer(소비자), Competitors(경쟁자), Company(자사)를 의미하며, STP는 Segmentation(세분화), Targeting(표적화), Positioning(위치화)을 의미한다."
+},
+{
+"id": 176,
+"topic": 3,
+"section": "3.1",
+"type": "blank",
+"q": "거시환경은 기업의 경영활동에 영향을 미치는 외부요인으로, 기업의 입장에서 ______이/가 거의 불가능하다.",
+"answer": "통제",
+"accept": [
+"통제",
+"컨트롤",
+"제어"
+],
+"explain": "거시환경(macro environment)은 모든 기업에 영향을 미치며 기업이 통제하기 거의 불가능하지만, 기업의 성장방향과 경영전략에 직간접적 영향을 미친다."
+},
+{
+"id": 177,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "PESTEL 분석의 구성요소가 아닌 것은?",
+"options": [
+"①Political(정치)",
+"②Ethical(윤리)",
+"③Technological(기술)",
+"④Environmental(환경)"
+],
+"answer": 1,
+"explain": "PESTEL은 Political(정치), Economic(경제), Social(사회), Technological(기술), Environmental(환경), Legal(법률)의 약자이다. Ethical(윤리)은 포함되지 않는다."
+},
+{
+"id": 178,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "PESTEL 분석에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①외부 거시환경을 종합적으로 분석한다",
+"②위험요소를 줄이고 기회를 극대화하는 데 활용된다",
+"③거시적 차원에서 산업 및 시장 트렌드를 평가한다",
+"④기업 내부의 강점과 약점을 분석하는 도구이다"
+],
+"answer": 3,
+"explain": "PESTEL 분석은 외부 거시환경(정치, 경제, 사회, 기술, 환경, 법률)을 분석하는 도구이다. 기업 내부의 강점과 약점 분석은 SWOT 분석의 영역이다."
+},
+{
+"id": 179,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "소비자 분석(Consumer Analysis)에서 '소비자 니즈 분석(customer needs analysis)'의 목적으로 올바른 것은?",
+"options": [
+"①기업의 내부 비용 구조를 파악하는 것",
+"②현재 충족되지 않았거나 중요도가 높은 가치와 혜택을 파악하는 것",
+"③경쟁자의 시장점유율을 분석하는 것",
+"④공급자의 교섭력을 평가하는 것"
+],
+"answer": 1,
+"explain": "소비자 니즈 분석은 현재 충족되지 않았거나 중요도가 높은 가치와 혜택을 파악하는 과정이다."
+},
+{
+"id": 180,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "'inside out'과 'outside in' 사고방식에 대한 설명으로 올바른 것은?",
+"options": [
+"①inside out은 고객중심 사고이다",
+"②outside in은 기업중심 사고이다",
+"③inside out은 기업중심 사고, outside in은 고객중심 사고이다",
+"④두 가지 모두 경쟁자 중심 사고이다"
+],
+"answer": 2,
+"explain": "inside out은 기업중심 사고, outside in은 고객중심 사고를 의미한다. 마케팅에서는 outside in(고객중심 사고)이 강조된다."
+},
+{
+"id": 181,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "시장분석(market analysis)에서 평가하는 항목으로 적절하지 않은 것은?",
+"options": [
+"①시장 규모",
+"②성장률",
+"③직원 만족도",
+"④경쟁 강도"
+],
+"answer": 2,
+"explain": "시장분석은 전체 시장과 세분시장의 매력도를 평가하는 과정으로, 시장 규모, 성장률, 수익성, 경쟁 강도, 트렌드 등을 분석한다. 직원 만족도는 시장분석이 아닌 내부 조직관리의 영역이다."
+},
+{
+"id": 182,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "경쟁자 분석(Competitor Analysis)의 주요 목적은?",
+"options": [
+"①거시환경의 변화를 예측하기 위해",
+"②경쟁자의 전략, 강점/약점, 시장 내 위치를 이해하여 경쟁우위를 확보하기 위해",
+"③소비자의 인구통계적 특성을 파악하기 위해",
+"④자사의 원가구조를 분석하기 위해"
+],
+"answer": 1,
+"explain": "경쟁자 분석은 경쟁자의 전략, 강점/약점, 시장 내 위치를 이해하여 경쟁우위를 확보하기 위한 과정이다."
+},
+{
+"id": 183,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "경쟁자 분석에서 다루는 핵심 질문이 아닌 것은?",
+"options": [
+"①경쟁자가 고객에게 어떤 가치(value)를 제공하고 있는가?",
+"②우리가 이길 수 있는 영역은 어디인가?",
+"③경쟁자의 직원 수는 몇 명인가?",
+"④어떤 이익/혜택이 표적시장에 더 강조되어야 하는가?"
+],
+"answer": 2,
+"explain": "경쟁자 분석의 핵심 질문은 경쟁자의 가치 제공, 강점/약점, 표적시장에서의 강조 혜택, 우리가 이길 수 있는 영역 등이다. 단순히 직원 수를 파악하는 것은 핵심 질문이 아니다."
+},
+{
+"id": 184,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "완전독점(monopoly)에 대한 설명으로 올바른 것은?",
+"options": [
+"①다수의 기업이 차별화된 제품을 판매하는 시장",
+"②소수의 대형 기업이 시장을 지배하는 구조",
+"③한 재화나 서비스의 공급이 단일 기업에 의해 이루어지는 시장 형태",
+"④다수의 공급자가 동질적 제품을 거래하는 시장"
+],
+"answer": 2,
+"explain": "완전독점(monopoly)은 한 재화나 서비스의 공급이 단일 기업(독점기업)에 의해 이루어지는 시장의 형태이다."
+},
+{
+"id": 185,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "과점(oligopoly)에 대한 설명으로 올바른 것은?",
+"options": [
+"①단일 기업이 시장을 완전히 지배한다",
+"②소수의 대형 기업들이 시장을 지배하며, 기업 간 전략적 상호의존성이 존재한다",
+"③다수의 기업이 동질적 제품을 판매한다",
+"④모든 경제주체가 완전한 정보를 가진다"
+],
+"answer": 1,
+"explain": "과점(oligopoly)은 소수의 대형 기업들이 시장을 지배하는 구조로, 기업 간 전략적 상호의존성이 존재한다."
+},
+{
+"id": 186,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "순수과점(homogeneous/undifferentiated oligopoly)과 차별적 과점(differentiated oligopoly)의 차이로 올바른 것은?",
+"options": [
+"①순수과점은 차별화된 제품, 차별적 과점은 동질적 제품을 생산한다",
+"②순수과점은 동질적 제품, 차별적 과점은 유사하지만 차별화된 제품을 생산한다",
+"③둘 다 동질적 제품을 생산하는 다수의 기업이다",
+"④순수과점은 다수의 기업, 차별적 과점은 단일 기업이다"
+],
+"answer": 1,
+"explain": "순수과점은 동질적인 제품을 생산하는 소수의 기업들이며, 차별적 과점은 유사하지만 차별화된 제품을 생산하는 소수의 기업들이다."
+},
+{
+"id": 187,
+"topic": 3,
+"section": "3.1",
+"type": "blank",
+"q": "다수의 기업이 존재하며, 서로 유사하지만 차별화된 제품을 판매하는 시장구조를 ______(이)라 한다.",
+"answer": "독점적 경쟁",
+"accept": [
+"독점적 경쟁",
+"monopolistic competition"
+],
+"explain": "독점적 경쟁(monopolistic competition)은 다수의 기업이 존재하며 서로 유사하지만 차별화된 제품을 판매하는 시장구조이다."
+},
+{
+"id": 188,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "완전경쟁(pure competition)에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①다수의 공급자와 다수의 수요자가 존재한다",
+"②서로 대체 가능한 동질적 제품을 거래한다",
+"③기업은 가격설정자(price maker)이다",
+"④모든 경제주체는 완전한 정보를 가지고 있다"
+],
+"answer": 2,
+"explain": "완전경쟁시장에서 기업은 가격수용자(price taker)로서 시장가격을 그대로 받아들인다. 가격설정자(price maker)가 아니다."
+},
+{
+"id": 189,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "Porter의 5 Forces 모형에서 '대체품의 위협'이 존재할 경우 시장은 어떻게 평가되는가?",
+"options": [
+"①더 매력적인 시장으로 평가된다",
+"②매력도에 영향이 없다",
+"③덜 매력적인 시장으로 평가된다",
+"④시장 진입이 용이해진다"
+],
+"answer": 2,
+"explain": "특정 세분시장의 제품에 대한 실질적이고 잠재적인 대체품이 존재할 경우에는 덜 매력적인 시장으로 평가된다."
+},
+{
+"id": 190,
+"topic": 3,
+"section": "3.1",
+"type": "blank",
+"q": "특정 세분시장의 제품에 대한 실질적이고 잠재적인 대체품이 존재할 경우에는 ______ 매력적인 시장으로 평가된다.",
+"answer": "덜",
+"accept": [
+"덜",
+"less"
+],
+"explain": "대체품의 위협이 존재하면 시장의 매력도가 낮아진다. 따라서 덜 매력적인 시장으로 평가된다."
+},
+{
+"id": 191,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "구매자의 교섭력이 강해지면 세분시장은 어떻게 되는가?",
+"options": [
+"①더 매력적이 된다",
+"②덜 매력적이 된다",
+"③매력도에 변화가 없다",
+"④시장 규모가 확대된다"
+],
+"answer": 1,
+"explain": "세분시장에서 구매자가 강력한 교섭력을 가지게 되면 덜 매력적인 시장이 된다."
+},
+{
+"id": 192,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "잠재적 진입자의 위협에 대한 설명으로 올바른 것은?",
+"options": [
+"①기존 기업 입장에서 신규 기업의 진입이 쉬울수록 매력적인 시장이다",
+"②진입하려는 기업 입장에서는 진입이 어려울수록 매력적이다",
+"③기존 기업 입장에서는 신규 진입이 어려워야 매력적인 시장이다",
+"④진입 장벽은 시장 매력도에 영향을 미치지 않는다"
+],
+"answer": 2,
+"explain": "진입하려는 기업에게는 진입이 쉬워야 매력적이지만, 기존 기업 입장에서는 신규 기업의 산업 내 진입이 어려워야 매력적인 시장이다."
+},
+{
+"id": 193,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "Porter의 5 Forces에 해당하지 않는 것은?",
+"options": [
+"①산업 내 경쟁자",
+"②잠재적 진입자의 위협",
+"③거시환경의 변화",
+"④공급자의 교섭력"
+],
+"answer": 2,
+"explain": "Porter의 5 Forces는 산업 내 경쟁자, 잠재적 진입자의 위협, 대체품의 위협, 구매자의 교섭력, 공급자의 교섭력이다. 거시환경의 변화는 PESTEL 분석의 영역이다."
+},
+{
+"id": 194,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "자사분석(Company Analysis)에서 성과분석(performance analysis)의 목적으로 올바른 것은?",
+"options": [
+"①경쟁자의 시장점유율을 파악한다",
+"②현재 사용 중인 전략의 효과성을 판단하고, 전략 유지 또는 수정 여부를 결정한다",
+"③소비자의 구매 행동을 예측한다",
+"④공급자의 가격 인상 가능성을 분석한다"
+],
+"answer": 1,
+"explain": "성과분석은 현재 사용 중인 전략이 얼마나 효과적인지를 판단하고, 전략 유지 또는 수정 여부를 결정할 수 있는 근거를 제공하는 것이다."
+},
+{
+"id": 195,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "자사분석에서 원가분석(cost analysis)에 대한 설명으로 올바른 것은?",
+"options": [
+"①원가 분석은 소비자의 지불 의향을 측정한다",
+"②비용우위는 경쟁우위의 중요한 원천이다",
+"③원가 분석은 경쟁자의 생산비용만을 대상으로 한다",
+"④원가상의 우위는 가격경쟁에서 불리하다"
+],
+"answer": 1,
+"explain": "원가구조를 분석하여 비용경쟁력을 평가하며, 비용우위는 경쟁우위의 중요한 원천이다. 원가상의 우위는 기업에게 더 높은 마진을 제공하고 가격경쟁에서도 유리한 위치를 선점하게 한다."
+},
+{
+"id": 196,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "자사분석에서 브랜드 자산 분석(brand & resource evaluation)이 평가하는 항목이 아닌 것은?",
+"options": [
+"①브랜드 포지셔닝",
+"②핵심역량",
+"③경쟁자의 가격 전략",
+"④조직역량"
+],
+"answer": 2,
+"explain": "브랜드 자산 분석은 자사의 핵심자원과 브랜드자산을 평가하는 것으로, 브랜드 포지셔닝, 브랜드 이미지, 핵심역량, 유통, 기술, 조직역량 등을 평가한다. 경쟁자의 가격 전략은 경쟁자 분석의 영역이다."
+},
+{
+"id": 197,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "자사의 강점과 약점 분석에 관한 설명으로 올바른 것은?",
+"options": [
+"①자사 단독으로 강점과 약점을 절대적으로 평가한다",
+"②경쟁시장 조건하에서 기업의 강약점은 상대적인 의미를 갖는다",
+"③약점 분석은 생략하고 강점에만 집중한다",
+"④재무 기능만을 중심으로 접근하는 것이 효과적이다"
+],
+"answer": 1,
+"explain": "경쟁시장 조건하에서 기업의 강약점은 상대적인 의미를 갖는다. 기업이 보유한 유형 및 무형 자원을 주요 경쟁사와 비교 분석하여 상대적 강점과 약점을 평가하는 것이 핵심이다."
+},
+{
+"id": 198,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "시장세분화(segmentation)에 대한 설명으로 올바른 것은?",
+"options": [
+"①전체 시장을 하나의 동질적 집단으로 유지하는 것",
+"②전체 시장을 유사한 제품 니즈를 갖는 소비자들의 하위집단으로 나누는 과정",
+"③기업의 내부 부서를 분류하는 과정",
+"④경쟁자별로 시장을 분류하는 과정"
+],
+"answer": 1,
+"explain": "시장세분화는 전체 시장을 유사한 제품 니즈를 갖는 소비자들 혹은 조직들로 구성된 집단 혹은 하위집단으로 나누는 과정이다."
+},
+{
+"id": 199,
+"topic": 3,
+"section": "3.2",
+"type": "blank",
+"q": "세분시장(market segment)은 한 개 혹은 더 많은 ______ 특성을 공유하고 있는 개인들, 집단들 혹은 조직들이다.",
+"answer": "공통적인",
+"accept": [
+"공통적인",
+"공통",
+"유사한"
+],
+"explain": "세분시장은 공통적인 특성(유사한 욕구, 구매력, 지리적 위치, 구매태도 및 구매습관)을 공유하는 개인, 집단, 조직의 모임이다."
+},
+{
+"id": 200,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "성공적인 시장세분화의 조건으로 올바르지 않은 것은?",
+"options": [
+"①세분시장은 식별되고 나눌 수 있어야 한다",
+"②특별한 마케팅 믹스를 개발할 만큼의 충분한 이익 잠재성이 있어야 한다",
+"③세분시장의 규모가 작을수록 좋다",
+"④기업은 선택한 세분시장에 접근할 수 있어야 한다"
+],
+"answer": 2,
+"explain": "세분시장은 특별한 마케팅 믹스를 개발할 만큼의 충분한 이익 잠재성을 가지고 있어야 한다. 규모가 작을수록 좋은 것이 아니라 충분히 커야 한다."
+},
+{
+"id": 201,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "시장세분화 절차의 2단계인 분석단계(analysis stage)에서 사용하는 분석 기법의 조합으로 올바른 것은?",
+"options": [
+"①회귀분석과 상관분석",
+"②요인분석(factor analysis)과 군집분석(cluster analysis)",
+"③분산분석과 T-검정",
+"④판별분석과 회귀분석"
+],
+"answer": 1,
+"explain": "분석단계에서는 요인분석(핵심변수 축소)을 통해 상관관계가 높은 변수들을 추출하고, 군집분석(유사한 고객 그룹 도출)을 적용하여 세분시장의 수를 결정한다."
+},
+{
+"id": 202,
+"topic": 3,
+"section": "3.2",
+"type": "blank",
+"q": "시장세분화 절차 2단계에서, 조사자는 유사한 고객 그룹을 도출하기 위해 ______(을)를 적용한다.",
+"answer": "군집분석",
+"accept": [
+"군집분석",
+"cluster analysis",
+"군집 분석"
+],
+"explain": "분석단계에서 요인분석으로 핵심 변수를 축소한 후, 군집분석(cluster analysis)을 적용하여 유사한 고객 그룹을 도출한다."
+},
+{
+"id": 203,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "시장세분화 절차의 올바른 순서는?",
+"options": [
+"①분석 → 조사 → 세부요약설명 → 전략연결",
+"②조사 → 분석 → 세부요약설명 → 전략연결(STP)",
+"③세부요약설명 → 조사 → 분석 → 전략연결",
+"④전략연결 → 조사 → 분석 → 세부요약설명"
+],
+"answer": 1,
+"explain": "시장세분화 절차는 1단계 조사단계(research) → 2단계 분석단계(analysis) → 3단계 세부요약설명단계(profiling) → 4단계 전략연결(STP) 순서이다."
+},
+{
+"id": 204,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "시장세분화 절차 4단계(전략연결)에서 강조하는 핵심 포인트는?",
+"options": [
+"①세분화의 목적은 데이터 분석 자체이다",
+"②세분화의 목적은 분석이 아니라 표적시장 선택과 포지셔닝의 시작(도구)이다",
+"③세분화는 경쟁자 분석을 위한 도구이다",
+"④세분화는 거시환경 분석의 결과물이다"
+],
+"answer": 1,
+"explain": "세분화의 목적은 분석이 아니라 표적시장 선택과 포지셔닝의 시작(도구)이다. 세분화는 STP 전략의 출발점이다."
+},
+{
+"id": 205,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "세분화 변수(segmentation variable)에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①세분화 변수는 제품사용에 대한 고객들의 니즈와 연관되어야 한다",
+"②변수들은 측정될 수 있어야 한다",
+"③하나의 변수만 단독으로 사용해야 한다",
+"④기업의 자원과 능력을 고려해야 한다"
+],
+"answer": 2,
+"explain": "세분화 변수는 여러 변수를 조합하여 사용한다. 하나의 변수만 단독으로 사용해야 하는 것이 아니다."
+},
+{
+"id": 206,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "인구통계적 변수(demographic)의 특징으로 올바른 것은?",
+"options": [
+"①측정이 매우 어렵다",
+"②고객의 니즈와 구매행동에 밀접하게 연결되며 손쉽게 측정 가능하다",
+"③소비자의 심리적 특성만을 반영한다",
+"④지역 기후에 따른 소비 차이를 설명한다"
+],
+"answer": 1,
+"explain": "인구통계적 변수는 고객의 니즈와 구매행동에 밀접하게 연결되며 손쉽게 측정 가능한 것이 특징이다."
+},
+{
+"id": 207,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "인구통계적 세분화 변수에 해당하지 않는 것은?",
+"options": [
+"①연령",
+"②소득",
+"③시장밀도",
+"④가족생활주기"
+],
+"answer": 2,
+"explain": "시장밀도(market density)는 지리통계적 변수에 해당한다. 인구통계적 변수는 연령, 성별, 인종, 소득, 교육, 직업, 가족수, 가족생활주기, 종교, 사회계층 등이다."
+},
+{
+"id": 208,
+"topic": 3,
+"section": "3.2",
+"type": "blank",
+"q": "인구통계적 변수 중, 결혼 상태, 자녀의 유무, 자녀 수 등이 가계소득과 제품 니즈에 영향을 미치는 변수는 ______이다.",
+"answer": "가족생활주기",
+"accept": [
+"가족생활주기",
+"가족 생활주기",
+"가족생활 주기"
+],
+"explain": "가족생활주기는 결혼 상태, 자녀의 유무, 자녀 수 등으로 가계소득과 제품 니즈에 영향을 미치는 인구통계적 세분화 변수이다."
+},
+{
+"id": 209,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "지리통계적 변수(geographic)에 해당하는 것은?",
+"options": [
+"①소득과 교육 수준",
+"②기후, 지형, 지역의 차이",
+"③개성과 라이프스타일",
+"④사용빈도와 충성도"
+],
+"answer": 1,
+"explain": "지리통계적 변수는 기후, 지형, 지역의 차이가 소비자 니즈에 영향을 미치는 것을 반영한다."
+},
+{
+"id": 210,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "시장밀도(market density)에 대한 설명으로 올바른 것은?",
+"options": [
+"①인구밀도와 동일한 개념이다",
+"②토지면적 단위 안의 잠재적인 고객 수이며, 인구밀도와 다른 개념이다",
+"③소비자의 심리적 특성을 나타내는 지표이다",
+"④세분시장의 수익성을 나타내는 지표이다"
+],
+"answer": 1,
+"explain": "시장밀도는 토지면적 단위 안의 잠재적인 고객 수로, 인구밀도(population density)와는 다른 개념이다."
+},
+{
+"id": 211,
+"topic": 3,
+"section": "3.2",
+"type": "blank",
+"q": "라이프스타일과 인구통계학적 정보를 바탕으로 우편번호 혹은 지역 단위로 소비자들을 군집으로 나누는 시장세분화 방법을 ______ 세분화라 한다.",
+"answer": "지리인구통계적",
+"accept": [
+"지리인구통계적",
+"geodemographic",
+"지리인구통계"
+],
+"explain": "지리인구통계적 세분화(geodemographic segmentation)는 라이프스타일과 인구통계학적 정보를 바탕으로 우편번호 혹은 지역 단위로 소비자들을 군집으로 나누는 방법이다. Claritas PRIZM이 대표적 도구이다."
+},
+{
+"id": 212,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "심리통계적 변수(psychographic)에 해당하는 것은?",
+"options": [
+"①연령, 성별, 소득",
+"②기후, 도시 규모, 시장밀도",
+"③개성, 동기, 라이프스타일",
+"④사용빈도, 충성도, 혜택"
+],
+"answer": 2,
+"explain": "심리통계적 변수는 개성과 동기와 라이프스타일을 포함한다."
+},
+{
+"id": 213,
+"topic": 3,
+"section": "3.2",
+"type": "blank",
+"q": "심리통계적 세분화는 많은 경쟁 제품 간에 ______이/가 없고 소비자의 니즈가 다른 세분화 변수와 의미 있게 연결되지 않을 때 사용된다.",
+"answer": "실질적 차이",
+"accept": [
+"실질적 차이",
+"차이",
+"실질적인 차이"
+],
+"explain": "심리통계적 변수는 많은 경쟁 제품 간에 실질적 차이가 없고, 소비자 니즈가 다른 세분화 변수와 의미 있게 연결되지 않을 때 활용된다."
+},
+{
+"id": 214,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "라이프스타일 세분화에서 사용하는 AOI의 구성요소로 올바른 것은?",
+"options": [
+"①Activity, Opinion, Interest",
+"②Attitude, Operation, Income",
+"③Age, Occupation, Income",
+"④Awareness, Opportunity, Innovation"
+],
+"answer": 0,
+"explain": "AOI는 Activity(활동), Opinion(의견), Interest(관심)로 구성되며, 소비자들을 라이프스타일에 따라 집단화하는 데 사용된다."
+},
+{
+"id": 215,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "심리통계적 세분화에서 '가치관'에 대한 설명으로 올바른 것은?",
+"options": [
+"①일시적인 유행에 따라 빠르게 변한다",
+"②핵심적 가치관은 행위나 태도보다 더 영향력 있으며, 장기간에 걸쳐 사람들의 선택과 욕망을 결정한다",
+"③가치관은 측정이 불가능하다",
+"④가치관은 인구통계적 변수에 해당한다"
+],
+"answer": 1,
+"explain": "핵심적 가치관은 행위나 태도보다 더 영향력 있는 것으로서, 기본적인 수준에서 장기간에 걸쳐 사람들의 선택과 욕망을 결정한다."
+},
+{
+"id": 216,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "행동적 세분화 변수(behavioral)에 해당하지 않는 것은?",
+"options": [
+"①사용여부(사용자 상태)",
+"②사용량(사용빈도)",
+"③종교와 사회계층",
+"④충성도"
+],
+"answer": 2,
+"explain": "행동적 변수에는 사용여부, 사용량, 충성도, 이점(혜택)이 포함된다. 종교와 사회계층은 인구통계적 변수이다."
+},
+{
+"id": 217,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "행동적 세분화에서 '사용자 상태'에 의한 분류가 아닌 것은?",
+"options": [
+"①비사용자",
+"②잠재적 사용자",
+"③대량 사용자",
+"④전사용자"
+],
+"answer": 2,
+"explain": "사용자 상태에 의한 분류는 비사용자, 잠재적 사용자, 전사용자, 처음 사용자, 규칙적 사용자이다. 대량 사용자는 사용량(사용빈도)에 의한 분류이다."
+},
+{
+"id": 218,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "행동적 세분화에서 '이점(혜택)' 변수는 무엇을 기준으로 소비자를 분류하는가?",
+"options": [
+"①소비자의 구매 빈도",
+"②소비자의 브랜드 충성도 수준",
+"③구매자들이 제품으로부터 추구하는 상이한 이점",
+"④소비자의 인구통계적 특성"
+],
+"answer": 2,
+"explain": "이점(혜택) 변수는 구매자들이 제품으로부터 추구하는 상이한 이점에 따라 소비자를 분류하는 것이다."
+},
+{
+"id": 219,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "비즈니스 시장의 세분화 변수에 해당하지 않는 것은?",
+"options": [
+"①지리적 위치",
+"②조직의 유형",
+"③소비자의 개성과 라이프스타일",
+"④고객의 규모"
+],
+"answer": 2,
+"explain": "비즈니스 시장 세분화 변수는 지리적 위치, 조직의 유형, 고객의 규모, 제품의 용도 등이다. 소비자의 개성과 라이프스타일은 소비자 시장의 심리통계적 변수이다."
+},
+{
+"id": 220,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "비즈니스 시장 세분화에서 '고객의 규모'가 영향을 미치는 것은?",
+"options": [
+"①소비자의 라이프스타일",
+"②구매절차와 제품의 유형 및 수량",
+"③거시환경 분석 결과",
+"④포지셔닝 맵의 축 설정"
+],
+"answer": 1,
+"explain": "비즈니스 시장에서 고객의 규모는 구매절차와 제품의 유형 및 수량에 영향을 미친다(대량 vs. 소량 구매)."
+},
+{
+"id": 221,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "세분화 전략(Segmentation Strategies)에서 요구하는 기준이 아닌 것은?",
+"options": [
+"①세분시장 내 동질성(homogeneous within)",
+"②세분시장 간 이질성(heterogeneous between)",
+"③세분시장의 규모 최소화(minimal)",
+"④실행 가능성(operational)"
+],
+"answer": 2,
+"explain": "세분화 전략의 기준은 세분시장 내 동질성, 세분시장 간 이질성, 충분한 규모(substantial), 실행 가능성(operational)이다. 규모 최소화가 아니라 충분한 규모(profitable)가 기준이다."
+},
+{
+"id": 222,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "표적시장(target market)의 정의로 올바른 것은?",
+"options": [
+"①전체 시장에서 가장 규모가 큰 시장",
+"②기업이 구성원들의 니즈를 만족시키기 위해 특별히 설계된 마케팅 믹스를 만들고 지속하기 위한 사람들 혹은 조직들의 집단",
+"③경쟁자가 진입하지 않은 시장",
+"④소비자의 인구통계적 특성이 동일한 집단"
+],
+"answer": 1,
+"explain": "표적시장은 기업이 집단의 구성원들의 니즈를 만족시키기 위해 특별히 설계된 마케팅 믹스를 만들고 지속하기 위한 사람들 혹은 조직들의 집단이다."
+},
+{
+"id": 223,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "표적시장을 선정하기 위해 사용되는 전략에 영향을 주는 요인이 아닌 것은?",
+"options": [
+"①표적시장의 특성",
+"②제품 속성들",
+"③기업의 목표와 자원",
+"④경쟁자의 직원 수"
+],
+"answer": 3,
+"explain": "표적시장 선정 전략에 영향을 주는 요인은 표적시장의 특성, 제품 속성들, 기업의 목표와 자원이다."
+},
+{
+"id": 224,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "단일세분시장 집중(single-segment concentration) 전략에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①단일 제품으로 단일 세분시장에 소구하는 전략이다",
+"②목표 고객집단의 특성과 니즈를 분석하고 만족시키기 위해 모든 역량을 투입한다",
+"③세분시장이 충분히 크면 대기업과도 경쟁 가능하다",
+"④위험이 분산되어 안정적인 전략이다"
+],
+"answer": 3,
+"explain": "단일세분시장 집중 전략은 모든 자원이 단일 목표 세분시장에 투입되므로, 제품 수요 격감 시 위험이 크다. 위험이 분산되는 것이 아니다."
+},
+{
+"id": 225,
+"topic": 3,
+"section": "3.3",
+"type": "blank",
+"q": "세분시장 중에서 매력적이고 기업 목표에 적합한 몇 개의 세분시장에 진입하는 전략을 ______ 전문화라 한다.",
+"answer": "선택적",
+"accept": [
+"선택적",
+"selective"
+],
+"explain": "선택적 전문화(selective specialization)는 세분시장 중에서 매력적이고 기업 목표에 적합한 몇 개의 세분시장에 진입하는 전략이다."
+},
+{
+"id": 226,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "선택적 전문화(selective specialization) 전략의 특징으로 올바르지 않은 것은?",
+"options": [
+"①하나의 세분시장에 집중적 표적화를 성공한 이후 추가 세분시장으로 확장한다",
+"②매출 증가의 이점이 있다",
+"③생산원가 상승이 단점이다",
+"④전체 시장을 대상으로 하는 전략이다"
+],
+"answer": 3,
+"explain": "선택적 전문화는 전체 시장이 아닌 몇 개의 매력적인 세분시장에 진입하는 전략이다. 전체 시장 확보는 별도의 전략(full market coverage)이다."
+},
+{
+"id": 227,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "제품전문화(product specialization) 전략에 대한 설명으로 올바른 것은?",
+"options": [
+"①여러 제품으로 단일 세분시장에 소구한다",
+"②단일 제품으로 여러 세분시장에 소구한다",
+"③여러 제품으로 전체 시장에 소구한다",
+"④단일 제품으로 단일 세분시장에 소구한다"
+],
+"answer": 1,
+"explain": "제품전문화는 기업이 단일 제품으로 여러 세분시장들에 소구하는 전략이다."
+},
+{
+"id": 228,
+"topic": 3,
+"section": "3.3",
+"type": "blank",
+"q": "어떤 특정 고객집단의 여러 가지 욕구를 충족시키기 위하여 다양한 제품을 판매하는 전략을 ______ 전문화라 한다.",
+"answer": "시장",
+"accept": [
+"시장",
+"market"
+],
+"explain": "시장전문화(market specialization)는 어떤 특정 고객집단의 여러 가지 욕구를 충족시키기 위하여 다양한 제품을 판매하기 위한 전략이다."
+},
+{
+"id": 229,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "전체시장 확보(full market coverage) 전략을 수행할 수 있는 기업의 특성으로 올바른 것은?",
+"options": [
+"①스타트업 기업에 적합하다",
+"②특히 대기업의 경우 수행 가능하다",
+"③자원이 제한된 중소기업에 적합하다",
+"④단일 제품만 보유한 기업에 적합하다"
+],
+"answer": 1,
+"explain": "전체시장 확보 전략은 특히 대기업의 경우 수행할 수 있는 전략이다. 충분한 자원과 역량이 필요하다."
+},
+{
+"id": 230,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "표적시장 선정 전략 5가지 유형에 해당하지 않는 것은?",
+"options": [
+"①단일세분시장 집중",
+"②선택적 전문화",
+"③가격 전문화",
+"④시장 전문화"
+],
+"answer": 2,
+"explain": "표적시장 선정 전략 5유형은 단일세분시장 집중, 선택적 전문화, 제품 전문화, 시장 전문화, 전체시장 확보이다. 가격 전문화는 포함되지 않는다."
+},
+{
+"id": 231,
+"topic": 3,
+"section": "3.3",
+"type": "mc",
+"q": "시장전문화(market specialization)와 제품전문화(product specialization)의 차이로 올바른 것은?",
+"options": [
+"①시장전문화는 단일 제품/여러 시장, 제품전문화는 여러 제품/단일 시장이다",
+"②시장전문화는 특정 고객집단에 다양한 제품을, 제품전문화는 단일 제품으로 여러 세분시장에 소구한다",
+"③둘 다 전체 시장을 대상으로 한다",
+"④시장전문화는 대기업, 제품전문화는 중소기업만 가능하다"
+],
+"answer": 1,
+"explain": "시장전문화는 특정 고객집단의 여러 욕구를 충족시키기 위해 다양한 제품을 판매하는 전략이고, 제품전문화는 단일 제품으로 여러 세분시장에 소구하는 전략이다."
+},
+{
+"id": 232,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝(positioning)의 정의로 올바른 것은?",
+"options": [
+"①경쟁 제품과 동일한 위치를 차지하는 것",
+"②마케팅 믹스를 이용하여 소비자의 의식에 자사 제품의 정확한 위치를 심어주는 것",
+"③시장세분화와 동일한 개념이다",
+"④표적시장을 선정하는 과정이다"
+],
+"answer": 1,
+"explain": "포지셔닝은 경쟁 제품과 효과적으로 경쟁하기 위하여 마케팅 믹스를 이용하여 소비자의 의식에 자사 제품의 정확한 위치를 심어주는 것이다."
+},
+{
+"id": 233,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 전략의 유형으로 적절하지 않은 것은?",
+"options": [
+"①속성/효익에 의한 포지셔닝",
+"②경쟁에 의한 포지셔닝",
+"③원가 절감에 의한 포지셔닝",
+"④사용상황에 의한 포지셔닝"
+],
+"answer": 2,
+"explain": "포지셔닝 전략의 유형에는 속성/효익, 사용상황, 제품사용자, 경쟁에 의한 포지셔닝과 기술/제품/시장/유통/생산 위주의 차별화, 서비스/이미지/인적 차별화가 있다. 원가 절감에 의한 포지셔닝은 언급되지 않았다."
+},
+{
+"id": 234,
+"topic": 3,
+"section": "3.4",
+"type": "blank",
+"q": "경쟁 환경과 소비자 인식의 변화에 대응하여, 제품이나 브랜드가 목표 고객의 머릿속에서 차지하는 위치를 재설정하는 전략적 활동을 ______(이)라 한다.",
+"answer": "재포지셔닝",
+"accept": [
+"재포지셔닝",
+"repositioning",
+"리포지셔닝"
+],
+"explain": "재포지셔닝(repositioning)은 경쟁 환경과 소비자 인식의 변화에 대응하여 제품이나 브랜드의 위치를 재설정하는 전략적 활동이다."
+},
+{
+"id": 235,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "재포지셔닝(repositioning)이 필요한 시점이 아닌 것은?",
+"options": [
+"①경쟁 심화(새 경쟁자 등장)",
+"②소비자 니즈 변화",
+"③기존 포지셔닝이 성공적으로 유지되고 있을 때",
+"④브랜드 노후화"
+],
+"answer": 2,
+"explain": "재포지셔닝은 경쟁 심화, 소비자 니즈 변화, 브랜드 노후화, 기존 포지셔닝 실패 시 필요하다. 기존 포지셔닝이 성공적으로 유지되고 있을 때는 재포지셔닝이 필요하지 않다."
+},
+{
+"id": 236,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "재포지셔닝의 위험(risk)에 해당하지 않는 것은?",
+"options": [
+"①기존 고객 이탈 가능성",
+"②브랜드 정체성 혼란",
+"③커뮤니케이션 비용 증가",
+"④시장 규모 자동 확대"
+],
+"answer": 3,
+"explain": "재포지셔닝의 위험으로는 기존 고객 이탈 가능성, 브랜드 정체성 혼란, 커뮤니케이션 비용 증가가 있다. 시장 규모가 자동으로 확대되는 것은 위험이 아니며 보장되지도 않는다."
+},
+{
+"id": 237,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "재포지셔닝의 방법(how)에 해당하지 않는 것은?",
+"options": [
+"①속성/혜택 변경",
+"②타겟 변경",
+"③경쟁 기준 변경",
+"④기업 규모 축소"
+],
+"answer": 3,
+"explain": "재포지셔닝의 방법으로는 속성/혜택 변경, 타겟 변경, 경쟁 기준 변경이 있다. 기업 규모 축소는 재포지셔닝의 방법이 아니다."
+},
+{
+"id": 238,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 맵(positioning/perceptual map)에 대한 설명으로 올바른 것은?",
+"options": [
+"①기업의 재무 성과를 시각화한 도구이다",
+"②소비자의 지각/인식을 기반으로 자사 제품과 경쟁 제품의 시장 위치를 시각적으로 표현한 도구이다",
+"③거시환경 분석의 결과물이다",
+"④기업 내부의 원가구조를 비교하는 도구이다"
+],
+"answer": 1,
+"explain": "포지셔닝 맵은 소비자의 지각/인식(perception)을 기반으로 자사 제품과 경쟁 제품이 시장에서 차지하는 위치를 시각적으로 표현한 도구이다. 객관적 성능이 아닌 소비자의 주관적 인식을 반영한다."
+},
+{
+"id": 239,
+"topic": 3,
+"section": "3.4",
+"type": "blank",
+"q": "포지셔닝 맵은 소비자의 ______/인식(perception)을 기반으로 자사 제품과 경쟁 제품의 시장 위치를 시각적으로 표현한 도구이다.",
+"answer": "지각",
+"accept": [
+"지각",
+"인지"
+],
+"explain": "포지셔닝 맵(perceptual map)은 소비자의 지각/인식을 기반으로 하며, 객관적 성능이 아닌 소비자의 주관적 인식을 반영한다."
+},
+{
+"id": 240,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 맵의 차원 선택(dimension selection)에서 축을 설정하는 기준은?",
+"options": [
+"①기업이 가장 우수한 성과를 보이는 영역",
+"②소비자가 중요하게 생각하는 속성(attribute)",
+"③경쟁자의 생산 비용",
+"④시장의 지리적 위치"
+],
+"answer": 1,
+"explain": "포지셔닝 맵의 차원 선택은 소비자가 중요하게 생각하는 속성(attribute) 기준으로 축을 설정한다."
+},
+{
+"id": 241,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 맵에서 '이상점(ideal point)'이란?",
+"options": [
+"①경쟁 제품이 가장 많이 위치한 곳",
+"②소비자가 가장 선호하는 위치로, 잠재적 기회와 목표 방향을 나타낸다",
+"③시장에서 경쟁이 가장 치열한 위치",
+"④기업의 현재 시장점유율이 가장 높은 위치"
+],
+"answer": 1,
+"explain": "이상점은 소비자가 가장 선호하는 위치로, 잠재적 기회와 목표 방향을 나타낸다."
+},
+{
+"id": 242,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 맵의 활용 목적이 아닌 것은?",
+"options": [
+"①지각상 시장의 공백 규명(경쟁이 없는 영역 발견)",
+"②자사 제품의 현 위치 파악",
+"③기업의 인사 관리 평가",
+"④이상점과의 거리 분석(재포지셔닝 필요성 판단)"
+],
+"answer": 2,
+"explain": "포지셔닝 맵의 활용 목적은 시장 공백 규명, 현 위치 파악, 경쟁자 및 경쟁 상황 파악, 이상점과의 거리 분석, 마케팅 효과 측정 등이다. 인사 관리 평가는 포지셔닝 맵의 활용 목적이 아니다."
+},
+{
+"id": 243,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 맵에서 지각상 시장의 공백이 발견되면 이는 무엇을 의미하는가?",
+"options": [
+"①경쟁이 매우 치열한 영역이다",
+"②시장이 포화되었다는 의미이다",
+"③경쟁이 없는 영역으로 기회가 될 수 있다",
+"④소비자의 니즈가 없는 영역이다"
+],
+"answer": 2,
+"explain": "포지셔닝 맵에서 시장의 공백은 경쟁이 없는 영역으로, 기업에게 새로운 기회가 될 수 있다."
+},
+{
+"id": 244,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "STP 프로세스의 올바른 순서를 포함하는 전체 마케팅 전략 수립 과정은?",
+"options": [
+"①Positioning → Targeting → Segmentation → Implementing",
+"②Researching → Segmenting → Targeting → Differentiating → Positioning → Implementing → Evaluating",
+"③Implementing → Researching → Targeting → Segmenting",
+"④Segmenting → Implementing → Evaluating → Positioning"
+],
+"answer": 1,
+"explain": "마케팅 전략 수립 과정은 Researching → Segmenting → Targeting → Differentiating → Positioning → Implementing → Evaluating 순서이다."
+},
+{
+"id": 245,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "3C 분석에서 자사분석(Company Analysis)의 성과분석(performance analysis)에서 사용하는 지표가 아닌 것은?",
+"options": [
+"①매출성장률",
+"②시장점유율",
+"③수익성",
+"④경쟁자의 전략 변경 가능성"
+],
+"answer": 3,
+"explain": "자사의 성과분석 지표에는 매출성장률, 시장점유율, 수익성, 고객지표 등이 포함된다. 경쟁자의 전략 변경 가능성은 경쟁자 분석의 영역이다."
+},
+{
+"id": 246,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "공급자의 교섭력에 대한 설명으로 올바른 것은?",
+"options": [
+"①공급자가 가격을 인하하여 기업에게 유리한 조건을 제공하는 힘",
+"②공급자가 가격을 인상하고 공급 주문량을 감소시킬 수 있는 힘",
+"③구매자가 공급자에게 대량 주문을 강제하는 힘",
+"④정부가 공급 가격을 규제하는 힘"
+],
+"answer": 1,
+"explain": "공급자의 교섭력은 공급자가 가격을 인상할 수 있고, 또한 공급되는 주문량을 감소시킬 수 있는 공급자가 가진 힘을 의미한다."
+},
+{
+"id": 247,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "시장세분화가 필요한 이유로 올바른 것은?",
+"options": [
+"①모든 소비자의 니즈가 동일하기 때문이다",
+"②시장이 점차 분열되어(고객의 니즈가 다양해져) 대량 마케팅(mass marketing)을 수행하기 어려워졌기 때문이다",
+"③기업의 생산 비용을 절감하기 위해서이다",
+"④정부 규제를 준수하기 위해서이다"
+],
+"answer": 1,
+"explain": "시장이 점차 분열되어 고객의 니즈가 다양해짐에 따라 대량 마케팅(mass marketing)을 수행하기 어려워졌기 때문에 시장세분화가 필요하다."
+},
+{
+"id": 248,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "시장세분화 절차 3단계인 세부요약설명단계(profiling stage)에서 각 군집을 설명하는 기준이 아닌 것은?",
+"options": [
+"①태도와 행동",
+"②인구통계적 특성",
+"③기업의 내부 비용 구조",
+"④매체 유형"
+],
+"answer": 2,
+"explain": "세부요약설명단계에서 각 군집은 구별되는 태도, 행동, 인구통계적, 지리적, 심리묘사적 및 매체 유형을 기준으로 설명된다. 기업의 내부 비용 구조는 해당되지 않는다."
+},
+{
+"id": 249,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "소비자 시장의 4대 세분화 변수 유형으로 올바른 것은?",
+"options": [
+"①인구통계적, 지리통계적, 경제적, 기술적",
+"②인구통계적, 지리통계적, 심리통계적, 행동적",
+"③인구통계적, 환경적, 법률적, 사회적",
+"④지리통계적, 심리통계적, 기술적, 정치적"
+],
+"answer": 1,
+"explain": "소비자 시장의 4대 세분화 변수는 인구통계적(demographic), 지리통계적(geographic), 심리통계적(psychographic), 행동적(behavioral) 변수이다."
+},
+{
+"id": 250,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 프로세스의 올바른 순서는?",
+"options": [
+"①자사 제품 포지셔닝 개발 → 소비자 분석 → 경쟁 제품 확인 → 재포지셔닝",
+"②소비자 분석 → 경쟁 제품 확인 → 경쟁 제품의 포지션 분석 → 자사 제품의 포지셔닝 개발 → 포지셔닝의 확인 및 재포지셔닝",
+"③경쟁 제품 확인 → 자사 제품 포지셔닝 → 소비자 분석 → 재포지셔닝",
+"④재포지셔닝 → 소비자 분석 → 경쟁 제품 확인 → 포지셔닝 개발"
+],
+"answer": 1,
+"explain": "포지셔닝 프로세스는 소비자 분석 → 경쟁 제품 확인 → 경쟁 제품의 포지션 분석 → 자사 제품의 포지셔닝 개발 → 포지셔닝의 확인 및 재포지셔닝 순서이다."
+},
+{
+"id": 251,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "지리인구통계적 세분화(geodemographic segmentation)의 전제가 되는 가정은?",
+"options": [
+"①같은 연령대의 사람들은 같은 제품을 구매한다",
+"②사람들은 기본적인 라이프스타일과 정치적 신념이 유사한 지역에 거주하려 한다",
+"③소득이 높을수록 도시에 거주한다",
+"④기후가 유사한 지역의 소비자 니즈는 동일하다"
+],
+"answer": 1,
+"explain": "지리인구통계적 세분화의 전제는 사람들이 기본적인 라이프스타일과 정치적 신념이 유사한 지역에 거주하려 한다는 것이다."
+},
+{
+"id": 252,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "심리통계적 세분화에서 '동기적 소비'의 예시로 적절하지 않은 것은?",
+"options": [
+"①개인의 외모",
+"②소속감",
+"③원자재 구매",
+"④안전과 건강"
+],
+"answer": 2,
+"explain": "동기적 소비의 예시에는 개인의 외모, 소속감, 신분, 안전과 건강이 포함된다. 원자재 구매는 비즈니스 시장의 세분화 변수(제품의 용도)에 해당한다."
+},
+{
+"id": 253,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "자사분석에서 강점과 약점 분석을 위해 활용하는 분석 도구는?",
+"options": [
+"①PESTEL 분석",
+"②Porter의 5 Forces",
+"③SWOT 분석",
+"④군집분석"
+],
+"answer": 2,
+"explain": "자사의 가치/핵심역량/장점/단점 분석에는 SWOT Analysis가 활용된다."
+},
+{
+"id": 254,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 맵의 활용 중 '마케팅 효과 측정'이란?",
+"options": [
+"①경쟁자의 매출을 추정하는 것",
+"②전략 실행 후 소비자 인식 상의 위치 변화를 확인하는 것",
+"③새로운 세분시장을 발굴하는 것",
+"④기업의 재무 성과를 평가하는 것"
+],
+"answer": 1,
+"explain": "포지셔닝 맵에서 마케팅 효과 측정이란 전략 실행 후 소비자 인식 상의 위치 변화를 확인하는 것이다."
+},
+{
+"id": 255,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "행동적 세분화에서 사용량(사용빈도)에 의한 분류로 올바른 것은?",
+"options": [
+"①비사용자, 전사용자, 규칙적 사용자",
+"②소량, 중량/보통, 대량/다량 사용자",
+"③충성 고객, 전환 고객, 이탈 고객",
+"④혜택 추구, 가격 추구, 품질 추구"
+],
+"answer": 1,
+"explain": "사용량(사용빈도)에 의한 분류는 소량, 중량/보통, 대량/다량 사용자로 나뉜다."
+},
+{
+"id": 256,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "소비자 분석(Consumer Analysis)에서 세분화 기반을 마련하기 위해 고려하는 변수가 아닌 것은?",
+"options": [
+"①인구통계적 변수",
+"②심리통계적 변수",
+"③행동적 변수",
+"④법률적 변수"
+],
+"answer": 3,
+"explain": "소비자의 특성과 행동을 이해하여 세분화 기반을 마련하기 위해 인구통계적, 심리통계적, 행동적 변수를 고려한다. 법률적 변수는 PESTEL 분석의 영역이다."
+},
+{
+"id": 257,
+"topic": 3,
+"section": "3.2",
+"type": "mc",
+"q": "성공적인 시장세분화의 조건 중 '고객의 니즈는 이질적(heterogeneous)이어야 함'의 의미로 올바른 것은?",
+"options": [
+"①모든 고객이 동일한 니즈를 가져야 한다",
+"②세분시장 간에 고객의 니즈가 서로 달라야 한다",
+"③세분시장 내 고객의 니즈가 서로 달라야 한다",
+"④기업의 자원이 다양해야 한다"
+],
+"answer": 1,
+"explain": "성공적인 시장세분화를 위해서는 고객의 니즈가 이질적이어야 한다. 즉, 전체 시장 내에 다양한 니즈가 존재해야 세분화가 의미가 있다."
+},
+{
+"id": 258,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝에서 차별화의 유형에 해당하지 않는 것은?",
+"options": [
+"①기술/제품 위주의 차별화",
+"②서비스/이미지/인적 차별화",
+"③유통/생산 위주의 차별화",
+"④원가/규모 위주의 차별화"
+],
+"answer": 3,
+"explain": "포지셔닝 전략의 차별화 유형에는 기술, 제품, 시장, 유통, 생산 위주의 차별화와 서비스, 이미지, 인적 차별화가 있다. 원가/규모 위주의 차별화는 강의에서 별도로 언급된 유형이 아니다."
+},
+{
+"id": 259,
+"topic": 3,
+"section": "3.4",
+"type": "mc",
+"q": "포지셔닝 맵에서 '이상점과의 거리 분석'을 통해 파악할 수 있는 것은?",
+"options": [
+"①기업의 매출 규모",
+"②고객 니즈와의 차이 파악 및 재포지셔닝 필요성 판단",
+"③경쟁자의 생산 원가",
+"④시장의 지리적 분포"
+],
+"answer": 1,
+"explain": "이상점과의 거리 분석을 통해 고객 니즈와의 차이를 파악하고, 재포지셔닝 필요성을 판단할 수 있다."
+},
+{
+"id": 260,
+"topic": 3,
+"section": "3.1",
+"type": "mc",
+"q": "경쟁자 분석에서 경쟁강도 및 시장구조를 분석하는 이유로 올바른 것은?",
+"options": [
+"①자사 직원의 역량을 평가하기 위해",
+"②경쟁적 시장 상황이 경쟁자의 수나 종류에 영향을 미치므로 경쟁 정도와 수준을 고려해야 하기 때문이다",
+"③소비자의 가족생활주기를 파악하기 위해",
+"④공급자의 원자재 가격을 예측하기 위해"
+],
+"answer": 1,
+"explain": "경쟁적 시장 상황은 경쟁자의 수나 종류에 영향을 미치기 때문에 경쟁 정도와 수준을 고려해야 한다. 이를 통해 경쟁자의 목표, 행동 가능성, 전략 변경 가능성 등을 예측할 수 있다."
+},
+{
+"id": 261,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "소비자 구매행동(consumer buying behavior)에 대한 설명으로 가장 적절한 것은?",
+"options": [
+"①기업이 비즈니스 목적으로 제품을 선택·구매·사용하는 과정",
+"②개인이나 가계가 비즈니스 목적이 아닌 소비를 위해 제품과 서비스를 선택, 구매, 사용, 평가하는 과정과 행동",
+"③재판매를 위해 도매상이 제품을 구매하는 과정",
+"④정부가 공공서비스 제공을 위해 재화를 구매하는 과정"
+],
+"answer": 1,
+"explain": "소비자 구매행동은 개인이나 가계가 비즈니스 목적이 아닌 '소비'를 위해 제품과 서비스를 선택, 구매, 사용, 평가하는 과정과 행동을 의미한다."
+},
+{
+"id": 262,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "소비자 구매 의사결정 과정의 5단계를 올바른 순서로 나열한 것은?",
+"options": [
+"①정보탐색 → 문제인식 → 대안평가 → 구매 → 구매후평가",
+"②문제인식 → 대안평가 → 정보탐색 → 구매 → 구매후평가",
+"③문제인식 → 정보탐색 → 대안평가 → 구매 → 구매후평가",
+"④문제인식 → 정보탐색 → 구매 → 대안평가 → 구매후평가"
+],
+"answer": 2,
+"explain": "소비자 구매의사결정과정은 문제인식(problem recognition) → 정보탐색(information search) → 대안평가(evaluation of alternatives) → 구매(purchase) → 구매후평가(post-purchase evaluation)의 5단계로 이루어진다."
+},
+{
+"id": 263,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "문제인식(problem recognition)에 대한 설명으로 옳지 않은 것은?",
+"options": [
+"①소비자가 현재 상태와 바람직한 상태 간의 차이를 인식할 때 시작된다",
+"②내적 자극과 외적 자극에 의해 유발될 수 있다",
+"③마케터는 소비자가 아직 인식하지 못한 욕구를 자극하여 문제인식을 유도할 수 있다",
+"④문제인식은 반드시 외적 자극에 의해서만 발생한다"
+],
+"answer": 3,
+"explain": "문제인식은 내적 자극(제품 고갈, 생리적 욕구 발생 등)과 외적 자극(광고, 신제품 출시, 사회적 영향 등) 모두에 의해 발생할 수 있다. 반드시 외적 자극에 의해서만 발생하는 것은 아니다."
+},
+{
+"id": 264,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "소비자가 현재 상태와 바람직한 상태 간의 ______을(를) 인식할 때 구매 의사결정이 시작된다.",
+"answer": "차이",
+"accept": [
+"차이",
+"격차",
+"괴리",
+"gap",
+"갭"
+],
+"explain": "문제인식(problem recognition)은 소비자가 현재 상태와 바람직한 상태 간의 '차이(gap)'를 인식할 때 시작된다."
+},
+{
+"id": 265,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "다음 중 내적 자극(internal stimuli)에 해당하는 것은?",
+"options": [
+"①TV 광고를 보고 신제품에 관심을 갖게 됨",
+"②친구의 추천으로 새로운 브랜드를 알게 됨",
+"③배가 고파서 음식을 사고 싶어짐",
+"④매장 진열을 보고 충동적으로 구매하고 싶어짐"
+],
+"answer": 2,
+"explain": "내적 자극은 소비자 내부에서 발생하는 욕구나 동기에 의해 문제인식이 유발되는 것이다. 생리적 욕구(배고픔)는 대표적인 내적 자극이다. 나머지는 외적 자극에 해당한다."
+},
+{
+"id": 266,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "정보탐색(information search) 단계에서 외적 탐색(external search)이 증가하는 조건으로 가장 적절한 것은?",
+"options": [
+"①제품에 대한 과거 경험이 풍부할 때",
+"②지각된 위험과 관여도 수준이 높을수록",
+"③제품 가격이 매우 낮을 때",
+"④습관적 구매가 이루어질 때"
+],
+"answer": 1,
+"explain": "지각된 위험과 관여도 수준이 높을수록 소비자는 더 많은 외적 탐색을 수행한다. 내적 탐색만으로 정보가 부족하거나 불확실성이 높을 때 외부 정보원을 통해 추가 정보를 탐색한다."
+},
+{
+"id": 267,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "정보탐색 단계에서 내적 탐색(internal search)에 대한 설명으로 옳은 것은?",
+"options": [
+"①외부 정보원을 통해 추가 정보를 수집하는 과정이다",
+"②소비자가 과거의 경험, 기억, 지식에 기반하여 자신의 기억 속에서 정보를 회상하고 탐색하는 과정이다",
+"③개인적, 상업적, 공적, 경험적 정보원을 활용한다",
+"④관여도가 높을수록 내적 탐색만으로 충분하다"
+],
+"answer": 1,
+"explain": "내적 탐색은 소비자가 과거의 경험, 기억, 지식에 기반하여 자신의 기억 속에서 정보를 회상하고 탐색하는 과정이다. 외부 정보원 활용은 외적 탐색에 해당한다."
+},
+{
+"id": 268,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "외적 탐색(external search)은 구매자가 자신의 _______ 이외의 외부 원천에서 정보를 탐색하는 것이다.",
+"answer": "기억",
+"accept": [
+"기억",
+"내적 정보",
+"경험과 기억",
+"기억속 정보"
+],
+"explain": "외적 탐색은 내적 탐색(기억 속 정보)만으로 부족할 때 외부 정보원을 통해 추가 정보를 탐색하는 과정이다."
+},
+{
+"id": 269,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "정보원 유형(sources of information)으로 강의에서 언급된 4가지에 해당하지 않는 것은?",
+"options": [
+"①개인적 정보원",
+"②상업적 정보원",
+"③경험적 정보원",
+"④법적 정보원"
+],
+"answer": 3,
+"explain": "강의에서 언급된 정보원 유형은 개인적, 상업적, 공적, 경험적 정보원의 4가지이다. 법적 정보원은 언급되지 않았다."
+},
+{
+"id": 270,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "대안평가(evaluation of alternatives)에서 소비자의 브랜드 집합 축소 과정의 올바른 순서는?",
+"options": [
+"①전체집합 → 고려집합 → 인지집합 → 선택집합",
+"②전체집합 → 인지집합 → 선택집합 → 고려집합",
+"③전체집합 → 인지집합 → 고려집합 → 선택집합",
+"④인지집합 → 전체집합 → 고려집합 → 선택집합"
+],
+"answer": 2,
+"explain": "소비자는 전체집합(total set) → 인지집합(awareness set) → 고려집합(consideration set) → 선택집합(choice set) 순으로 대안을 축소하여 최종 구매를 결정한다."
+},
+{
+"id": 271,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "인지집합 중에서 실제 구매 가능성이 있다고 판단하여 비교 대상으로 올려놓은 브랜드들의 집합을 _______ 집합(consideration set)이라 한다.",
+"answer": "고려",
+"accept": [
+"고려",
+"考慮"
+],
+"explain": "고려집합(consideration set)은 인지집합 중에서 실제 구매 가능성이 있다고 판단하여 비교 대상으로 올려놓은 브랜드들의 집합을 의미한다."
+},
+{
+"id": 272,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "선택집합(choice set)에 대한 설명으로 옳은 것은?",
+"options": [
+"①시장에서 구매 가능한 모든 브랜드의 집합이다",
+"②소비자가 알고 있거나 떠올릴 수 있는 브랜드들의 집합이다",
+"③고려집합 중 최종 구매 직전에 실제 선택 대상으로 남은 소수의 브랜드 집합이다",
+"④인지집합과 동일한 의미이다"
+],
+"answer": 2,
+"explain": "선택집합(choice set)은 고려집합 중 최종 구매 직전에 실제 선택 대상으로 남은 소수의 브랜드 집합을 의미한다."
+},
+{
+"id": 273,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "소비자의 구매의사결정에서 대안평가의 핵심 특성으로 가장 적절한 것은?",
+"options": [
+"①시장의 모든 대안을 빠짐없이 평가하는 과정이다",
+"②알고 있는 대안 중 일부를 고려하고 그중 극소수만 최종 선택 대상으로 남기는 축소 과정이다",
+"③가격만을 기준으로 대안을 비교하는 과정이다",
+"④항상 객관적 기준만으로 평가가 이루어진다"
+],
+"answer": 1,
+"explain": "소비자의 구매의사결정은 시장의 모든 대안을 평가하는 것이 아니라, 알고 있는 대안 중 일부를 고려하고 그중 극소수만 최종 선택 대상으로 남기는 '축소 과정'이다."
+},
+{
+"id": 274,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "대안평가에서 평가기준(evaluation criteria)에 대한 설명으로 옳지 않은 것은?",
+"options": [
+"①가격, 크기, 성능 등 측정 가능한 속성을 기반으로 평가하는 것은 객관적 기준이다",
+"②스타일, 이미지, 브랜드 인식 등 개인의 인식에 따라 평가하는 것은 주관적 기준이다",
+"③소비자는 객관적 기준과 주관적 기준 모두를 활용하여 대안을 평가한다",
+"④소비자 평가에서는 객관적 기준만 작용하며 주관적 기준은 배제된다"
+],
+"answer": 3,
+"explain": "소비자는 제품의 속성과 편익을 기준으로 대안을 평가하며, 객관적 기준(가격, 크기, 성능)과 주관적 기준(스타일, 이미지, 브랜드 인식) 모두가 작용한다."
+},
+{
+"id": 275,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "동일한 정보라도 제시 방식에 따라 소비자의 판단과 선택이 달라지는 현상을 _______ 효과(framing effect)라 한다.",
+"answer": "프레이밍",
+"accept": [
+"프레이밍",
+"틀",
+"틀짜기",
+"프레임",
+"framing"
+],
+"explain": "프레이밍 효과(framing effect)는 동일한 정보라도 제시 방식(프레임)에 따라 소비자의 판단과 선택이 달라지는 현상을 말한다. 마케터는 특정 속성을 강조하거나 정보 제시 방식을 조정하여 소비자의 평가 과정에 영향을 미칠 수 있다."
+},
+{
+"id": 276,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "다속성 태도모델(multiattribute attitude model)에 대한 설명으로 옳은 것은?",
+"options": [
+"①소비자가 제품의 하나의 속성만을 기준으로 태도를 형성한다",
+"②Fishbein(1975)이 제안한 모델로, 소비자는 제품의 여러 속성에 대한 신념과 각 속성의 중요도의 결합으로 태도를 형성한다",
+"③제품의 가격만으로 소비자 태도가 결정된다",
+"④소비자의 감정적 반응만을 측정하는 모델이다"
+],
+"answer": 1,
+"explain": "다속성 태도모델은 Fishbein(1975)이 제안한 것으로, 소비자가 제품의 여러 속성(attribute)에 대한 신념(belief)과 각 속성의 중요도(importance weight)를 결합하여 종합적인 태도(attitude)를 형성한다는 모델이다."
+},
+{
+"id": 277,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "다속성 태도모델의 공식에서 Bi가 의미하는 것은?",
+"options": [
+"①소비자가 속성 i에 대해 부여하는 중요성 정도",
+"②특정 대상에 대한 태도",
+"③특정 대상이 속성 i를 갖고 있다는 신념 정도",
+"④소비자가 중요하다고 생각하는 제품의 속성 신념 수"
+],
+"answer": 2,
+"explain": "다속성 태도모델에서 Bi는 특정 대상이 속성 i를 갖고 있다는 신념 정도(belief)를 의미한다. A0은 특정 대상에 대한 태도, Ii는 속성 i에 대한 중요성 정도, N은 속성 신념 수를 의미한다."
+},
+{
+"id": 278,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "다속성 태도모델을 활용한 마케팅 전략으로 적절하지 않은 것은?",
+"options": [
+"①경쟁 브랜드 대비 자사 제품의 특정 속성 우위를 강조한다",
+"②소비자가 중요하게 여기는 속성을 조정하여 자사 제품에 유리한 평가를 유도한다",
+"③소비자가 기존에 고려하지 않았던 새로운 속성을 도입한다",
+"④소비자의 모든 속성 평가를 무시하고 감정적 소구에만 집중한다"
+],
+"answer": 3,
+"explain": "다속성 태도모델 활용 전략에는 속성의 상대적 우위 강조, 신념 변화, 중요 속성 조정, 속성 연계 강화, 새로운 속성 도입, 비교광고를 통한 경쟁자 신념 변화 등이 있다. 모든 속성 평가를 무시하는 것은 해당 모델의 전략이 아니다."
+},
+{
+"id": 279,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "다속성 태도모델의 마케팅 활용에서 '비교광고(comparative ads)'를 통해 달성하려는 목적은?",
+"options": [
+"①자사 제품의 가격을 인하하는 것",
+"②경쟁 제품에 대한 소비자의 평가를 낮추는 것",
+"③소비자의 관여도를 높이는 것",
+"④새로운 유통 채널을 확보하는 것"
+],
+"answer": 1,
+"explain": "비교광고(comparative ads)는 경쟁자 신념 변화 전략으로, 경쟁 제품에 대한 소비자의 평가를 낮추어 자사 제품의 상대적 우위를 확보하는 것을 목적으로 한다."
+},
+{
+"id": 280,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "다속성 태도모델에서 마케터는 소비자가 특정 속성에서 자사 제품이 더 우수하다고 인식하도록 ______을(를) 변화시킨다.",
+"answer": "신념",
+"accept": [
+"신념",
+"belief",
+"신념(belief)"
+],
+"explain": "마케터는 소비자의 신념(belief)을 변화시켜 자사 제품이 특정 속성에서 경쟁 브랜드보다 더 우수하다고 인식하도록 유도한다."
+},
+{
+"id": 281,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "구매(purchase) 단계에서 소비자의 구매 결정에 영향을 미치는 요인으로 적절하지 않은 것은?",
+"options": [
+"①상황적 요인: 제품의 즉시 구매 가능성, 점포 선택, 결제 방식",
+"②예기치 못한 요인: 타인의 영향이나 경쟁사의 마케팅 활동",
+"③경쟁적 영향: 경쟁사의 프로모션이나 가격 전략",
+"④내적 자극: 소비자의 생리적 욕구 발생"
+],
+"answer": 3,
+"explain": "내적 자극에 의한 생리적 욕구 발생은 문제인식 단계의 요인이다. 구매 단계에서는 상황적 요인, 예기치 못한 요인, 경쟁적 영향이 구매 결정에 영향을 미친다."
+},
+{
+"id": 282,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "구매후 평가에서 소비자의 기대(E) 대비 제품이나 서비스의 성과(P) 결과에 따라 만족/불만족이 결정된다는 이론을 ____________ 이론(Expectation-Performance Theory)이라 한다.",
+"answer": "기대-성과",
+"accept": [
+"기대-성과",
+"기대성과",
+"기대 성과",
+"기대-성과 불일치"
+],
+"explain": "기대-성과 이론(Expectation-Performance Theory)은 소비자의 기대(E) 대비 성과(P)의 차이에 따라 만족 또는 불만족이 결정된다는 이론이다. 성과가 기대보다 크면 만족, 낮으면 불만족한다."
+},
+{
+"id": 283,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "기대-성과 이론에 따르면, 기업이 소비자 만족을 관리하는 데 있어 핵심 관건은?",
+"options": [
+"①제품 성과를 무한히 높이는 것",
+"②소비자가 기업의 제품이나 서비스에 적절한 기대 수준을 갖게 하는 것",
+"③제품 가격을 최대한 낮추는 것",
+"④광고를 통해 기대 수준을 최대한 높이는 것"
+],
+"answer": 1,
+"explain": "실제 성과를 높이는 것에는 한계가 있고, 기대가 너무 높은 경우 만족할 수 없기 때문에, 소비자가 적절한 기대 수준을 갖게 하는 것이 관건이다."
+},
+{
+"id": 284,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "구매 후 평가 단계에서 기업이 수행해야 할 활동으로 적절하지 않은 것은?",
+"options": [
+"①VOC(Voice of Customer)의 수집 및 분석",
+"②적절한 대응 매뉴얼 개발 및 실행",
+"③애프터서비스(A/S) 보강",
+"④구매 후 소비자와의 모든 접점을 차단하여 불만 표출을 방지"
+],
+"answer": 3,
+"explain": "기업은 구매 후 행동을 면밀히 파악해야 하며, VOC 수집/분석, 대응 매뉴얼 개발/실행, A/S 보강 등이 필요하다. 소비자와의 접점을 차단하는 것은 올바른 전략이 아니다."
+},
+{
+"id": 285,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "소비자가 특정 제품, 브랜드 또는 구매 상황에 대해 느끼는 개인적 중요성과 관심의 수준을 _______(involvement)이라 한다.",
+"answer": "관여도",
+"accept": [
+"관여도",
+"관여",
+"involvement"
+],
+"explain": "관여도(involvement)는 소비자가 특정 제품, 브랜드 또는 구매 상황에 대해 느끼는 개인적 중요성과 관심의 수준을 의미한다."
+},
+{
+"id": 286,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "고관여(high involvement) 상황에 대한 설명으로 옳은 것은?",
+"options": [
+"①지각된 위험이 낮고 개인적 중요성이 낮은 경우이다",
+"②소비자가 제한된 정보탐색과 단순한 의사결정을 수행한다",
+"③지각된 위험이 높고 개인적 중요성이 큰 경우로 소비자가 적극적으로 정보탐색과 평가를 수행한다",
+"④주로 저가격 일상용품 구매 시 나타난다"
+],
+"answer": 2,
+"explain": "고관여(high involvement)는 지각된 위험이 높고 개인적 중요성이 큰 경우로, 소비자가 적극적으로 정보탐색과 평가를 수행하는 상황이다."
+},
+{
+"id": 287,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "지속적 관여(enduring involvement)와 상황적 관여(situational involvement)의 차이에 대한 설명으로 옳은 것은?",
+"options": [
+"①지속적 관여는 일시적이고 상황적 관여는 장기적이다",
+"②지속적 관여는 특정 제품군에 대해 장기적이고 지속적인 관심이며, 상황적 관여는 특정 상황에 의해 일시적으로 유발되는 관심이다",
+"③두 개념은 동일하다",
+"④지속적 관여는 저관여 상품에서만 나타난다"
+],
+"answer": 1,
+"explain": "지속적 관여(enduring involvement)는 특정 제품이나 제품군에 대해 장기적이고 지속적인 관심을 가지는 상태이며, 상황적 관여(situational involvement)는 특정 상황이나 필요에 의해 일시적으로 유발되는 관심 수준이다."
+},
+{
+"id": 288,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "확장적 의사결정(extended decision making)에 대한 설명으로 옳은 것은?",
+"options": [
+"①저관여 상황에서 발생한다",
+"②저가격 제품을 반복적으로 구매할 때 나타난다",
+"③고관여 상황에서 발생하며 제품이 비싸고 친숙하지 않으며 구매빈도가 낮을 때 다양한 평가기준을 활용하여 많은 시간과 노력을 들인다",
+"④중간 수준의 관여도에서 발생한다"
+],
+"answer": 2,
+"explain": "확장적 의사결정(extended decision making)은 고관여 상황에서 발생하며, 제품이 비싸고 친숙하지 않으며 구매빈도가 낮을 때 소비자는 다양한 평가기준을 활용하여 많은 시간과 노력을 들여 정보탐색과 대안평가를 수행한다."
+},
+{
+"id": 289,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "한정적 의사결정(limited decision making)에 대한 설명으로 옳은 것은?",
+"options": [
+"①고관여 상황에서 발생한다",
+"②중간 수준의 관여도에서 발생하며 친숙한 제품군 내 새로운 브랜드 선택 시 제한된 정보탐색과 비교를 수행한다",
+"③최소한의 정보탐색으로 습관적 구매를 한다",
+"④강한 즉각적 욕구에 의해 사전 계획 없이 이루어진다"
+],
+"answer": 1,
+"explain": "한정적 의사결정(limited decision making)은 중간 수준의 관여도에서 발생하며, 친숙한 제품군 내 새로운 브랜드 선택 시 제한된 정보탐색과 비교를 통해 비교적 간단한 의사결정을 수행한다."
+},
+{
+"id": 290,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "반복반응행동(routinized decision making)에 대한 설명으로 옳은 것은?",
+"options": [
+"①고관여 상황에서 발생한다",
+"②저관여 상황에서 발생하며 저가격 제품을 반복적으로 구매할 때 최소한의 정보탐색으로 습관적이고 자동적인 의사결정을 수행한다",
+"③다양한 평가기준을 활용하여 시간과 노력을 들인다",
+"④처음 구매하는 제품에 대해 광범위한 탐색을 수행한다"
+],
+"answer": 1,
+"explain": "반복반응행동(routinized decision making)은 저관여 상황에서 발생하며, 저가격 제품을 반복적으로 구매할 때 소비자는 최소한의 정보탐색으로 습관적이고 자동적인 의사결정을 수행한다."
+},
+{
+"id": 291,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "충동구매(impulse buying)에 대한 설명으로 옳은 것은?",
+"options": [
+"①신중한 정보탐색 후 이루어지는 계획적 구매이다",
+"②강한 즉각적 욕구에 의해 사전 계획 없이 이루어지는 비계획적 구매행동이다",
+"③고관여 상황에서만 발생한다",
+"④반드시 외적 자극에 의해서만 발생한다"
+],
+"answer": 1,
+"explain": "충동구매(impulse buying)는 강한 즉각적 욕구에 의해 사전 계획 없이 이루어지는 비계획적 구매행동이다."
+},
+{
+"id": 292,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "관여도(involvement)와 지각된 제품 차별화(perceived product differentiation)를 축으로 한 구매행동 유형에서, 관여도가 높고 지각된 제품 차별화가 높은 경우에 해당하는 것은?",
+"options": [
+"①습관적 구매행동",
+"②다양성 추구 구매행동",
+"③부조화 감소 구매행동",
+"④복잡하고 신중한 구매행동"
+],
+"answer": 3,
+"explain": "관여도가 높고(High) 지각된 제품 차별화가 높은(High) 경우는 '복잡하고 신중한 구매행동'에 해당한다. 부조화 감소는 관여도 높고 차별화 낮은 경우, 다양성 추구는 관여도 낮고 차별화 높은 경우, 습관적은 관여도 낮고 차별화 낮은 경우이다."
+},
+{
+"id": 293,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "관여도가 낮고 지각된 제품 차별화가 높은 경우의 구매행동 유형은?",
+"options": [
+"①복잡하고 신중한 구매행동",
+"②부조화 감소 구매행동",
+"③다양성 추구 구매행동",
+"④습관적 구매행동"
+],
+"answer": 2,
+"explain": "관여도가 낮고(Low) 지각된 제품 차별화가 높은(High) 경우는 '다양성 추구 구매행동'에 해당한다. 소비자가 다양한 브랜드를 시도해보려는 행동을 보인다."
+},
+{
+"id": 294,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "관여도가 높고 지각된 제품 차별화가 낮은 경우의 구매행동 유형은?",
+"options": [
+"①복잡하고 신중한 구매행동",
+"②부조화 감소 구매행동",
+"③다양성 추구 구매행동",
+"④습관적 구매행동"
+],
+"answer": 1,
+"explain": "관여도가 높고(High) 지각된 제품 차별화가 낮은(Low) 경우는 '부조화 감소 구매행동'에 해당한다. 소비자는 높은 관여도에도 불구하고 브랜드 간 차이를 크게 느끼지 못해 구매 후 부조화를 경험할 수 있다."
+},
+{
+"id": 295,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "경제적 영향(economic needs)에 관한 설명으로 옳은 것은?",
+"options": [
+"①소비자는 비합리적으로 선택하는 경향이 강하다",
+"②소비자는 제한된 자원 내에서 최대의 효용을 얻기 위해 합리적으로 선택하려는 경향을 보인다",
+"③경제적 영향은 심리적 요인에만 해당한다",
+"④소비자의 소득 수준은 구매행동에 영향을 미치지 않는다"
+],
+"answer": 1,
+"explain": "경제적 영향에서 소비자는 제한된 자원 내에서 최대의 효용을 얻기 위해 합리적으로 선택하려는 경향을 보이며(rational consumer), 비용 대비 최대의 만족을 추구하는 효용극대화(utility maximization)를 지향한다."
+},
+{
+"id": 296,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "가처분소득에서 기본적인 생활비를 제외하고 자유롭게 소비할 수 있는 소득을 _______ 소득(discretionary income)이라 한다.",
+"answer": "재량",
+"accept": [
+"재량",
+"재량적"
+],
+"explain": "재량소득(discretionary income)은 가처분소득(disposable income)에서 기본적인 생활비를 제외하고 자유롭게 소비할 수 있는 소득이다. 재량소득이 높을수록 프리미엄 제품이나 선택적 소비가 증가한다."
+},
+{
+"id": 297,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "가처분소득(disposable income)에 대한 설명으로 옳은 것은?",
+"options": [
+"①기본적인 생활비를 제외한 후 자유롭게 소비할 수 있는 소득이다",
+"②개인 또는 가구가 세금을 제외한 후 실제로 사용할 수 있는 소득이다",
+"③소비자의 총수입 전체를 의미한다",
+"④재량소득에서 세금을 뺀 것이다"
+],
+"answer": 1,
+"explain": "가처분소득(disposable income)은 개인 또는 가구가 세금을 제외한 후 실제로 사용할 수 있는 소득이다. 가처분소득에서 기본 생활비를 제외한 것이 재량소득(discretionary income)이다."
+},
+{
+"id": 298,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "상황적 영향(situational influence)의 구성 요소에 해당하지 않는 것은?",
+"options": [
+"①물리적 환경(공간, 점포 분위기, 냄새, 소리, 조명)",
+"②사회적 환경(타인의 존재 또는 타인과의 관계성)",
+"③유전적 특성(소비자의 타고난 성격)",
+"④기분이나 조건(일시적이지만 즉각적인 영향)"
+],
+"answer": 2,
+"explain": "상황적 영향의 구성 요소에는 물리적 환경, 사회적 환경, 시간, 구매 목적, 기분이나 조건이 포함된다. 유전적 특성은 심리적 영향(성격)에 해당하는 것이지 상황적 영향이 아니다."
+},
+{
+"id": 299,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "상황적 영향 중 '구매 목적'에 대한 설명으로 옳은 것은?",
+"options": [
+"①구매의사결정의 각 단계에 걸리는 시간이다",
+"②해당 제품의 사용 상황이나 사용자와 관련된다",
+"③일시적인 감정 상태를 의미한다",
+"④점포의 물리적 분위기를 말한다"
+],
+"answer": 1,
+"explain": "구매 목적은 해당 제품의 사용 상황이나 사용자와 관련된 상황적 영향 요인이다. 예를 들어 자기 사용 vs 선물용에 따라 구매 행동이 달라질 수 있다."
+},
+{
+"id": 300,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "지각(perception)에 대한 설명으로 옳은 것은?",
+"options": [
+"①소비자가 모든 외부 자극을 동일하게 처리하는 과정이다",
+"②소비자가 외부 자극을 선택하고 조직화하며 해석하여 의미를 부여하는 과정이다",
+"③학습을 통해 형성된 행동 변화를 의미한다",
+"④특정 대상에 대해 지속적으로 가지는 평가 경향이다"
+],
+"answer": 1,
+"explain": "지각(perception)은 소비자가 외부 자극을 선택(selection)하고 조직화(organization)하며 해석(interpretation)하여 의미를 부여하는 과정이다."
+},
+{
+"id": 301,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "소비자가 현재 욕구나 관심과 관련된 정보에만 주의를 기울이는 현상을 선택적 _______(selective attention)이라 한다.",
+"answer": "주의",
+"accept": [
+"주의",
+"노출",
+"attention"
+],
+"explain": "선택적 주의(selective attention)는 소비자가 현재 욕구나 관심과 관련된 정보에만 주의를 기울이는 현상이다. 선택적 지각의 한 유형이다."
+},
+{
+"id": 302,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "선택적 왜곡(selective distortion)에 대한 설명으로 옳은 것은?",
+"options": [
+"①현재 욕구나 관심과 관련된 정보에만 주의를 기울이는 것이다",
+"②자신의 신념과 일치하는 정보는 잘 기억하고 그렇지 않은 정보는 쉽게 잊는 것이다",
+"③기존 신념이나 태도에 맞게 정보를 해석하는 경향이다",
+"④외부 자극이 감각기관을 통해 전달되는 과정이다"
+],
+"answer": 2,
+"explain": "선택적 왜곡(selective distortion)은 소비자가 기존 신념이나 태도에 맞게 정보를 해석하는 경향을 의미한다. 선택적 주의(attention), 선택적 저장(retention)과 구분된다."
+},
+{
+"id": 303,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "선택적 저장(selective retention)에 대한 설명으로 옳은 것은?",
+"options": [
+"①모든 정보를 동등하게 기억하는 것이다",
+"②자신의 신념과 일치하는 정보는 잘 기억하고 그렇지 않은 정보는 쉽게 잊는 것이다",
+"③기존 신념에 맞게 정보를 왜곡하여 해석하는 것이다",
+"④관심 있는 정보에만 주의를 기울이는 것이다"
+],
+"answer": 1,
+"explain": "선택적 저장(selective retention)은 자신의 신념과 일치하는 정보는 잘 기억하고 그렇지 않은 정보는 쉽게 잊는 현상이다."
+},
+{
+"id": 304,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "소비자가 새로운 정보를 기존 지식과 결합하여 의미 있는 형태로 조직화하는 것을 ____________(perceptual organization)이라 한다.",
+"answer": "지각적 조직화",
+"accept": [
+"지각적 조직화",
+"지각조직화",
+"지각 조직화",
+"지각적조직화"
+],
+"explain": "지각적 조직화(perceptual organization)는 소비자가 새로운 정보를 기존 지식과 결합하여 의미 있는 형태로 조직화하는 과정으로, 형상-배경(figure-ground)과 완결성(closure) 등의 원리가 작용한다."
+},
+{
+"id": 305,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "지각적 조직화(perceptual organization)의 원리에 해당하지 않는 것은?",
+"options": [
+"①형상-배경(figure-ground): 일부 정보는 중심이 되는 형상으로, 나머지는 배경으로 인식",
+"②완결성(closure): 불완전한 정보를 완전한 형태로 보완하여 이해하려는 경향",
+"③선택적 왜곡(selective distortion): 기존 신념에 맞게 정보를 해석",
+"④해석(interpretation): 조직화된 정보에 개인의 경험과 기대를 반영하여 의미 부여"
+],
+"answer": 2,
+"explain": "선택적 왜곡(selective distortion)은 선택적 지각의 한 유형이지, 지각적 조직화(perceptual organization)의 원리가 아니다. 지각적 조직화에는 형상-배경, 완결성 등이 포함된다."
+},
+{
+"id": 306,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "동기(motive)에 대한 설명으로 옳은 것은?",
+"options": [
+"①특정 대상에 대해 지속적으로 가지는 평가 경향이다",
+"②외부 자극을 선택하고 해석하여 의미를 부여하는 과정이다",
+"③욕구 충족을 위해 행동을 유발하는 내적 에너지로 행동의 방향과 강도를 결정한다",
+"④경험과 정보에 의해 지식과 행동이 변화하는 과정이다"
+],
+"answer": 2,
+"explain": "동기(motive)는 욕구 충족을 위해 행동을 유발하는 내적 에너지로, 행동의 방향과 강도를 결정한다."
+},
+{
+"id": 307,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "매슬로우의 욕구단계설(Maslow's hierarchy of needs)에서 욕구의 올바른 순서(낮은 단계 → 높은 단계)는?",
+"options": [
+"①안전 → 생리적 → 사회적 → 존경 → 자아실현",
+"②생리적 → 안전 → 사회적 → 존경 → 자아실현",
+"③생리적 → 사회적 → 안전 → 존경 → 자아실현",
+"④생리적 → 안전 → 존경 → 사회적 → 자아실현"
+],
+"answer": 1,
+"explain": "매슬로우의 욕구단계설은 생리적 욕구(physiological) → 안전의 욕구(security) → 사회적 욕구(social) → 존경의 욕구(esteem) → 자아실현의 욕구(self-actualization) 순서이다."
+},
+{
+"id": 308,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "매슬로우의 욕구단계설에서 '타인이나 스스로에게 존중받고 싶은 욕구'에 해당하는 것은?",
+"options": [
+"①생리적 욕구(physiological)",
+"②안전의 욕구(security)",
+"③사회적 욕구(social)",
+"④존경의 욕구(esteem)"
+],
+"answer": 3,
+"explain": "존경의 욕구(esteem)는 타인이나 스스로에게 존중받고 싶은 욕구이다. 사회적 욕구는 애정, 정서, 소속감에 대한 갈망이다."
+},
+{
+"id": 309,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "매슬로우의 욕구단계설에서 '능력치의 최대한까지 성장하고 발전하고자 하는 바람'은 어떤 욕구에 해당하는가?",
+"options": [
+"①사회적 욕구(social)",
+"②존경의 욕구(esteem)",
+"③자아실현의 욕구(self-actualization)",
+"④안전의 욕구(security)"
+],
+"answer": 2,
+"explain": "자아실현의 욕구(self-actualization)는 능력치의 최대한까지 성장하고 발전하고자 하는 바람으로, 매슬로우 욕구단계의 최상위에 위치한다."
+},
+{
+"id": 310,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "매슬로우의 욕구단계설의 핵심 원리로 가장 적절한 것은?",
+"options": [
+"①모든 욕구가 동시에 동일한 강도로 발생한다",
+"②상위 욕구가 먼저 충족되어야 하위 욕구가 활성화된다",
+"③낮은 단계의 욕구가 충족되면 상위의 욕구로 향하고자 하는 동기가 발동한다",
+"④욕구 간에는 위계가 존재하지 않는다"
+],
+"answer": 2,
+"explain": "매슬로우의 욕구단계설에 따르면, 인간은 생리적 욕구에서 시작하여 안전, 사회적, 존경, 자아실현 욕구 순으로 단계적으로 욕구를 충족시키려 하며, 낮은 단계의 욕구가 충족되면 상위의 욕구로 향하고자 하는 동기가 발동한다."
+},
+{
+"id": 311,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "학습(learning)에 대한 설명으로 옳은 것은?",
+"options": [
+"①특정 대상에 대해 지속적으로 가지는 평가와 행동 경향이다",
+"②경험과 정보에 의해 소비자의 지식과 행동이 변화하는 과정이다",
+"③외부 자극을 선택하고 해석하는 과정이다",
+"④소비자의 고유한 심리적 특성과 행동 경향이다"
+],
+"answer": 1,
+"explain": "학습(learning)은 경험과 정보에 의해 소비자의 지식과 행동이 변화하는 과정이다. 직접 또는 간접 경험을 통해 제품에 대한 이해가 형성되고 구매 위험이 감소한다."
+},
+{
+"id": 312,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "태도(attitude)에 대한 설명으로 옳지 않은 것은?",
+"options": [
+"①특정 대상에 대해 지속적으로 가지는 평가와 행동 경향이다",
+"②비교적 안정적이며 단기간에 급격하게 변화하기 어렵다",
+"③인지적, 감정적, 행동적 요소로 구성된다",
+"④단기간에 쉽게 변화하며 불안정하다"
+],
+"answer": 3,
+"explain": "태도(attitude)는 특정 대상에 대해 지속적으로 가지는 평가와 행동 경향으로, 비교적 안정적이며 단기간에 급격하게 변화하기 어렵다. 인지적(cognitive), 감정적(affective), 행동적(behavioral) 요소로 구성된다."
+},
+{
+"id": 313,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "태도의 세 가지 구성요소로 올바르게 짝지어진 것은?",
+"options": [
+"①인지적(cognitive) - 감정적(affective) - 행동적(behavioral)",
+"②인지적(cognitive) - 물리적(physical) - 사회적(social)",
+"③감정적(affective) - 경제적(economic) - 행동적(behavioral)",
+"④인지적(cognitive) - 감정적(affective) - 경제적(economic)"
+],
+"answer": 0,
+"explain": "태도의 세 가지 구성요소는 인지적(cognitive: 개인적 지식과 정보), 감정적(affective: 개인적 느낌과 감정), 행동적(behavioral: 실제 행동 경향)이다."
+},
+{
+"id": 314,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "태도(attitude)가 소비자의 구매행동에 미치는 영향의 성격으로 가장 적절한 것은?",
+"options": [
+"①일시적인 영향",
+"②지속적인 영향",
+"③무관한 영향",
+"④역방향의 영향"
+],
+"answer": 1,
+"explain": "태도는 경험과 사회적 상호작용을 통해 형성되며, 소비자의 구매행동에 '지속적인' 영향을 미친다."
+},
+{
+"id": 315,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "어떤 대상을 묘사하는 형용사 구절이나 문장에 대한 반응 정도를 통해 태도를 측정하는 수단을 ___________(attitude scale)이라 한다.",
+"answer": "태도척도",
+"accept": [
+"태도척도",
+"태도 척도",
+"attitude scale"
+],
+"explain": "태도척도(attitude scale)는 어떤 대상을 묘사하는 형용사 구절이나 문장에 대한 반응 정도를 통해 태도를 측정하는 수단이다."
+},
+{
+"id": 316,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "특정 상황에서 일관된 행동을 유도하는 개인의 고유한 심리적 특성과 행동 경향을 _______(personality)이라 한다.",
+"answer": "성격",
+"accept": [
+"성격",
+"개성",
+"퍼스널리티",
+"personality"
+],
+"explain": "성격(personality)은 특정 상황에서 일관된 행동을 유도하는 개인의 고유한 심리적 특성과 행동 경향을 의미하며, 유전적 요인과 개인의 경험에 의해 형성된다."
+},
+{
+"id": 317,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "자아개념(self-concept)에 대한 설명으로 옳은 것은?",
+"options": [
+"①소비자가 자신에 대해 가지는 인식으로 제품 선택과 브랜드 선호에 영향을 미친다",
+"②경험과 정보에 의해 지식이 변화하는 과정이다",
+"③사회적 환경에서 타인의 존재가 영향을 미치는 것이다",
+"④특정 제품군에 대한 장기적 관심 수준이다"
+],
+"answer": 0,
+"explain": "자아개념(self-concept)은 소비자가 자신에 대해 가지는 인식으로, 제품 선택과 브랜드 선호에 영향을 미친다. 제품 구매는 자아개념의 유지나 강화와 관련된다."
+},
+{
+"id": 318,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "라이프스타일(lifestyle)에 대한 설명으로 옳은 것은?",
+"options": [
+"①소비자가 외부 자극을 선택하고 해석하는 과정이다",
+"②활동, 관심, 견해를 통해 표현된 삶의 패턴으로 소비패턴과 밀접하게 연관된다",
+"③특정 대상에 대한 지속적 평가 경향이다",
+"④유전적 요인에 의해서만 결정되는 특성이다"
+],
+"answer": 1,
+"explain": "라이프스타일(lifestyle)은 활동, 관심, 견해를 통해 표현된 삶의 패턴으로, 소비패턴과 밀접하게 연관된다. 개인의 시간 사용 방식, 타인과의 교류 정도, 인생의 가치관 등을 포함한다."
+},
+{
+"id": 319,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "사회적 영향(social influence)에서 '역할'에 대한 설명으로 옳은 것은?",
+"options": [
+"①한 사회가 환경에 대처하기 위해 사용하는 가치관의 총체이다",
+"②개인이나 주변의 기대에 부응하는 특정 위치에 걸맞는 행동이나 활동이다",
+"③비공식 집단에서 정보를 제공하는 구성원이다",
+"④동질적인 특성을 공유하는 하위 집단이다"
+],
+"answer": 1,
+"explain": "사회적 영향에서 역할이란 개인이나 주변의 기대에 부응하는 특정 위치에 걸맞는 행동이나 활동을 의미하며, 서로 다른 기대가 동일한 사람에게 중첩될 수 있다."
+},
+{
+"id": 320,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "준거집단(reference group)에 대한 설명으로 옳지 않은 것은?",
+"options": [
+"①새로운 행동과 라이프스타일을 노출시킨다",
+"②개인의 자아와 특정 제품 및 브랜드의 태도에 영향을 미친다",
+"③실질적인 브랜드 선택에 영향을 미치기도 한다",
+"④소비자의 구매행동에 전혀 영향을 미치지 않는 집단이다"
+],
+"answer": 3,
+"explain": "준거집단(reference group)은 새로운 행동과 라이프스타일을 노출시키고, 개인의 자아와 특정 제품 및 브랜드의 태도에 영향을 미치며, 실질적인 브랜드 선택에도 영향을 미치는 마케팅 관점에서 매우 중요한 집단이다."
+},
+{
+"id": 321,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "준거집단의 1차 집단(primary group)과 2차 집단(secondary group)에 대한 설명으로 옳은 것은?",
+"options": [
+"①1차 집단은 비교적 덜 친밀하고 상호작용 빈도가 낮은 그룹이다",
+"②2차 집단은 직접적이고 지속적인 영향을 미치는 가까운 관계의 그룹이다",
+"③1차 집단은 직접적이고 지속적인 영향을 미치는 가까운 관계의 그룹이며, 2차 집단은 비교적 덜 친밀하고 상호작용 빈도가 낮은 그룹이다",
+"④두 집단은 동일한 특성을 가진다"
+],
+"answer": 2,
+"explain": "1차 집단(primary)은 직접적이고 지속적인 영향을 미치는 가까운 관계의 그룹이며, 2차 집단(secondary)은 비교적 덜 친밀하고 상호작용 빈도가 낮은 그룹이다."
+},
+{
+"id": 322,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "비공식 집단의 다른 구성원에게 특정 주제의 정보를 제공하는 구성원을 ____________(opinion leader)라 한다.",
+"answer": "의견선도자",
+"accept": [
+"의견선도자",
+"의견 선도자",
+"오피니언 리더",
+"opinion leader"
+],
+"explain": "의견선도자(opinion leader)는 비공식 집단의 다른 구성원에게 특정 주제의 정보를 제공하는 구성원이다. 소비자의 제품 관여도가 높으면서 제품지식이 낮은 경우, 소비자가 의견선도자와 가치와 태도를 공유하는 경우 등에서 영향력이 크다."
+},
+{
+"id": 323,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "의견선도자(opinion leader)의 영향력이 큰 상황에 해당하지 않는 것은?",
+"options": [
+"①소비자의 제품 관여도가 높으면서 제품지식이 낮은 경우",
+"②소비자가 의견선도자와 가치와 태도를 공유하는 경우",
+"③제품 정보가 많거나 복잡한 경우",
+"④소비자가 제품에 대한 전문 지식을 이미 충분히 갖춘 경우"
+],
+"answer": 3,
+"explain": "의견선도자의 영향력이 큰 상황은 소비자의 관여도가 높으면서 제품지식이 낮은 경우, 가치와 태도를 공유하는 경우, 제품정보가 많거나 복잡한 경우이다. 이미 전문 지식을 충분히 갖추었다면 의견선도자의 영향은 상대적으로 작다."
+},
+{
+"id": 324,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "문화(culture)에 대한 설명으로 옳은 것은?",
+"options": [
+"①동질적인 특성을 공유하는 하위 집단이다",
+"②한 사회가 환경에 대처하기 위해 사용하는 가치관, 지식, 신념, 관습, 목표, 개념 등의 총체이다",
+"③비공식 집단에서 정보를 제공하는 역할이다",
+"④개인이 특정 위치에서 기대되는 행동이다"
+],
+"answer": 1,
+"explain": "문화(culture)는 한 사회가 환경에 대처하기 위해 사용하는 가치관, 지식, 신념, 관습, 목표, 개념 등의 총체이며, 한 사회의 핵심 가치와 행동의 수용 범위를 포함한다."
+},
+{
+"id": 325,
+"topic": 4,
+"section": "4.1",
+"type": "blank",
+"q": "동질적인 특성, 가치관, 행동 패턴을 공유하는 구성원들의 집단으로서, 주변의 다른 문화에 속한 구성원과 차이점을 보이는 집단을 _________(subculture)이라 한다.",
+"answer": "하위문화",
+"accept": [
+"하위문화",
+"하위 문화",
+"서브컬처",
+"subculture"
+],
+"explain": "하위문화(subculture)는 동질적인 특성, 가치관, 행동 패턴을 공유하는 구성원들의 집단으로, 주변의 다른 문화에 속한 구성원과 차이점을 보인다. 지리적 경계나 인구통계적 특성이 사용된다."
+},
+{
+"id": 326,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 시장(business market)에 대한 설명으로 옳은 것은?",
+"options": [
+"①개인 소비자가 자신의 소비를 위해 제품을 구매하는 시장이다",
+"②재판매 목적, 다른 제품 생산 목적, 또는 일상적인 운영 목적으로 제품을 구매하려는 개인들, 조직들, 집단들이다",
+"③고객 수가 많고 각 고객의 구매 규모가 작다",
+"④단기적 거래만을 지향한다"
+],
+"answer": 1,
+"explain": "비즈니스 시장은 재판매 목적, 다른 제품 생산 목적, 또는 일상적인 운영 목적으로 제품을 구매하려는 개인들, 조직들, 집단들을 의미한다. 고객 수는 적지만 각 고객의 구매 규모는 크다."
+},
+{
+"id": 327,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 시장의 4가지 유형에 해당하지 않는 것은?",
+"options": [
+"①생산자 시장(producer market)",
+"②재판매자 시장(reseller market)",
+"③소비자 시장(consumer market)",
+"④기관 시장(institutional market)"
+],
+"answer": 2,
+"explain": "비즈니스 시장의 4가지 유형은 생산자 시장(producer market), 재판매자 시장(reseller market), 정부 시장(government market), 기관 시장(institutional market)이다. 소비자 시장은 비즈니스 시장이 아니다."
+},
+{
+"id": 328,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "생산자 시장(producer market)에 대한 설명으로 옳은 것은?",
+"options": [
+"①제품을 구매하여 이윤을 붙여 재판매하는 시장이다",
+"②다른 제품이나 서비스를 생산하기 위해 원자재, 부품, 설비 등을 구매하는 기업들로 구성된 시장이다",
+"③공공서비스 제공을 위해 재화를 구매하는 시장이다",
+"④교육, 의료 등 공익적 서비스를 위해 구매하는 비영리 조직 시장이다"
+],
+"answer": 1,
+"explain": "생산자 시장(producer market)은 다른 제품이나 서비스를 생산하기 위해 원자재, 부품, 설비 등을 구매하는 기업들로 구성된 시장이다. 제조업, 농업, 건설업, 광업 등이 포함된다."
+},
+{
+"id": 329,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "재판매자 시장(reseller market)에 대한 설명으로 옳은 것은?",
+"options": [
+"①원자재를 구매하여 제품을 생산하는 시장이다",
+"②정부가 공적 자금으로 제품을 구매하는 시장이다",
+"③제품을 구매하여 이윤을 붙여 재판매하는 도매상과 소매상 등 중개업자로 구성된 시장이다",
+"④비영리 조직이 공익적 서비스를 위해 구매하는 시장이다"
+],
+"answer": 2,
+"explain": "재판매자 시장은 제품을 구매하여 이윤을 붙여 재판매하는 도매상과 소매상 등 중개업자로 구성된 시장이다. 재판매자는 미래 수요를 예측하여 구매량을 결정하고 마진을 고려하여 판매가격을 설정한다."
+},
+{
+"id": 330,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "도매상(wholesalers)과 소매상(retailers)에 대한 설명으로 옳은 것은?",
+"options": [
+"①도매상은 최종 소비자에게 직접 판매하는 중간상이다",
+"②소매상은 다른 도매상에게 재판매하기 위해 대량 구매하는 중간상이다",
+"③도매상은 소매상, 다른 도매상, 생산자, 정부 및 기관에 재판매하기 위해 대량으로 제품을 구매하는 중간상이다",
+"④도매상과 소매상은 동일한 역할을 수행한다"
+],
+"answer": 2,
+"explain": "도매상(wholesalers)은 소매상, 다른 도매상, 생산자, 정부 및 기관에 재판매하기 위해 대량으로 제품을 구매하는 중간상이다. 소매상(retailers)은 최종 소비자에게 제품을 판매하기 위해 제품을 구매하는 중간상이다."
+},
+{
+"id": 331,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "정부 시장(government market)에서 공정성과 효율성을 확보하기 위해 여러 공급자로부터 제안을 받아 경쟁적으로 공급자를 선정하는 방식은?",
+"options": [
+"①수의계약(sole-source procurement)",
+"②경쟁입찰(competitive bidding)",
+"③샘플 평가(sampling)",
+"④사찰(inspection)"
+],
+"answer": 1,
+"explain": "경쟁입찰(competitive bidding)은 정부가 공정성과 효율성을 확보하기 위해 여러 공급자로부터 제안을 받아 경쟁적으로 공급자를 선정하는 방식이다."
+},
+{
+"id": 332,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "정부 시장에서 표준화된 입찰이 어려운 복잡하거나 전문적인 제품의 경우 특정 공급자와 직접 협상하여 계약을 체결하는 방식은?",
+"options": [
+"①경쟁입찰(competitive bidding)",
+"②제품명세 기반 평가(product specification)",
+"③수의계약/협상계약(negotiated contract / sole-source procurement)",
+"④경험 기반 학습(experience-based learning)"
+],
+"answer": 2,
+"explain": "수의계약/협상계약(negotiated contract / sole-source procurement)은 표준화된 입찰이 어려운 복잡하거나 전문적인 제품의 경우 정부가 특정 공급자와 직접 협상하여 계약을 체결하는 방식이다."
+},
+{
+"id": 333,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "기관 시장(institutional market)에 대한 설명으로 옳은 것은?",
+"options": [
+"①이윤 극대화를 최우선 목표로 하는 영리 기업들의 시장이다",
+"②교육, 의료, 복지 등 공익적 서비스를 제공하기 위해 재화와 서비스를 구매하는 비영리 조직으로 구성된 시장이다",
+"③정부의 기능 수행을 위해 재화를 구매하는 시장이다",
+"④최고 품질의 제품만을 추구하는 시장이다"
+],
+"answer": 1,
+"explain": "기관 시장(institutional market)은 교육, 의료, 복지 등 공익적 서비스를 제공하기 위해 재화와 서비스를 구매하는 비영리 조직(병원, 학교, 종교기관, 자선단체 등)으로 구성된 시장이다."
+},
+{
+"id": 334,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "기관 시장의 의사결정 특성으로 가장 적절한 것은?",
+"options": [
+"①최고 품질의 제품을 가격에 관계없이 구매한다",
+"②최고 품질보다는 필요 수준을 충족하는 범위 내에서 비용을 최소화하려는 경향(adequate quality at lowest cost)이 있다",
+"③대규모 투자를 통해 최신 설비를 도입한다",
+"④공급자와의 관계보다 가격만을 기준으로 선정한다"
+],
+"answer": 1,
+"explain": "기관 시장의 구매자는 제한된 예산 내에서 운영해야 하므로, 최고 품질보다는 필요 수준을 충족하는 범위 내에서 비용을 최소화하려는 경향(비용 중심 의사결정, adequate quality at lowest cost)이 있다."
+},
+{
+"id": 335,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 고객과의 거래 특성에 해당하지 않는 것은?",
+"options": [
+"①대규모 거래(large volume transactions)",
+"②경제적 가치 중심 의사결정(economic needs, profit-oriented)",
+"③저가격·저위험 거래(low value & low risk purchases)",
+"④장기적 관계 지향(long-term relationship)"
+],
+"answer": 2,
+"explain": "비즈니스 거래의 특성에는 대규모 거래, 경제적 가치 중심 의사결정, 고위험·고가 거래(high value & high risk), 맞춤형 요구, 장기적 관계 지향이 포함된다. 저가격·저위험은 해당하지 않는다."
+},
+{
+"id": 336,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 고객의 속성 중 '전문적 구매자(professional & knowledgeable buyers)'에 대한 설명으로 옳은 것은?",
+"options": [
+"①제품과 시장에 대한 지식이 부족하여 감정적으로 구매를 결정한다",
+"②제품과 시장에 대한 높은 수준의 전문지식과 정보를 보유하고 기술적 사양과 성능을 평가한다",
+"③개인적 목표만을 추구하며 조직 목표는 무시한다",
+"④공급자와의 관계보다 가격만을 중시한다"
+],
+"answer": 1,
+"explain": "전문적 구매자(professional & knowledgeable buyers)는 제품과 시장에 대한 높은 수준의 전문지식과 정보를 보유하고 있으며, 기술적 사양과 성능을 평가한다."
+},
+{
+"id": 337,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 고객의 속성 중 '조직 목표와 개인 목표의 동시 추구'에 대한 설명으로 옳은 것은?",
+"options": [
+"①구매자는 조직의 성과만을 고려한다",
+"②구매자는 개인적 성과 평가, 보상, 경력 발전만을 고려한다",
+"③구매자는 조직의 성과 향상뿐 아니라 성과 평가, 보상, 경력 발전 등 개인적 목표도 함께 고려한다",
+"④구매자의 개인적 목표는 조직 목표와 항상 일치한다"
+],
+"answer": 2,
+"explain": "비즈니스 구매자는 조직의 성과 향상뿐 아니라 성과 평가, 보상, 경력 발전 등 개인적 목표도 함께 고려한다."
+},
+{
+"id": 338,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 고객의 최우선 관심사에 해당하지 않는 것은?",
+"options": [
+"①가격 및 총비용(price & total cost)",
+"②품질(quality & conformance to specifications)",
+"③브랜드 이미지(brand image & luxury perception)",
+"④서비스 및 지원(service & support)"
+],
+"answer": 2,
+"explain": "비즈니스 고객의 최우선 관심사에는 가격 및 총비용, 품질, 서비스 및 지원, 재고 및 공급 안정성이 포함된다. 브랜드 이미지나 럭셔리 인식은 강의에서 언급된 최우선 관심사가 아니다."
+},
+{
+"id": 339,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 고객이 가격뿐 아니라 운영비, 유지비, 고장 비용 등을 포함하여 공급자를 평가하는 관점은?",
+"options": [
+"①단위가격 관점",
+"②총비용 관점(total cost perspective)",
+"③매출 관점",
+"④시장점유율 관점"
+],
+"answer": 1,
+"explain": "비즈니스 고객은 가격뿐 아니라 운영비, 유지비, 고장 비용 등을 포함한 총비용 관점(total cost perspective)에서 공급자를 평가한다."
+},
+{
+"id": 340,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 구매방식 중 '사찰(inspection)'에 대한 설명으로 옳은 것은?",
+"options": [
+"①제품의 기술적 요구사항과 성능 기준을 정의하고 이에 맞는 공급자를 선택하는 것이다",
+"②제품의 실제 상태나 품질이 사용 이력에 따라 달라질 수 있어 실물 검사를 통해 품질을 평가하는 것이다",
+"③제품의 일부 샘플을 통해 전체 품질을 평가하는 것이다",
+"④여러 공급자로부터 제안을 받아 협상하는 것이다"
+],
+"answer": 1,
+"explain": "사찰(inspection)은 제품의 실제 상태나 품질이 사용 이력에 따라 달라질 수 있는 경우 구매자가 실물 검사를 통해 품질을 평가하는 방식이다."
+},
+{
+"id": 341,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 구매 유형 중 '신규 구매(new-task purchase)'에 대한 설명으로 옳은 것은?",
+"options": [
+"①기존에 구매하던 제품을 변경 없이 반복 구매하는 상황이다",
+"②기존 구매 경험을 바탕으로 제품 사양이나 공급자를 변경하여 재구매하는 상황이다",
+"③조직이 특정 제품이나 서비스를 처음으로 구매하는 상황으로 불확실성과 위험이 높다",
+"④구매 과정이 표준화되고 자동화되어 있는 상황이다"
+],
+"answer": 2,
+"explain": "신규 구매(new-task purchase)는 조직이 특정 제품이나 서비스를 처음으로 구매하는 상황으로, 불확실성과 위험이 높기 때문에 정보탐색과 대안평가가 광범위하게 이루어진다."
+},
+{
+"id": 342,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "수정 재구매(modified rebuy purchase)에 대한 설명으로 옳은 것은?",
+"options": [
+"①조직이 처음으로 구매하는 상황이다",
+"②기존 구매 경험을 바탕으로 제품 사양, 가격, 거래 조건 또는 공급자를 변경하여 재구매하는 상황이다",
+"③기존에 구매하던 제품을 변경 없이 반복 구매하는 상황이다",
+"④정보 요구가 거의 없으며 루틴화된 구매이다"
+],
+"answer": 1,
+"explain": "수정 재구매(modified rebuy purchase)는 기존 구매 경험을 바탕으로 제품 사양, 가격, 거래 조건 또는 공급자를 변경하여 재구매하는 상황이다. 일부 정보탐색이 필요하고 기존 공급자와 경쟁이 발생한다."
+},
+{
+"id": 343,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "단순 재구매(straight rebuy purchase)에 대한 설명으로 옳은 것은?",
+"options": [
+"①불확실성과 위험이 높아 광범위한 정보탐색이 필요하다",
+"②제품 사양이나 공급자를 변경하여 재구매하는 상황이다",
+"③기존에 구매하던 제품을 변경 없이 반복 구매하며 구매 과정이 표준화되고 자동화되는 경우가 많다",
+"④의사결정 참여자가 많고 공급자 탐색이 활발하다"
+],
+"answer": 2,
+"explain": "단순 재구매(straight rebuy purchase)는 기존에 구매하던 제품을 변경 없이 반복 구매하는 상황으로, 구매 과정이 표준화되어 있으며 자동화되는 경우가 많다. 정보 요구가 거의 없고 기존 공급자를 유지하는 루틴화된 구매이다."
+},
+{
+"id": 344,
+"topic": 4,
+"section": "4.2",
+"type": "blank",
+"q": "기업의 제품 및 서비스에 대한 수요가 최종 소비자의 수요로부터 파생되는 것을 _______ 수요(derived demand)라 한다.",
+"answer": "파생",
+"accept": [
+"파생",
+"파생적",
+"derived"
+],
+"explain": "파생수요(derived demand)란 어떤 재화나 서비스에 대한 수요가 그것 자체 때문이 아니라, 그것이 사용되는 다른 재화나 서비스에 대한 수요에서 비롯되는 것이다."
+},
+{
+"id": 345,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "공통수요(joint/complementary demand)에 대한 설명으로 옳은 것은?",
+"options": [
+"①가격 변화에 비해 수요 변화가 작은 수요이다",
+"②소비재보다 수요 변동성이 큰 수요이다",
+"③한 제품 생산에서 둘 이상의 품목이 조합을 이룰 때 발생하는 수요이다",
+"④소수의 대형 고객이 시장 수요의 상당 부분을 차지하는 수요이다"
+],
+"answer": 2,
+"explain": "공통수요(joint/complementary demand)는 한 제품 생산에서 둘 이상의 품목이 조합을 이룰 때 발생하는 수요이다. 한 제품의 수요는 관련 제품의 수요에 의존하며, 관련 품목을 동시에 판매할 좋은 기회가 된다."
+},
+{
+"id": 346,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비탄력적 수요(inelastic demand)에 대한 설명으로 옳은 것은?",
+"options": [
+"①가격 변화에 따라 수요가 크게 변한다",
+"②가격 변화에 비해 수요 변화가 작으며 특히 생산에 필수적인 투입 요소는 단기적으로 비탄력적이다",
+"③최종 수요 변화가 산업 수요에서 증폭되는 현상이다",
+"④소수의 대형 고객이 수요의 대부분을 차지한다"
+],
+"answer": 1,
+"explain": "비탄력적 수요(inelastic demand)는 가격 변화에 비해 수요 변화가 작은 것을 의미하며, 특히 생산에 필수적인 투입 요소는 단기적으로 비탄력적이다."
+},
+{
+"id": 347,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "변동적 수요(fluctuating demand)에 대한 설명으로 옳은 것은?",
+"options": [
+"①비즈니스 시장의 수요는 소비재보다 안정적이다",
+"②가격 변화에 비해 수요 변화가 작은 특성이다",
+"③소비재보다 수요 변동성이 크며, 최종 수요 변화가 산업 수요에서 증폭된다",
+"④한 제품의 수요가 관련 제품의 수요에 의존하는 것이다"
+],
+"answer": 2,
+"explain": "변동적 수요(fluctuating demand)는 소비재보다 수요 변동성이 크며, 최종 수요 변화가 산업 수요에서 증폭되는 특성을 가진다."
+},
+{
+"id": 348,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "집중된 수요(concentrated demand)에 대한 설명으로 옳은 것은?",
+"options": [
+"①다수의 소규모 고객이 시장 수요를 균등하게 차지한다",
+"②소수의 대형 고객이 시장 수요의 상당 부분을 차지한다",
+"③가격 변화에 수요가 민감하게 반응한다",
+"④최종 소비자의 수요로부터 파생되는 수요이다"
+],
+"answer": 1,
+"explain": "집중된 수요(concentrated demand)는 소수의 대형 고객이 시장 수요의 상당 부분을 차지하는 특성이다."
+},
+{
+"id": 349,
+"topic": 4,
+"section": "4.2",
+"type": "blank",
+"q": "비즈니스 구매 의사결정을 수행하는 조직의 구성원 집단을 ___________(buying center 또는 decision-making unit)이라 한다.",
+"answer": "구매센터",
+"accept": [
+"구매센터",
+"구매 센터",
+"buying center",
+"의사결정단위"
+],
+"explain": "구매센터(buying center 또는 decision-making unit)는 비즈니스 구매 의사결정을 수행하는 조직의 구성원 집단이다."
+},
+{
+"id": 350,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "구매센터(buying center)의 구성원 역할 중, 해당 비즈니스 제품을 실제로 사용하게 되는 구성원은?",
+"options": [
+"①영향력 행사자(influencer)",
+"②사용자(user)",
+"③문지기(gatekeeper)",
+"④의사결정자(decider)"
+],
+"answer": 1,
+"explain": "사용자(user)는 해당 비즈니스 제품을 실제로 사용하게 되는 구성원이다."
+},
+{
+"id": 351,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "구매센터에서 '영향력 행사자(influencer)'의 역할로 옳은 것은?",
+"options": [
+"①비즈니스 제품을 실제로 선정하는 결정을 내린다",
+"②공급자를 선정하고 구매 조건을 협상한다",
+"③종종 엔지니어 같은 기술 관련 직원으로, 제품 명세서 작성과 대안 비교 평가에 관여한다",
+"④구매센터 내 여러 역할 간 정보의 흐름을 통제한다"
+],
+"answer": 2,
+"explain": "영향력 행사자(influencer)는 종종 엔지니어 같은 기술 관련 직원으로, 제품 명세서 작성과 대안 비교 평가에 관여하는 구성원이다."
+},
+{
+"id": 352,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "구매센터에서 '문지기(gatekeeper)'의 역할로 옳은 것은?",
+"options": [
+"①비즈니스 제품을 실제로 사용하는 구성원이다",
+"②공급자를 선정하고 구매 조건을 협상한다",
+"③비즈니스 제품을 실제로 선정하는 결정을 내린다",
+"④구매센터 내 여러 역할 간 정보의 흐름을 통제한다"
+],
+"answer": 3,
+"explain": "문지기(gatekeeper)는 구매센터 내 여러 역할 간 정보의 흐름을 통제하는 구성원이다."
+},
+{
+"id": 353,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "구매센터의 구성원 역할을 올바르게 짝지은 것은?",
+"options": [
+"①구매자(buyer) - 비즈니스 제품을 실제로 선정하는 결정을 내림",
+"②의사결정자(decider) - 공급자를 선정하고 구매 조건을 협상",
+"③구매자(buyer) - 공급자를 선정하고 구매 조건을 협상, 의사결정자(decider) - 비즈니스 제품을 실제로 선정하는 결정",
+"④사용자(user) - 구매센터 내 정보의 흐름을 통제"
+],
+"answer": 2,
+"explain": "구매자(buyer)는 공급자를 선정하고 구매 조건을 협상하며, 의사결정자(decider)는 비즈니스 제품을 실제로 선정하는 결정을 내리는 구성원이다."
+},
+{
+"id": 354,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 시장에서 공급자와 구매자 간의 신뢰와 협력이 발전하는 방향으로 가장 적절한 것은?",
+"options": [
+"①단기적 가격 경쟁",
+"②일회성 거래",
+"③장기적 거래 관계 및 전략적 파트너십",
+"④다수의 공급자를 동시에 활용한 가격 인하"
+],
+"answer": 2,
+"explain": "비즈니스 시장에서 공급자와 구매자 간의 신뢰와 협력은 장기적 거래 관계 및 전략적 파트너십으로 발전한다."
+},
+{
+"id": 355,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "마케터가 소비자의 문제인식을 유도하기 위해 활용할 수 있는 수단에 해당하지 않는 것은?",
+"options": [
+"①광고",
+"②비교 제시",
+"③포장 및 진열",
+"④소비자의 기억 삭제"
+],
+"answer": 3,
+"explain": "마케터는 광고, 비교 제시, 포장, 진열, 리뷰 활용 등을 통해 소비자가 아직 인식하지 못한 욕구를 자극하여 문제인식을 유도할 수 있다."
+},
+{
+"id": 356,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "다속성 태도모델에서 '새로운 속성 도입(adding new attribute)' 전략에 대한 설명으로 옳은 것은?",
+"options": [
+"①기존 속성에 대한 경쟁사의 신념을 변화시키는 것이다",
+"②소비자가 중요하게 여기는 속성과 자사 제품의 강점을 연결하는 것이다",
+"③소비자가 기존에 고려하지 않았던 새로운 속성을 제시하여 평가 기준을 변화시키는 것이다",
+"④비교 광고를 통해 경쟁 제품의 평가를 낮추는 것이다"
+],
+"answer": 2,
+"explain": "새로운 속성 도입(adding new attribute)은 소비자가 기존에 고려하지 않았던 새로운 속성을 제시하여 평가 기준을 변화시키는 전략이다."
+},
+{
+"id": 357,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 구매방식 중 '샘플 및 시험 평가(sampling)'에 대한 설명으로 옳은 것은?",
+"options": [
+"①구매자가 제품의 기술적 요구사항을 정의하고 이에 맞는 공급자를 선택한다",
+"②실물 검사를 통해 품질을 직접 평가한다",
+"③제품의 일부 샘플이나 시험 사용을 통해 전체 품질을 평가하는 방식이다",
+"④여러 공급자로부터 제안을 받아 가격 등을 협상한다"
+],
+"answer": 2,
+"explain": "샘플 및 시험 평가(sampling)는 제품의 일부 샘플이나 시험 사용을 통해 전체 품질을 평가하는 방식으로, 균일한 제품일수록 효과적이다."
+},
+{
+"id": 358,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "구매 단계에서 '예기치 못한 요인(unanticipated factors)'에 대한 설명으로 옳은 것은?",
+"options": [
+"①제품의 즉시 구매 가능성이나 점포 선택과 관련된 요인이다",
+"②구매 직전의 예상하지 못한 상황이나 타인의 영향 또는 경쟁사의 마케팅 활동으로 인해 구매가 변경되거나 취소될 수 있는 요인이다",
+"③소비자의 내적 자극에 의한 요인이다",
+"④소비자의 장기적 기억에서 비롯되는 요인이다"
+],
+"answer": 1,
+"explain": "예기치 못한 요인(unanticipated factors)은 구매 직전의 예상하지 못한 상황이나 타인의 영향 또는 경쟁사의 마케팅 활동으로 인해 구매가 변경되거나 취소될 수 있는 요인이다."
+},
+{
+"id": 359,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "비즈니스 시장과 소비자 시장의 차이에 대한 설명으로 옳은 것은?",
+"options": [
+"①비즈니스 시장은 고객 수가 많고 구매 규모가 작다",
+"②비즈니스 시장은 고객 수는 적지만 각 고객의 구매 규모는 크다",
+"③비즈니스 시장은 단기적 거래만을 지향한다",
+"④비즈니스 시장은 감정적 의사결정이 지배적이다"
+],
+"answer": 1,
+"explain": "비즈니스 시장은 고객 집단의 수가 적기 때문에 세분시장도 소수이지만, 각 고객의 구매규모/구매방식에서 규모 차이가 크다. 장기적이고 상호 호혜적인 관계를 지향한다."
+},
+{
+"id": 360,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "재판매자 시장에서 소매상이 제품별 수익성을 평가할 때 고려하는 요소에 해당하지 않는 것은?",
+"options": [
+"①매출",
+"②마진",
+"③재고회전율",
+"④생산원가"
+],
+"answer": 3,
+"explain": "소매상은 제한된 매장 공간을 효율적으로 활용하기 위해 제품의 매출, 마진, 재고회전율 등을 고려하여 제품별 수익성을 평가한다. 생산원가는 생산자가 고려하는 요소이다."
+},
+{
+"id": 361,
+"topic": 4,
+"section": "4.1",
+"type": "mc",
+"q": "소비자 구매 의사결정과정을 이해하는 것이 마케팅에서 중요한 이유로 가장 적절한 것은?",
+"options": [
+"①소비자의 소득 수준을 높이기 위해",
+"②소비자의 태도와 선호를 파악하여 마케팅 믹스를 설계하고 마케팅 전략에 대한 반응을 예측하기 위해",
+"③경쟁사의 제품 가격을 낮추기 위해",
+"④소비자의 문화적 배경을 변화시키기 위해"
+],
+"answer": 1,
+"explain": "소비자의 태도와 선호를 파악하여 고객의 필요에 부합하는 마케팅 믹스를 설계하고 마케팅 전략에 대한 반응을 예측하는 데 소비자 구매 의사결정과정의 이해가 중요하다."
+},
+{
+"id": 362,
+"topic": 4,
+"section": "4.2",
+"type": "mc",
+"q": "신규 구매(new-task purchase) 상황의 특성에 해당하지 않는 것은?",
+"options": [
+"①정보 요구량이 높다",
+"②의사결정 참여자가 많다",
+"③공급자 탐색이 활발하다",
+"④구매 과정이 표준화되고 자동화되어 있다"
+],
+"answer": 3,
+"explain": "구매 과정이 표준화되고 자동화되어 있는 것은 단순 재구매(straight rebuy)의 특성이다. 신규 구매는 불확실성과 위험이 높아 정보 요구량이 높고, 의사결정 참여자가 많으며, 공급자 탐색이 활발하다."
+},
+{
+"id": 363,
+"topic": 5,
+"section": "5.1",
+"type": "mc",
+"q": "마케팅정보시스템(MIS)의 구성요소로 올바르게 짝지어진 것은?",
+"options": [
+"①사람(people), 장비(equipment), 절차(procedures)",
+"②데이터(data), 기술(technology), 전략(strategy)",
+"③사람(people), 예산(budget), 절차(procedures)",
+"④장비(equipment), 전략(strategy), 소프트웨어(software)"
+],
+"answer": 0,
+"explain": "MIS는 마케팅 의사결정자가 필요로 하는 정보를 적시에 정확하게 제공하기 위해 사람(people), 장비(equipment), 절차(procedures)로 구성된 시스템이다."
+},
+{
+"id": 364,
+"topic": 5,
+"section": "5.1",
+"type": "mc",
+"q": "마케팅정보시스템(MIS)에 대한 설명으로 가장 적절하지 않은 것은?",
+"options": [
+"①조직의 내부 및 외부 환경으로부터 관련 정보를 지속적으로 수집·분석·저장·배포하는 체계이다",
+"②시장 자료를 수집·분류·분석·평가하여 의사결정에 활용 가능한 형태로 전환한다",
+"③MIS의 효율적 운영은 신속하고 합리적인 마케팅 의사결정을 가능하게 한다",
+"④MIS는 일회성 조사 프로젝트로서 필요시에만 운영된다"
+],
+"answer": 3,
+"explain": "MIS는 '지속적으로' 정보를 수집·분석·저장·배포하는 체계이며, 일회성이 아닌 상시 운영되는 시스템이다."
+},
+{
+"id": 365,
+"topic": 5,
+"section": "5.1",
+"type": "mc",
+"q": "MIS에서 데이터베이스(database)에 대한 설명으로 올바른 것은?",
+"options": [
+"①외부에서 수집된 데이터만을 저장한다",
+"②조직 내외부에서 수집된 데이터를 체계적으로 저장하고 관리하여 관리자가 필요시 쉽게 접근하고 활용할 수 있도록 구성된 정보 집합이다",
+"③빅데이터 분석을 위한 전용 소프트웨어를 의미한다",
+"④마케팅 의사결정자의 직관을 기록하는 시스템이다"
+],
+"answer": 1,
+"explain": "데이터베이스는 조직 내외부에서 수집된 데이터를 체계적으로 저장하고 관리하여 관리자가 필요시 쉽게 접근하고 활용할 수 있도록 구성된 정보 집합이다. 내부 판매 데이터, 고객 데이터, 시장조사 자료, 정부 통계, 산업보고서 등이 포함된다."
+},
+{
+"id": 366,
+"topic": 5,
+"section": "5.1",
+"type": "mc",
+"q": "빅데이터(big data)에 대한 설명으로 올바른 것은?",
+"options": [
+"①기존의 데이터 처리 방식으로 쉽게 관리·분석이 가능한 소규모 데이터이다",
+"②대규모·고속·다양한 형태의 데이터로서, 고급 분석 기술과 소프트웨어를 통해 유의미한 패턴과 인사이트 도출에 활용된다",
+"③정형 데이터만을 대상으로 하는 분석 기법이다",
+"④데이터베이스와 동일한 개념이다"
+],
+"answer": 1,
+"explain": "빅데이터는 기존의 데이터 처리 방식으로는 관리·분석이 어려운 대규모·고속·다양한 형태의 데이터로서, 고급 분석 기술과 소프트웨어를 통해 유의미한 패턴과 인사이트 도출에 활용된다."
+},
+{
+"id": 367,
+"topic": 5,
+"section": "5.1",
+"type": "mc",
+"q": "마케팅조사(marketing research)의 정의로 가장 적절한 것은?",
+"options": [
+"①소비자에게 직접 제품을 판매하는 일련의 과정이다",
+"②마케팅 의사결정과 관련된 문제를 해결하고 기회를 탐색하기 위해 정보를 체계적으로 설계·수집·분석·해석·보고하는 일련의 과정이다",
+"③기업의 재무 상태를 분석하여 경영 전략을 수립하는 과정이다",
+"④시장에서 경쟁사의 가격 정보만을 수집하는 활동이다"
+],
+"answer": 1,
+"explain": "마케팅조사란 마케팅 의사결정과 관련된 문제를 해결하고 기회를 탐색하기 위해 정보를 체계적으로 설계·수집·분석·해석·보고하는 일련의 과정이다."
+},
+{
+"id": 368,
+"topic": 5,
+"section": "5.1",
+"type": "mc",
+"q": "마케팅조사의 역할에 대한 설명으로 가장 적절하지 않은 것은?",
+"options": [
+"①마케팅 관련 의사결정 상황에서 불확실성을 줄이고 합리적인 의사결정을 지원한다",
+"②빠르게 변화하는 시장환경, 경쟁상황, 소비자 트렌드를 지속적으로 파악한다",
+"③마케팅 관리자의 직관 의존을 높이고 경험 기반 의사결정을 강화한다",
+"④신제품 아이디어의 타당성 평가와 성공 가능성 예측에 활용된다"
+],
+"answer": 2,
+"explain": "마케팅조사는 마케팅 관리자의 직관 의존을 '줄이고' 데이터 기반 의사결정을 가능하게 한다. 직관 의존을 높이는 것이 아니다."
+},
+{
+"id": 369,
+"topic": 5,
+"section": "5.1",
+"type": "mc",
+"q": "마케팅조사가 '전략적 계획을 가능하게 한다'는 것의 의미로 적절하지 않은 것은?",
+"options": [
+"①시장 기회를 기반으로 효과적인 마케팅 전략 수립이 가능하다",
+"②고객의 니즈와 선호를 반영한 제품 및 마케팅 활동 설계가 가능하다",
+"③신제품 아이디어의 타당성 평가와 성공 가능성 예측이 가능하다",
+"④경쟁사의 내부 기밀 정보를 획득하여 전략에 반영할 수 있다"
+],
+"answer": 3,
+"explain": "마케팅조사는 시장 기회, 고객 니즈, 신제품 타당성 등을 분석하여 전략적 계획을 가능하게 하지만, 경쟁사의 내부 기밀을 획득하는 것은 마케팅조사의 역할이 아니다."
+},
+{
+"id": 370,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "마케팅조사의 활용 영역 중 '가격 분야(pricing research)'에 해당하지 않는 것은?",
+"options": [
+"①가격 민감도 분석",
+"②경쟁 가격 조사",
+"③점포 입지 분석",
+"④지불의사 측정"
+],
+"answer": 2,
+"explain": "점포 입지 분석은 유통 분야(distribution research)에 해당한다. 가격 분야는 가격 민감도 분석, 경쟁 가격 조사, 지불의사 측정, 가격 전략 수립 지원 등을 포함한다."
+},
+{
+"id": 371,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "마케팅조사 활용 영역 중 '촉진 분야(promotion research)'에 해당하는 것은?",
+"options": [
+"①유통 채널 구조 분석",
+"②고객 충성도 분석",
+"③광고 효과 측정 및 매체 선택",
+"④시장 점유율 분석"
+],
+"answer": 2,
+"explain": "촉진 분야에는 광고 효과 측정, 매체 선택, 판촉 효과 분석, 광고 사전·사후 테스트 등이 포함된다."
+},
+{
+"id": 372,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "'사용 및 태도 조사(usage & attitude), 브랜드 인식 및 이미지, 고객만족도, 고객 충성도 분석'이 속하는 마케팅조사 영역은?",
+"options": [
+"①제품 분야(product research)",
+"②가격 분야(pricing research)",
+"③고객 분야(customer research)",
+"④시장분석 및 예측(market analysis & forecasting)"
+],
+"answer": 2,
+"explain": "해당 내용은 모두 고객 분야(customer research)에 해당한다."
+},
+{
+"id": 373,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "문제확인조사(problem-identification research)에 해당하지 않는 것은?",
+"options": [
+"①시장 잠재력, 시장 점유율 분석",
+"②브랜드 이미지 및 포지셔닝 분석",
+"③시장 세분화 기준 도출(segmentation research)",
+"④산업 및 경쟁 환경 분석"
+],
+"answer": 2,
+"explain": "시장 세분화 기준 도출은 문제해결조사(problem-solving research)에 해당한다. 문제확인조사는 현재 또는 잠재적 문제와 기회를 파악하기 위한 조사이다."
+},
+{
+"id": 374,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "문제해결조사(problem-solving research)에 해당하는 것을 모두 고른 것은?\n(가) 시장 세분화 기준 도출\n(나) 제품 개발 및 테스트\n(다) 판매 분석 및 판매 예측\n(라) 유통 경로 설계 및 평가",
+"options": [
+"①(가), (나), (다)",
+"②(가), (나), (라)",
+"③(나), (다), (라)",
+"④(가), (나), (다), (라)"
+],
+"answer": 1,
+"explain": "판매 분석 및 판매 예측(다)은 문제확인조사에 해당한다. 문제해결조사에는 시장 세분화 기준 도출, 제품 개발 및 테스트, 가격 결정, 촉진 전략 결정, 유통 경로 설계 및 평가가 포함된다."
+},
+{
+"id": 375,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "질적 자료(qualitative data)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①숫자가 아닌 서술적, 묘사적 정보이다",
+"②사람들의 생각, 감정, 동기, 태도 등을 파악하는 데 유용하다",
+"③대규모 샘플에 기반한 일반화가 용이하다",
+"④탐색적 조사에 적합하다"
+],
+"answer": 2,
+"explain": "'대규모 샘플에 기반한 일반화가 용이하다'는 양적 자료(quantitative data)의 특성이다. 질적 자료는 해석 중심의 분석(내용분석, 주제분석 등)을 사용한다."
+},
+{
+"id": 376,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "양적 자료(quantitative data)의 특성으로 올바르지 않은 것은?",
+"options": [
+"①실증적인 정보로 구성되어 있으며 수치로 나타낼 수 있는 정보이다",
+"②객관적 비교와 통계적으로 분석 가능한 데이터이다",
+"③설명력과 예측력이 강점이다",
+"④'왜 그런 행동을 하는지'를 설명하는 데 가장 적합하다"
+],
+"answer": 3,
+"explain": "'왜 그런 행동을 하는지'를 설명하는 것은 질적 자료의 특성이다. 양적 자료는 수치 기반으로 객관적 비교와 통계 분석이 가능하며, 설명력과 예측력이 강점이다."
+},
+{
+"id": 377,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "정성조사(qualitative research)의 특성으로 올바른 것은?",
+"options": [
+"①what, who, when 중심 질문을 다룬다",
+"②구조화된 설문과 대규모 표본을 기반으로 데이터를 수집한다",
+"③반응 및 의미 중심(why, how 중심 질문)의 조사이다",
+"④트렌드 변화 추적 및 수요 예측에 주로 활용된다"
+],
+"answer": 2,
+"explain": "정성조사는 why, how 중심 질문을 다루며, 비구조화 또는 반구조화된 자료 수집을 통해 심층적 이해가 가능하다. what, who, when은 정량조사의 영역이다."
+},
+{
+"id": 378,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "정량조사(quantitative research)의 조사 목적에 해당하지 않는 것은?",
+"options": [
+"①측정(measure)",
+"②통찰(insight) 도출",
+"③추정(estimate)",
+"④예측(forecast)"
+],
+"answer": 1,
+"explain": "통찰(insight) 도출은 정성조사의 목적이다. 정량조사의 목적은 측정(measure), 감시(monitor), 추정(estimate), 예측(forecast)이다."
+},
+{
+"id": 379,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "정성조사는 주로 ( )조사에 활용되고, 정량조사는 주로 ( )조사에 활용된다. 빈칸에 들어갈 내용으로 올바른 것은?",
+"options": [
+"①결론적 - 탐색적",
+"②탐색적 - 결론적",
+"③기술적 - 실험적",
+"④실험적 - 기술적"
+],
+"answer": 1,
+"explain": "정성조사는 주로 탐색적 조사에, 정량조사는 주로 결론적 조사에 활용된다."
+},
+{
+"id": 380,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "탐색적 조사(exploratory)는 명확하게 정의되지 않은 문제를 이해하고 연구 방향을 설정하며 잠정적 가설을 도출하기 위한 ______ 단계의 조사이다.",
+"answer": "초기",
+"accept": [
+"초기",
+"초기적",
+"초반"
+],
+"explain": "탐색적 조사는 '초기' 단계의 조사로서, 불명확한 문제를 구체적인 조사 문제로 정교화하고 후속 정량조사/결론적 조사의 기반을 제공한다."
+},
+{
+"id": 381,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "탐색적 조사(exploratory research)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①문제나 현상에 대한 기초적 이해 확보에 적합하다",
+"②주로 질적 방법(qualitative methods)을 활용한다",
+"③불명확한 문제를 구체적인 조사 문제로 정교화한다",
+"④대규모 표본을 활용한 통계적 분석을 중심으로 한다"
+],
+"answer": 3,
+"explain": "대규모 표본을 활용한 통계적 분석은 결론적 조사의 특성이다. 탐색적 조사는 주로 질적 방법을 활용하며, 기초적 이해 확보와 문제 정교화에 초점을 둔다."
+},
+{
+"id": 382,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "탐색적 조사의 방법에 해당하지 않는 것은?",
+"options": [
+"①문헌조사(literature review)",
+"②전문가 인터뷰(expert interview)",
+"③포커스 그룹 인터뷰(FGI)",
+"④대규모 구조화 설문조사"
+],
+"answer": 3,
+"explain": "대규모 구조화 설문조사는 결론적 조사(특히 기술적 조사)의 방법이다. 탐색적 조사는 문헌조사, 전문가 인터뷰, 개별 인터뷰, 포커스 그룹 인터뷰 등 질적 방법을 활용한다."
+},
+{
+"id": 383,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "고객자문위원회(customer advisory boards)에 대한 설명으로 올바르지 않은 것은?",
+"options": [
+"①소수의 실제 고객으로 구성된 그룹이다",
+"②기업의 제품, 가격, 유통, 촉진 활동에 대한 의견과 아이디어를 지속적으로 수집한다",
+"③핵심 고객의 의견을 전략에 반영한다",
+"④대규모 소비자 패널을 통한 통계적 분석을 목적으로 한다"
+],
+"answer": 3,
+"explain": "고객자문위원회는 '소수의' 실제 고객으로 구성된 그룹을 통해 의견과 아이디어를 지속적으로 수집하며, 대규모 통계적 분석이 아닌 핵심 고객의 심층적 의견을 전략에 반영하는 것이 목적이다."
+},
+{
+"id": 384,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "개별 인터뷰(personal interview/in-depth interview)는 1대1 방식으로 응답자의 경험, 태도, 동기 등을 ______으로 탐색하는 조사방법이다.",
+"answer": "심층적",
+"accept": [
+"심층적",
+"심층",
+"깊이 있게"
+],
+"explain": "개별 인터뷰는 1대1 방식으로 특정 주제에 대해 연구자와 응답자 간 심층 질의응답을 진행하며, 유연한 질문과 탐색 질문(probing)을 통해 깊이 있는 정보를 수집한다."
+},
+{
+"id": 385,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "개별 인터뷰의 유형 중 '핵심 질문은 정해져 있으나 추가 탐색이 가능한' 방식은?",
+"options": [
+"①구조화 인터뷰(structured)",
+"②반구조화 인터뷰(semi-structured)",
+"③비구조화 인터뷰(unstructured)",
+"④표준화 인터뷰(standardized)"
+],
+"answer": 1,
+"explain": "반구조화 인터뷰는 핵심 질문은 정해져 있으나 추가 탐색이 가능한 방식이다. 구조화 인터뷰는 동일한 질문을 동일한 순서로, 비구조화 인터뷰는 자유로운 대화 형태로 진행된다."
+},
+{
+"id": 386,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "포커스 그룹 인터뷰(FGI)의 참가자 수로 가장 적절한 것은?",
+"options": [
+"①1~2명",
+"②6~10명",
+"③30~50명",
+"④100명 이상"
+],
+"answer": 1,
+"explain": "포커스 그룹 인터뷰는 소수의 참가자(보통 6~10명)를 대상으로 특정 주제에 대해 토론을 진행하여 집단 상호작용을 통해 인사이트를 도출하는 방법이다."
+},
+{
+"id": 387,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "포커스 그룹 인터뷰(FGI)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①참여자 간 상호작용과 집단역학(group dynamics)을 통해 다양한 의견을 도출한다",
+"②개방형 질문을 중심으로 비구조화 또는 반구조화 형태로 진행된다",
+"③결과의 일반화에 우수하다",
+"④사회적 바람직성 편향(social desirability bias)이 발생할 수 있다"
+],
+"answer": 2,
+"explain": "FGI는 탐색적 목적에 적합하며 '일반화에는 한계'가 있다. 또한 집단 내 특정 인물(dominant participant)이 토론에 영향을 미칠 수 있다."
+},
+{
+"id": 388,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "포커스 그룹 인터뷰에서 사회자(moderator)의 역할로 적절하지 않은 것은?",
+"options": [
+"①토론을 진행하고 참여를 유도한다",
+"②모든 참여자가 의견을 표현하도록 균형 있게 유도한다",
+"③특정 결론 방향으로 토론을 유도한다",
+"④중립적 태도를 유지하며 자유로운 발언 분위기를 조성한다"
+],
+"answer": 2,
+"explain": "사회자는 중립적 태도를 유지하며 특정 방향으로 유도하지 않아야 한다. 모든 참여자가 의견을 표현하도록 균형 있게 유도하고, 자유로운 발언 분위기를 조성하며 토론 흐름을 관리하는 것이 사회자의 역할이다."
+},
+{
+"id": 389,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "결론적 조사(conclusive research)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①구조화된 조사 설계를 통해 마케팅 의사결정을 지원한다",
+"②명확히 정의된 문제와 구체적인 의사결정 상황에서 수행된다",
+"③주로 정량적 방법(quantitative methods)을 활용한다",
+"④문제를 탐색하고 잠정적 가설을 도출하는 것이 주요 목적이다"
+],
+"answer": 3,
+"explain": "문제를 탐색하고 잠정적 가설을 도출하는 것은 탐색적 조사의 목적이다. 결론적 조사는 탐색적 조사 결과를 바탕으로 체계적이고 정량적인 조사를 설계하여 여러 대안 중 최적의 선택을 위한 근거를 제공한다."
+},
+{
+"id": 390,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "결론적 조사는 크게 두 가지로 구분된다. 올바르게 짝지어진 것은?",
+"options": [
+"①탐색적 조사와 실험적 조사",
+"②기술적 조사(descriptive)와 실험적 조사(experimental)",
+"③질적 조사와 양적 조사",
+"④문제확인조사와 문제해결조사"
+],
+"answer": 1,
+"explain": "결론적 조사는 기술적 조사(descriptive research)와 실험적 조사(experimental research)로 구분된다."
+},
+{
+"id": 391,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "기술적 조사(descriptive research)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①특정 집단이나 현상의 특성, 분포, 행동을 체계적으로 파악하기 위한 조사이다",
+"②구조화된 설문과 대규모 표본을 활용한 데이터 수집을 한다",
+"③변수 간 인과관계를 명확히 규명할 수 있다",
+"④고객만족도, 브랜드 태도, 구매의도, 사용 행태 등을 측정한다"
+],
+"answer": 2,
+"explain": "기술적 조사는 변수 간 관계를 설명할 수 있으나 '인과관계 규명에는 한계'가 있다. 인과관계 규명은 실험적 조사의 목적이다."
+},
+{
+"id": 392,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "실험적 조사(experimental research)는 변수 간 ______를 규명하기 위해 독립변수를 조작하고 그에 따른 종속변수의 변화를 측정하는 조사이다.",
+"answer": "인과관계",
+"accept": [
+"인과관계",
+"인과 관계",
+"cause-effect relationship"
+],
+"explain": "실험적 조사는 변수 간 인과관계(cause-effect relationship)를 규명하기 위해 독립변수를 조작하고 종속변수의 변화를 측정하는 조사로, 기술적 조사로는 설명하기 어려운 원인-결과 관계를 검증한다."
+},
+{
+"id": 393,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "실험적 조사에서 '연구자가 조작하는 원인 변수'를 무엇이라 하는가?",
+"options": [
+"①종속변수(dependent variable)",
+"②외생변수(extraneous variables)",
+"③독립변수(independent variable)",
+"④매개변수(mediating variable)"
+],
+"answer": 2,
+"explain": "독립변수(independent variable)는 연구자가 조작하는 원인 변수이며, 종속변수(dependent variable)는 독립변수의 변화에 따라 영향을 받는 결과 변수이다."
+},
+{
+"id": 394,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "실험적 조사에서 외생변수(extraneous variables)에 대한 설명으로 올바른 것은?",
+"options": [
+"①연구자가 의도적으로 조작하는 변수이다",
+"②독립변수의 변화에 따라 영향을 받는 결과 변수이다",
+"③독립변수 이외에 종속변수에 영향을 미칠 수 있는 모든 변수로, 통제하지 않으면 실험 결과를 왜곡할 수 있다",
+"④실험 결과와 무관한 변수이다"
+],
+"answer": 2,
+"explain": "외생변수는 독립변수 이외에 종속변수에 영향을 미칠 수 있는 모든 변수로, 연구자가 통제하지 않으면 실험 결과를 왜곡할 수 있는 요인이다."
+},
+{
+"id": 395,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "실험적 조사의 특성으로 적절하지 않은 것은?",
+"options": [
+"①A/B 테스트, 광고 효과 테스트, 가격 실험 등에 활용된다",
+"②실험실 환경(laboratory) 또는 실제 시장 환경(field)에서 수행 가능하다",
+"③높은 내적 타당성 확보가 가능하나 현실 적용성(external validity)에 제약이 있을 수 있다",
+"④변수 간 관계를 설명할 수 있으나 인과관계 규명에는 한계가 있다"
+],
+"answer": 3,
+"explain": "'변수 간 관계를 설명할 수 있으나 인과관계 규명에는 한계가 있다'는 기술적 조사의 특성이다. 실험적 조사는 인과관계 규명에 가장 적합한 방법이다."
+},
+{
+"id": 396,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "마케팅조사의 5단계를 올바른 순서로 나열한 것은?",
+"options": [
+"①문제점 규명 및 정의 → 자료 수집 → 상황분석 및 조사 설계 → 조사결과 해석 → 결과 보고",
+"②상황분석 및 조사 설계 → 문제점 규명 및 정의 → 자료 수집 → 결과 보고 → 조사결과 해석",
+"③문제점 규명 및 정의 → 상황분석 및 조사 설계 → 자료 수집 → 조사결과 해석 → 결과 보고",
+"④자료 수집 → 문제점 규명 및 정의 → 상황분석 및 조사 설계 → 조사결과 해석 → 결과 보고"
+],
+"answer": 2,
+"explain": "마케팅조사의 5단계는 문제점 규명 및 정의 → 상황분석 및 조사 설계 → 자료 수집 → 조사결과 해석 → 결과 보고의 순서로 진행된다."
+},
+{
+"id": 397,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "마케팅조사 1단계(문제점 규명 및 정의)에서 강조하는 핵심 사항은?",
+"options": [
+"①최대한 많은 데이터를 수집하는 것이 중요하다",
+"②단순한 증상(symptom)이 아닌 근본 원인(root problem)을 규명하는 것이 중요하다",
+"③가능한 한 빠르게 결론을 내리는 것이 중요하다",
+"④통계적 분석 기법을 먼저 결정하는 것이 중요하다"
+],
+"answer": 1,
+"explain": "문제점 정의 단계에서는 단순한 증상이 아닌 근본 원인을 규명하는 것이 중요하며, 문제의 본질에 초점을 맞추고 조사 범위와 상황을 명확히 설정해야 한다."
+},
+{
+"id": 398,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "마케팅조사 1단계(문제점 정의)에서 확보해야 할 사항이 아닌 것은?",
+"options": [
+"①조사가 필요한 이유에 대한 정당성(justification)",
+"②마케팅조사로부터 얻고자 하는 정보 명확화(information needs)",
+"③조사 결과의 활용 방안 명시(how results will be used)",
+"④데이터 수집에 필요한 예산 확정"
+],
+"answer": 3,
+"explain": "문제점 정의 단계에서는 조사 정당성 확보, 정보 니즈 명확화, 결과 활용 방안 명시가 핵심이다. 예산 확정은 이 단계에서 강조된 내용이 아니다."
+},
+{
+"id": 399,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "조사 설계(research design) 단계에서의 가설(hypothesis)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①두 개 이상의 변수 간 관계에 대한 검증 가능한 예측 또는 진술이다",
+"②독립변수와 종속변수 간 관계에 대한 명시적 가정이다",
+"③경험적 자료를 통해 검증 또는 반증 가능해야 한다",
+"④연구자의 주관적 판단으로 결론을 내리는 것이다"
+],
+"answer": 3,
+"explain": "가설은 연구자의 주관적 판단이 아니라, 경험적 자료(empirical data)를 통해 검증 또는 반증 가능해야 하며, 자료 수집 및 분석 방향을 제시하는 역할을 한다."
+},
+{
+"id": 400,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "1차 자료(primary data)에 대한 설명으로 올바른 것은?",
+"options": [
+"①기존에 다른 목적을 위해 수집·분석된 자료를 활용하는 것이다",
+"②특정 연구 목적을 위해 조사자가 직접 수집한 자료이다",
+"③시간과 비용이 적게 소요된다",
+"④정부 통계, 산업보고서 등이 이에 해당한다"
+],
+"answer": 1,
+"explain": "1차 자료는 특정 연구 목적을 위해 조사자가 직접 수집한 자료로, 특정 문제 해결에 적합한 맞춤형 정보를 제공하지만 시간과 비용이 많이 소요된다."
+},
+{
+"id": 401,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "2차 자료(secondary data)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①기존에 다른 목적을 위해 수집·분석된 자료를 활용한다",
+"②내부 자료와 외부 자료로 구분된다",
+"③시간과 비용 절감이 가능하다",
+"④연구 목적과 항상 완전히 일치하는 정보를 제공한다"
+],
+"answer": 3,
+"explain": "2차 자료는 시간과 비용 절감이 가능하지만, '연구 목적과 완전히 일치하지 않을 수 있다'는 한계가 있다."
+},
+{
+"id": 402,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "다음 중 2차 자료의 외부 자료(external data)에 해당하는 것은?",
+"options": [
+"①기업의 판매 자료",
+"②고객 DB",
+"③정부 통계, 산업보고서, 외부 조사기관 자료",
+"④사내 고객 만족도 조사 결과"
+],
+"answer": 2,
+"explain": "기업의 판매 자료, 고객 DB, 사내 고객 만족도 조사 결과는 내부 자료에 해당한다. 정부 통계, 산업보고서, 외부 조사기관 자료는 외부 자료이다."
+},
+{
+"id": 403,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "______(sampling)이란 모집단 전체를 조사하기 어려운 경우, 대표성을 가진 일부를 선택하는 절차이다.",
+"answer": "표본추출",
+"accept": [
+"표본추출",
+"표본 추출"
+],
+"explain": "표본추출(sampling)은 시간, 비용, 조사 가능성의 제약 속에서 모집단의 특성을 가능한 한 정확하게 추정하기 위한 절차이며, 대표성(representativeness) 확보가 중요하다."
+},
+{
+"id": 404,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "모집단(population)과 표본(sample)에 대한 설명으로 올바른 것은?",
+"options": [
+"①모집단은 표본을 대표하도록 선정된 일부 구성원이다",
+"②표본은 연구자가 정보를 얻고자 하는 전체 대상 집합이다",
+"③모집단은 전체 대상 집합이고, 표본은 모집단을 대표하도록 선정된 일부 구성원이다",
+"④모집단과 표본은 동일한 개념이다"
+],
+"answer": 2,
+"explain": "모집단(population)은 연구자가 정보를 얻고자 하는 전체 대상 집합이고, 표본(sample)은 모집단을 대표하도록 선정된 일부 구성원이다."
+},
+{
+"id": 405,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "확률표본추출법(probability sampling)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①모집단의 각 요소가 표본으로 선택될 확률이 알려져 있다",
+"②표본오차(sampling error) 추정이 가능하다",
+"③결과의 일반화 가능성이 높다",
+"④연구자의 판단이나 접근 가능성에 따라 표본을 추출한다"
+],
+"answer": 3,
+"explain": "연구자의 판단이나 접근 가능성에 따라 표본을 추출하는 것은 비확률표본추출법의 특성이다. 확률표본추출법은 모집단의 각 요소가 표본으로 선택될 확률이 알려져 있다."
+},
+{
+"id": 406,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "표본오차(sampling error)에 대한 설명으로 올바른 것은?",
+"options": [
+"①설문지 작성 과정에서 발생하는 오류이다",
+"②모집단 전체를 조사하지 않고 일부 표본만을 조사함으로써 발생하는 결과와 실제 모집단 값 간의 차이이다",
+"③조사원이 응답에 영향을 미쳐 발생하는 오류이다",
+"④비확률표본추출법에서만 발생하는 오류이다"
+],
+"answer": 1,
+"explain": "표본오차는 모집단 전체를 조사하지 않고 일부 표본만을 조사함으로써 발생하는 결과와 실제 모집단 값 간의 차이이다."
+},
+{
+"id": 407,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "______표본추출법(stratified sampling)은 모집단을 중요한 특성에 따라 서로 겹치지 않는 층(strata)으로 나눈 뒤 각 층에서 표본을 추출하는 방법이다.",
+"answer": "층화",
+"accept": [
+"층화",
+"층화 표본추출법"
+],
+"explain": "층화표본추출법(stratified sampling)은 모집단을 동질적인 층으로 나누어 각 층에서 표본을 추출하여, 단순무작위표본추출에서 야기될 수 있는 오차를 줄이고 표본의 대표성을 향상시킨다. 층 내 동질성, 층 간 이질성을 확보하는 것이 핵심이다."
+},
+{
+"id": 408,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "단순무작위표본추출법(random sampling)에 대한 설명으로 올바른 것은?",
+"options": [
+"①연구자가 편의에 따라 표본을 선택하는 방법이다",
+"②모든 구성원이 동일한 확률로 선택되는 방법이다",
+"③모집단을 층으로 나눈 후 표본을 추출하는 방법이다",
+"④초기 응답자가 다음 응답자를 소개하는 방식이다"
+],
+"answer": 1,
+"explain": "단순무작위표본추출법은 전체 인구(모집단)를 구성하는 사람이나 구성 단위들이 표본으로 뽑힐 확률이 동등하거나 알려져 있는 방법이다."
+},
+{
+"id": 409,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "비확률표본추출법(nonprobability sampling)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①모집단의 각 구성요소가 표본으로 선택될 확률을 알 수 없다",
+"②통계적 일반화에는 한계가 있다",
+"③실행이 쉽고 시간과 비용을 절약할 수 있다",
+"④표본오차의 정확한 추정이 가능하다"
+],
+"answer": 3,
+"explain": "비확률표본추출법은 선택될 확률을 알 수 없으므로 표본오차의 정확한 추정이 어렵다. 이는 확률표본추출법의 장점이다."
+},
+{
+"id": 410,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "편의표본추출(convenience sampling)에 대한 설명으로 올바른 것은?",
+"options": [
+"①모집단의 특정 특성 비율을 반영하도록 할당 기준을 정한다",
+"②가장 쉽게 접근 가능한 대상자를 표본으로 선택하는 방법으로, 가장 간단하고 저렴하나 대표성은 낮다",
+"③초기 응답자가 다음 응답자를 소개하는 방식이다",
+"④모집단을 층으로 나누어 추출하는 방법이다"
+],
+"answer": 1,
+"explain": "편의표본추출은 가장 쉽게 접근 가능한 대상자를 표본으로 선택하는 방법으로, 가장 간단하고 저렴하나 대표성은 낮다. 학생 표본, 매장 방문객, 온라인 자발적 응답 등이 예시이다."
+},
+{
+"id": 411,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "______표본추출법(quota sampling)은 모집단의 특정 특성 비율을 반영하도록 할당 기준을 정한 후 각 범주 안에서 비확률적으로 표본을 추출하는 방법이다.",
+"answer": "할당",
+"accept": [
+"할당",
+"할당 표본추출법"
+],
+"explain": "할당표본추출법은 표본 구성은 모집단과 유사하게 맞추지만 무작위성(randomness)은 부족하며, 선택 확률이 동일하지 않다."
+},
+{
+"id": 412,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "눈덩이표본추출(snowball sampling)이 특히 유용한 상황은?",
+"options": [
+"①모집단의 크기가 매우 큰 경우",
+"②접근이 어려운 집단(hidden population)을 조사할 때",
+"③모집단의 특성 비율을 정확히 알고 있을 때",
+"④전수조사가 가능한 경우"
+],
+"answer": 1,
+"explain": "눈덩이표본추출은 초기 응답자가 다음 응답자를 소개하는 방식으로 표본을 확장하며, 접근이 어려운 집단(특정 질환자, 소수 커뮤니티 등)에 유용하다."
+},
+{
+"id": 413,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "우편설문조사(mail survey)의 장점이 아닌 것은?",
+"options": [
+"①응답자가 자신의 속도로 응답 가능하며 충분한 시간 확보가 가능하다",
+"②비교적 낮은 비용으로 넓은 지역의 응답자 조사가 가능하다",
+"③익명성이 높아 민감한 질문에 대해 솔직한 응답 유도가 가능하다",
+"④높은 응답률(response rate)을 보인다"
+],
+"answer": 3,
+"explain": "우편설문조사는 응답률이 낮고 회수 기간이 길어 데이터 수집이 지연될 수 있다는 단점이 있다."
+},
+{
+"id": 414,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "전화설문조사(phone survey)의 특성으로 적절하지 않은 것은?",
+"options": [
+"①질문에 대한 오해를 즉시 수정 가능하다",
+"②시각적 자료 활용이 가능하다",
+"③일정 수준의 통제(control)와 응답 관리가 가능하다",
+"④조사 비용이 우편보다 높고 면접보다 낮은 중간 수준이다"
+],
+"answer": 1,
+"explain": "전화설문조사는 시각적 자료 활용이 불가능하다는 한계가 있다. 전화 인터뷰를 통해 신속한 자료수집이 가능하지만, 응답률이 낮아지는 추세이다."
+},
+{
+"id": 415,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "개인면접설문조사(personal interview)의 장점이 아닌 것은?",
+"options": [
+"①유연한 질문(probing)을 통해 심층적 정보 수집이 가능하다",
+"②응답자의 태도, 표정, 비언어적 반응까지 관찰 가능하다",
+"③비용과 시간이 가장 적게 소요된다",
+"④응답 완료율이 높고 데이터 품질이 우수하다"
+],
+"answer": 2,
+"explain": "개인면접설문조사는 비용과 시간이 '가장 많이' 소요되는 방법이다. 그러나 응답 완료율이 높고 데이터 품질이 우수하며, 시청각 자료 활용이 가능하다는 장점이 있다."
+},
+{
+"id": 416,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "개인면접설문조사에서는 _____________(interviewer bias)가 발생할 수 있는데, 이는 조사원이 질문을 제시하거나 응답을 기록하는 과정에서 의도적 또는 비의도적으로 응답자의 답변에 영향을 미치는 현상이다.",
+"answer": "면접자 편향",
+"accept": [
+"면접자 편향",
+"조사원 편향",
+"면접자편향",
+"조사원편향",
+"인터뷰어 편향"
+],
+"explain": "면접자 편향(interviewer bias)은 조사원의 태도, 질문 방식, 표현 등이 응답에 영향을 줄 수 있어 데이터의 정확성을 왜곡시키는 현상이다."
+},
+{
+"id": 417,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "설문지 작성 시 'double-barreled question'이란 무엇을 의미하는가?",
+"options": [
+"①응답자가 답할 수 없는 질문",
+"②한 문항에 두 가지 이상의 내용이 포함된 질문",
+"③특정 방향으로 유도하는 질문(leading question)",
+"④응답 범주가 상호배타적이지 않은 질문"
+],
+"answer": 1,
+"explain": "Double-barreled question은 한 문항에 두 가지 이상의 내용이 포함된 질문으로, 설문 설계 시 지양해야 한다. 한 문항에는 하나의 내용만 포함해야 한다."
+},
+{
+"id": 418,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "설문지 작성 시 응답 범주는 ______(mutually exclusive)이고 포괄적(exhaustive)이어야 한다.",
+"answer": "상호배타적",
+"accept": [
+"상호배타적",
+"상호 배타적"
+],
+"explain": "설문의 응답 범주는 상호배타적(mutually exclusive)이어야 하며(선택지 간 겹치지 않아야 하며), 동시에 포괄적(exhaustive)이어야 한다(가능한 모든 응답을 포함해야 한다)."
+},
+{
+"id": 419,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "설문지 작성 시 질문 순서로 적절한 것은?",
+"options": [
+"①민감한 질문 → 일반적 질문",
+"②구체적 질문 → 일반적 질문",
+"③일반적 → 구체적, 비민감 → 민감 순으로 배열",
+"④무작위 순서로 배열"
+],
+"answer": 2,
+"explain": "설문지의 질문 순서는 일반 → 구체, 비민감 → 민감 순으로 배열하는 것이 적절하다."
+},
+{
+"id": 420,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "리커트 척도(Likert Scale)에 대한 설명으로 올바른 것은?",
+"options": [
+"①반대되는 형용사 쌍 사이에서 응답자의 인식을 평가하는 척도이다",
+"②'예/아니오'의 두 가지 응답 중 하나를 선택하도록 하는 질문이다",
+"③진술문에 대해 동의 또는 비동의 정도를 평가하며, 보통 5점 또는 7점 척도를 사용한다",
+"④향후 구매 또는 사용 의도를 측정하는 척도이다"
+],
+"answer": 2,
+"explain": "리커트 척도는 진술문에 대해 동의 또는 비동의 정도를 평가하는 척도로, 보통 5점 또는 7점 척도를 사용한다. 예: '전혀 동의하지 않는다~매우 동의한다'"
+},
+{
+"id": 421,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "의미차이척도(Semantic Differential Scale)에 대한 설명으로 올바른 것은?",
+"options": [
+"①진술문에 대한 동의 정도를 평가한다",
+"②반대되는 형용사 쌍 사이에서 응답자의 인식을 평가하는 척도이다",
+"③특정 속성의 중요도를 평가한다",
+"④두 가지 응답 중 하나를 선택하는 형태이다"
+],
+"answer": 1,
+"explain": "의미차이척도는 반대되는 형용사 쌍(예: 불신-신뢰, 불편함-편리함) 사이에서 응답자의 인식을 평가하는 척도이다."
+},
+{
+"id": 422,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "'전혀 중요하지 않음~매우 중요함'의 형태로 특정 속성이나 요소의 중요도를 평가하는 척도는?",
+"options": [
+"①리커트 척도(Likert Scale)",
+"②의미차이척도(Semantic Differential Scale)",
+"③중요도 척도(Importance Scale)",
+"④양자택일형(Dichotomous)"
+],
+"answer": 2,
+"explain": "중요도 척도(Importance Scale)는 특정 속성이나 요소의 중요도를 평가하는 척도로, '전혀 중요하지 않음~매우 중요함'의 형태를 사용한다."
+},
+{
+"id": 423,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "신뢰도(reliability)에 대한 설명으로 올바른 것은?",
+"options": [
+"①측정 도구가 의도한 개념을 얼마나 정확하게 측정하는지의 정도이다",
+"②동일한 측정 도구를 반복 사용했을 때 일관된 결과를 도출하는 정도이다",
+"③문항이 개념을 충분히 포괄하는지의 정도이다",
+"④외부 기준과의 일치 정도이다"
+],
+"answer": 1,
+"explain": "신뢰도(reliability)는 동일한 측정 도구를 반복 사용했을 때 일관된 결과를 도출하는 정도로, 측정의 안정성과 일관성 확보가 핵심이다."
+},
+{
+"id": 424,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "타당도(validity)의 하위 유형과 그 설명이 올바르게 짝지어진 것은?",
+"options": [
+"①내용 타당성(content validity) - 이론적 개념을 제대로 반영하는지",
+"②구성 타당성(construct validity) - 문항이 개념을 충분히 포괄하는지",
+"③기준 타당성(criterion validity) - 외부 기준과의 일치 정도",
+"④내용 타당성(content validity) - 외부 기준과의 일치 정도"
+],
+"answer": 2,
+"explain": "내용 타당성은 문항이 개념을 충분히 포괄하는지, 구성 타당성은 이론적 개념을 제대로 반영하는지, 기준 타당성은 외부 기준과의 일치 정도를 나타낸다."
+},
+{
+"id": 425,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "______이(가) 높다고 해서 반드시 ______이(가) 높은 것은 아니다. 타당한 측정을 위해서는 일정 수준 이상의 신뢰성이 전제되어야 한다.",
+"answer": "신뢰도, 타당도",
+"accept": [
+"신뢰도, 타당도",
+"신뢰도/타당도"
+],
+"explain": "신뢰도가 높다고 해서 반드시 타당도가 높은 것은 아니다. 즉, 측정이 일관되더라도 의도한 개념을 정확히 측정하지 못할 수 있다. 그러나 타당한 측정을 위해서는 일정 수준 이상의 신뢰도가 전제되어야 한다."
+},
+{
+"id": 426,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "관찰조사방법(observational research)에 대한 설명으로 적절하지 않은 것은?",
+"options": [
+"①응답자의 자기보고(self-report)에 의존하지 않고 실제 행동을 직접 관찰한다",
+"②응답편향(response bias) 감소에 효과적이다",
+"③인과관계 규명에 가장 적합한 방법이다",
+"④행동의 '이유(why)'보다는 '무엇(what)'과 '어떻게(how)' 파악에 적합하다"
+],
+"answer": 2,
+"explain": "관찰조사는 인과관계 규명에 한계가 있으며, 주로 기술적 조사에 해당한다. 인과관계 규명에 가장 적합한 것은 실험적 조사이다."
+},
+{
+"id": 427,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "관찰조사의 유형 중 '실제 시장 환경에서 소비자의 행동을 그대로 관찰'하는 방식은?",
+"options": [
+"①인위적 관찰",
+"②자연적 관찰",
+"③실험적 관찰",
+"④구조화 관찰"
+],
+"answer": 1,
+"explain": "자연적 관찰은 실제 시장 환경에서 소비자의 행동을 그대로 관찰하는 방식이다. 인위적 관찰은 실험실이나 통제된 환경에서 행동을 관찰하는 방식이다."
+},
+{
+"id": 428,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "응답편향(response bias)에 대한 설명으로 올바른 것은?",
+"options": [
+"①표본 추출 과정에서 발생하는 통계적 오차이다",
+"②응답자가 실제 생각이나 행동과 다르게 체계적으로 왜곡된 응답을 하는 현상이다",
+"③설문지의 인쇄 오류로 인한 데이터 왜곡이다",
+"④조사원이 데이터를 임의로 수정하는 행위이다"
+],
+"answer": 1,
+"explain": "응답편향(response bias)은 응답자가 실제 생각이나 행동과 다르게 체계적으로 왜곡된 응답을 하는 현상으로, 사회적 바람직성 편향(social desirability bias)이 대표적인 예이다."
+},
+{
+"id": 429,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "안구추적장치(eye-tracking device)에 대한 설명으로 올바른 것은?",
+"options": [
+"①심박수와 피부전도를 측정한다",
+"②시선 이동과 고정(fixation)을 측정하여 시각적 주의(attention)를 분석한다",
+"③뇌의 특정 부위 활성화를 측정한다",
+"④뇌파를 측정하여 즉각적인 인지를 분석한다"
+],
+"answer": 1,
+"explain": "안구추적장치는 시선 이동과 고정(fixation)을 측정하여 시각적 주의(attention)를 분석하며, 광고, 웹사이트, 패키지 디자인 분석에 활용된다."
+},
+{
+"id": 430,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "생체측정모니터(biometric monitor)는 심박수, 피부전도(GSR), 표정 분석 등을 포함하여 생리적 반응을 통해 _______ 반응을 측정한다.",
+"answer": "감정적",
+"accept": [
+"감정적",
+"정서적",
+"감정",
+"정서"
+],
+"explain": "생체측정모니터는 생리적 반응(심박수, 피부전도, 표정 등)을 통해 감정적(정서적) 반응을 측정하는 관찰조사 도구이다."
+},
+{
+"id": 431,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "fMRI와 EEG에 대한 설명으로 올바른 것은?",
+"options": [
+"①fMRI는 뇌파를 측정하고, EEG는 뇌의 특정 부위 활성화를 측정한다",
+"②fMRI는 뇌의 특정 부위 활성화를 측정하고, EEG는 전반적인 뇌의 활동량(뇌파)을 측정한다",
+"③둘 다 시선 이동을 측정하는 장비이다",
+"④fMRI는 심박수를 측정하고, EEG는 피부전도를 측정한다"
+],
+"answer": 1,
+"explain": "fMRI는 뇌의 특정 부위 활성화를 측정하여 신경학적 반응을 분석하고, EEG는 전반적인 뇌의 활동량(뇌파)을 측정하여 자극에 대한 즉각적인 인지를 분석한다. EEG는 뇌 활동의 정확한 위치 파악에는 한계가 있다."
+},
+{
+"id": 432,
+"topic": 5,
+"section": "5.2",
+"type": "blank",
+"q": "______ 통계(descriptive statistics)는 데이터의 분포와 특성을 요약하는 분석이며, ______ 통계(inferential statistics)는 표본 데이터를 기반으로 모집단의 특성을 추정하고 가설을 검정하는 분석이다.",
+"answer": "기술, 추론",
+"accept": [
+"기술, 추론",
+"기술/추론",
+"기술 통계, 추론 통계"
+],
+"explain": "기술 통계(descriptive statistics)는 빈도분석, 비율, 평균, 중앙값 등으로 데이터를 요약하고, 추론 통계(inferential statistics)는 가설검정, 상관관계, 회귀분석 등을 통해 모집단의 특성을 추정한다."
+},
+{
+"id": 433,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "기술 통계(descriptive statistics)의 '중심경향성'을 나타내는 지표로 올바르게 묶인 것은?",
+"options": [
+"①분산(variance), 표준편차(standard deviation)",
+"②평균(mean), 중앙값(median), 최빈값(mode)",
+"③상관관계(correlation), 회귀분석(regression)",
+"④빈도분석, 비율, 그래프"
+],
+"answer": 1,
+"explain": "평균(mean), 중앙값(median), 최빈값(mode)은 중심경향성을 나타내는 지표이다. 분산과 표준편차는 데이터의 분산 정도를 나타낸다."
+},
+{
+"id": 434,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "추론 통계(inferential statistics)에 해당하지 않는 분석 기법은?",
+"options": [
+"①가설검정(hypothesis testing)",
+"②상관관계(correlation)",
+"③회귀분석(regression)",
+"④빈도분석(frequency analysis)"
+],
+"answer": 3,
+"explain": "빈도분석은 기술 통계에 해당한다. 추론 통계에는 가설검정, 상관관계, 회귀분석 등이 포함된다."
+},
+{
+"id": 435,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "결과 보고 단계에서의 실무적 고려사항으로 적절하지 않은 것은?",
+"options": [
+"①조사 결과의 한계(limitations)와 그 원인을 명시한다",
+"②실행 가능한 제안(actionable recommendations)을 포함한다",
+"③핵심 메시지 중심으로 구성하고 요약(executive summary)을 보고서 앞부분에 배치한다",
+"④단순 데이터 나열로 보고서의 분량을 최대화한다"
+],
+"answer": 3,
+"explain": "결과 보고는 단순 데이터 나열이 아니라 의사결정에 도움이 되는 인사이트(insight) 중심으로 전달해야 한다. 경영진은 전체 보고서를 읽기 어려운 경우가 많으므로 핵심 메시지 중심으로 구성해야 한다."
+},
+{
+"id": 436,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "마케팅조사의 마지막 단계인 '결과 보고'의 보고 내용 구성에 해당하지 않는 것은?",
+"options": [
+"①연구 목적 및 조사 문제 요약",
+"②주요 분석 결과 제시 및 가설 채택 또는 기각 여부 명시",
+"③핵심 인사이트 및 시사점 도출",
+"④경쟁사의 향후 전략 예측"
+],
+"answer": 3,
+"explain": "결과 보고의 내용 구성에는 연구 목적 및 조사 문제 요약, 조사 방법론, 주요 분석 결과, 가설 채택/기각 여부, 핵심 인사이트 및 시사점 도출이 포함된다. 경쟁사의 향후 전략 예측은 결과 보고의 기본 구성에 해당하지 않는다."
+},
+{
+"id": 437,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "다음 중 확률표본추출법에 해당하는 것은?",
+"options": [
+"①편의표본추출(convenience sampling)",
+"②할당표본추출(quota sampling)",
+"③층화표본추출(stratified sampling)",
+"④눈덩이표본추출(snowball sampling)"
+],
+"answer": 2,
+"explain": "층화표본추출(stratified sampling)은 확률표본추출법에 해당한다. 편의표본추출, 할당표본추출, 눈덩이표본추출은 모두 비확률표본추출법이다."
+},
+{
+"id": 438,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "양자택일형(Dichotomous) 질문에 대한 설명으로 올바른 것은?",
+"options": [
+"①여러 개의 보기 중 하나만 선택하도록 하는 질문이다",
+"②두 가지 응답 중 하나를 선택하도록 하는 질문으로, 단순 사실 여부 확인에 적합하나 정보의 깊이는 제한적이다",
+"③두 개 이상 선택이 가능한 보기를 제공한다",
+"④진술문에 대한 동의 정도를 평가한다"
+],
+"answer": 1,
+"explain": "양자택일형(Dichotomous)은 '예/아니오', '있다/없다' 등 두 가지 응답 중 하나를 선택하도록 하는 질문으로, 단순 사실 여부 확인에 적합하나 정보의 깊이는 제한적이다."
+},
+{
+"id": 439,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "MIS의 구성 체계에서 '데이터 창고(Data Warehouse)'와 '의사결정지원시스템(DSS)'의 관계로 올바른 것은?",
+"options": [
+"①데이터 창고는 DSS와 무관한 별도의 시스템이다",
+"②데이터 창고에 저장된 데이터가 DSS로 전달되어 의사결정을 지원한다",
+"③DSS가 먼저 작동하고 그 결과가 데이터 창고에 저장된다",
+"④데이터 창고와 DSS는 동일한 개념이다"
+],
+"answer": 1,
+"explain": "MIS 체계에서 마케팅조사, 내부정보, 외부정보가 데이터베이스/데이터 창고로 수집되고, 이것이 의사결정지원시스템(DSS)으로 연결되어 마케팅 의사결정자에게 정보를 제공한다."
+},
+{
+"id": 440,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "층화표본추출법(stratified sampling)의 핵심 원리로 올바른 것은?",
+"options": [
+"①층 내 이질성, 층 간 동질성을 확보한다",
+"②층 내 동질성, 층 간 이질성을 확보한다",
+"③모든 층에서 동일한 수의 표본을 추출한다",
+"④층을 나누지 않고 전체에서 무작위로 추출한다"
+],
+"answer": 1,
+"explain": "층화표본추출법은 층 내 동질성, 층 간 이질성을 확보하여 표본의 대표성을 향상시키고 어느 한쪽에 치우침 없이 골고루 추출 가능하게 한다."
+},
+{
+"id": 441,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "설문지 작성 시 'leading question'이란 무엇을 의미하는가?",
+"options": [
+"①한 문항에 두 가지 이상의 내용이 포함된 질문",
+"②특정 방향으로 응답을 유도하는 질문",
+"③응답자가 기억할 수 없는 내용을 묻는 질문",
+"④응답 범주가 포괄적이지 않은 질문"
+],
+"answer": 1,
+"explain": "Leading question은 특정 방향으로 응답을 유도하는 질문으로, 설문지 작성 시 질문은 중립적으로 작성하여 특정 방향으로 유도하지 않도록 설계해야 한다."
+},
+{
+"id": 442,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "사회적 바람직성 편향(social desirability bias)이 발생하기 가장 쉬운 조사 방법은?",
+"options": [
+"①우편설문조사",
+"②온라인 설문조사",
+"③포커스 그룹 인터뷰(FGI)",
+"④관찰조사"
+],
+"answer": 2,
+"explain": "포커스 그룹 인터뷰에서는 다른 참가자 앞에서 발언하므로 사회적 바람직성 편향이 발생하기 쉽다. 우편설문이나 온라인 설문은 익명성이 높아 상대적으로 편향이 적고, 관찰조사는 자기보고에 의존하지 않으므로 응답편향 자체가 줄어든다."
+},
+{
+"id": 443,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "다음 중 정성조사의 목적에 해당하는 것을 모두 고른 것은?\n(가) 이해(understand)\n(나) 측정(measure)\n(다) 발견(discover)\n(라) 예측(forecast)\n(마) 진단(diagnose)",
+"options": [
+"①(가), (나), (다)",
+"②(가), (다), (마)",
+"③(가), (다), (라), (마)",
+"④(나), (라)"
+],
+"answer": 1,
+"explain": "정성조사의 목적은 이해(understand), 발견(discover), 진단(diagnose)이며 통찰(insight) 도출을 목적으로 한다. 측정(measure)과 예측(forecast)은 정량조사의 목적이다."
+},
+{
+"id": 444,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "1차 자료와 2차 자료에 대한 비교 설명으로 올바르지 않은 것은?",
+"options": [
+"①1차 자료는 특정 연구 목적을 위해 직접 수집한 자료이다",
+"②2차 자료는 시간과 비용 절감이 가능하다",
+"③1차 자료는 시간과 비용이 많이 소요된다",
+"④2차 자료가 1차 자료보다 항상 연구 목적에 더 적합하다"
+],
+"answer": 3,
+"explain": "2차 자료는 기존에 다른 목적을 위해 수집된 자료이므로 '연구 목적과 완전히 일치하지 않을 수 있다'는 한계가 있다. 오히려 1차 자료가 특정 문제 해결에 적합한 맞춤형 정보를 제공한다."
+},
+{
+"id": 445,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "구매의도척도(Intention-to-Buy Scale)의 응답 보기로 적절한 것은?",
+"options": [
+"①전혀 동의하지 않는다~매우 동의한다",
+"②불신~신뢰",
+"③반드시 사용하겠다~절대 사용하지 않을 것이다",
+"④전혀 중요하지 않음~매우 중요함"
+],
+"answer": 2,
+"explain": "구매의도척도는 향후 구매 또는 사용 의도를 측정하며, '반드시 사용하겠다 / 아마 사용할 것이다 / 잘 모르겠다 / 아마 사용하지 않을 것이다 / 절대 사용하지 않을 것이다'의 형태를 사용한다."
+},
+{
+"id": 446,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "관찰조사의 장점이 아닌 것은?",
+"options": [
+"①실제 행동 기반 데이터 확보로 응답편향(response bias) 감소",
+"②소비자가 인지하지 못하거나 표현하기 어려운 행동 파악 가능",
+"③구매 과정, 매장 내 동선, 제품 사용 행태 분석에 유용",
+"④행동의 '이유(why)'를 파악하는 데 가장 적합하다"
+],
+"answer": 3,
+"explain": "관찰조사는 행동의 '이유(why)'보다는 '무엇(what)'과 '어떻게(how)' 파악에 적합하다. 이유를 파악하기 위해서는 심층 인터뷰 등 질적 방법이 필요하다."
+},
+{
+"id": 447,
+"topic": 5,
+"section": "5.2",
+"type": "mc",
+"q": "다음 중 '제품 분야(product research)'에 해당하는 조사 활동은?",
+"options": [
+"①가격 민감도 분석",
+"②신제품 아이디어 평가, 제품 콘셉트 테스트, 경쟁제품 비교 분석",
+"③광고 효과 측정, 매체 선택",
+"④유통 채널 구조 분석"
+],
+"answer": 1,
+"explain": "제품 분야에는 신제품 아이디어 평가, 제품 콘셉트 테스트, 제품 수용도 및 시장 잠재력 분석, 경쟁제품 비교 분석이 포함된다."
+}
+];
+
+// ===== STATE =====
+let quiz = { questions:[], idx:0, answers:[], mode:'' };
+const STORAGE_KEY = 'mm_midterm_v1';
+
+function loadStats(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {done:new Set(),wrong:new Set(),correct:0,total:0}; }
+  catch{ return {done:new Set(),wrong:new Set(),correct:0,total:0}; }
+}
+function saveStats(s){
+  const o = {...s, done:[...s.done], wrong:[...s.wrong]};
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
+}
+function getStats(){
+  const raw = loadStats();
+  raw.done = new Set(raw.done);
+  raw.wrong = new Set(raw.wrong);
+  return raw;
+}
+
+function updateHome(){
+  const s = getStats();
+  document.getElementById('s-total').textContent = ALL_QUESTIONS.length;
+  document.getElementById('s-done').textContent = s.done.size;
+  document.getElementById('s-rate').textContent = s.total > 0 ? Math.round(s.correct/s.total*100)+'%' : '-';
+  document.getElementById('s-wrong').textContent = s.wrong.size;
+}
+
+// ===== NAVIGATION =====
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='home') updateHome();
+  if(id==='topic-select') buildTopicList();
+  window.scrollTo(0,0);
+}
+
+const TOPIC_NAMES = {1:'마케팅에 대한 이해',2:'시장의 이해',3:'세분화, 표적화, 위치화',4:'소비자의 이해',5:'마케팅 조사'};
+
+function buildTopicList(){
+  const el = document.getElementById('topic-list');
+  el.innerHTML = '';
+  for(let t=1;t<=5;t++){
+    const cnt = ALL_QUESTIONS.filter(q=>q.topic===t).length;
+    const btn = document.createElement('button');
+    btn.className = 'topic-btn';
+    btn.innerHTML = `<span>Topic ${t}. ${TOPIC_NAMES[t]}</span><span class="cnt">${cnt}문제</span>`;
+    btn.onclick = ()=>startMode('topic',t);
+    el.appendChild(btn);
+  }
+}
+
+// ===== START QUIZ =====
+function startMode(mode, topicNum){
+  quiz.mode = mode;
+  quiz.idx = 0;
+  quiz.answers = [];
+  let qs = [];
+
+  if(mode==='all'){
+    qs = [...ALL_QUESTIONS];
+  } else if(mode==='topic'){
+    qs = ALL_QUESTIONS.filter(q=>q.topic===topicNum);
+  } else if(mode==='mock'){
+    // 55문제: mc 47, blank 8
+    const mc = ALL_QUESTIONS.filter(q=>q.type==='mc');
+    const bl = ALL_QUESTIONS.filter(q=>q.type==='blank');
+    shuffle(mc); shuffle(bl);
+    qs = [...mc.slice(0,47), ...bl.slice(0,8)];
+    shuffle(qs);
+  } else if(mode==='blank'){
+    qs = ALL_QUESTIONS.filter(q=>q.type==='blank');
+    shuffle(qs);
+  } else if(mode==='wrong'){
+    const s = getStats();
+    qs = ALL_QUESTIONS.filter(q=>s.wrong.has(q.id));
+    shuffle(qs);
+    if(qs.length===0){ alert('오답 문제가 없습니다!'); return; }
+  }
+
+  quiz.questions = qs;
+  quiz.answers = new Array(qs.length).fill(null);
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} }
+
+// ===== RENDER QUESTION =====
+function renderQuestion(){
+  const q = quiz.questions[quiz.idx];
+  if(!q) return endQuiz();
+
+  // header
+  document.getElementById('q-num').textContent = `${quiz.idx+1}/${quiz.questions.length}`;
+  document.getElementById('q-topic').textContent = `Topic ${q.topic} > ${q.section}`;
+  document.getElementById('q-progress').style.width = `${(quiz.idx/quiz.questions.length)*100}%`;
+
+  // question
+  const qText = document.getElementById('q-text');
+  if(q.type==='blank'){
+    qText.innerHTML = q.q.replace(/______/g, '<span class="blank-marker">______</span>');
+  } else {
+    qText.textContent = q.q;
+  }
+
+  // options or blank
+  const optWrap = document.getElementById('q-options');
+  const blankWrap = document.getElementById('q-blank-wrap');
+  const explainBox = document.getElementById('q-explain');
+
+  optWrap.innerHTML = '';
+  explainBox.classList.remove('visible');
+  explainBox.classList.remove('wrong-explain');
+  document.getElementById('btn-next').disabled = true;
+  document.getElementById('btn-skip').style.display = '';
+
+  if(q.type==='mc'){
+    blankWrap.style.display = 'none';
+    optWrap.style.display = '';
+    q.options.forEach((opt,i)=>{
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.textContent = opt;
+      btn.onclick = ()=>selectOption(i);
+      optWrap.appendChild(btn);
+    });
+  } else {
+    optWrap.style.display = 'none';
+    blankWrap.style.display = '';
+    const input = document.getElementById('q-blank-input');
+    input.value = '';
+    input.focus();
+    document.getElementById('q-check-btn').disabled = false;
+  }
+}
+
+// ===== MC ANSWER =====
+function selectOption(idx){
+  const q = quiz.questions[quiz.idx];
+  if(quiz.answers[quiz.idx] !== null) return; // already answered
+
+  quiz.answers[quiz.idx] = idx;
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((b,i)=>{
+    b.onclick = null;
+    if(i===q.answer) b.classList.add('correct');
+    if(i===idx && idx!==q.answer) b.classList.add('wrong');
+  });
+
+  showExplain(idx===q.answer);
+  recordAnswer(q, idx===q.answer);
+}
+
+// ===== BLANK ANSWER =====
+function checkBlank(){
+  const q = quiz.questions[quiz.idx];
+  if(quiz.answers[quiz.idx] !== null) return;
+
+  const input = document.getElementById('q-blank-input');
+  const val = input.value.trim();
+  if(!val) return;
+
+  const accepts = q.accept || [q.answer];
+  const isCorrect = accepts.some(a => {
+    const norm = s => s.replace(/\s/g,'').toLowerCase();
+    return norm(val) === norm(a);
+  });
+
+  quiz.answers[quiz.idx] = val;
+  input.disabled = true;
+  document.getElementById('q-check-btn').disabled = true;
+
+  if(isCorrect){
+    input.style.borderColor = 'var(--ok)';
+    input.style.background = '#f0fdf4';
+  } else {
+    input.style.borderColor = 'var(--no)';
+    input.style.background = '#fef2f2';
+  }
+
+  showExplain(isCorrect);
+  recordAnswer(q, isCorrect);
+}
+
+// Enter key for blank
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && document.getElementById('q-blank-wrap').style.display!=='none'){
+    checkBlank();
+  }
+});
+
+function showExplain(correct){
+  const q = quiz.questions[quiz.idx];
+  const box = document.getElementById('q-explain');
+  const title = document.getElementById('q-explain-title');
+  const text = document.getElementById('q-explain-text');
+
+  if(correct){
+    title.textContent = 'O 정답!';
+    box.classList.remove('wrong-explain');
+  } else {
+    const ans = q.type==='mc' ? q.options[q.answer] : q.answer;
+    title.textContent = 'X 오답 | 정답: ' + ans;
+    box.classList.add('wrong-explain');
+  }
+  text.textContent = q.explain || '';
+  box.classList.add('visible');
+
+  document.getElementById('btn-next').disabled = false;
+  document.getElementById('btn-skip').style.display = 'none';
+}
+
+function recordAnswer(q, correct){
+  const s = getStats();
+  s.done.add(q.id);
+  s.total++;
+  if(correct){
+    s.correct++;
+    s.wrong.delete(q.id);
+  } else {
+    s.wrong.add(q.id);
+  }
+  saveStats(s);
+}
+
+// ===== NAVIGATION =====
+function nextQ(){
+  quiz.idx++;
+  if(quiz.idx >= quiz.questions.length) return endQuiz();
+  renderQuestion();
+  window.scrollTo(0,0);
+}
+
+function skipQ(){
+  quiz.idx++;
+  if(quiz.idx >= quiz.questions.length) return endQuiz();
+  renderQuestion();
+  window.scrollTo(0,0);
+}
+
+function endQuiz(){
+  const answered = quiz.answers.filter(a=>a!==null).length;
+  const correct = quiz.answers.filter((a,i)=>{
+    const q = quiz.questions[i];
+    if(a===null) return false;
+    if(q.type==='mc') return a===q.answer;
+    const accepts = q.accept || [q.answer];
+    return accepts.some(ac=>ac.replace(/\s/g,'').toLowerCase()===String(a).replace(/\s/g,'').toLowerCase());
+  }).length;
+
+  const pct = answered>0 ? Math.round(correct/answered*100) : 0;
+  document.getElementById('r-pct').textContent = pct+'%';
+  document.getElementById('r-detail').innerHTML =
+    `<b>${answered}</b>문제 중 <b>${correct}</b>문제 정답<br>` +
+    `틀린 문제: <b style="color:var(--no)">${answered-correct}</b>개 | 건너뛴: <b>${quiz.questions.length-answered}</b>개`;
+
+  showScreen('result');
+}
+
+function showReview(){
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+
+  quiz.answers.forEach((a,i)=>{
+    const q = quiz.questions[i];
+    if(a===null) return;
+
+    let isCorrect;
+    if(q.type==='mc') isCorrect = a===q.answer;
+    else {
+      const accepts = q.accept || [q.answer];
+      isCorrect = accepts.some(ac=>ac.replace(/\s/g,'').toLowerCase()===String(a).replace(/\s/g,'').toLowerCase());
+    }
+    if(isCorrect) return;
+
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    const myAns = q.type==='mc' ? q.options[a] : a;
+    const correctAns = q.type==='mc' ? q.options[q.answer] : q.answer;
+    card.innerHTML = `
+      <div class="rv-q">Q. ${q.q}</div>
+      <div class="rv-ans">O 정답: ${correctAns}</div>
+      <div class="rv-my">X 내 답: ${myAns}</div>
+      <div class="rv-exp">${q.explain||''}</div>
+    `;
+    list.appendChild(card);
+  });
+
+  if(list.children.length===0){
+    list.innerHTML = '<p style="text-align:center;color:var(--sub);padding:40px">틀린 문제가 없습니다!</p>';
+  }
+
+  showScreen('review');
+}
+
+// ===== INIT =====
+updateHome();
+</script>
+</body>
+</html>
