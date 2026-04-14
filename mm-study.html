@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>MM 중간고사 학습</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MM학습">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--pri:#2563eb;--ok:#16a34a;--no:#dc2626;--bg:#f1f5f9;--card:#fff;--txt:#1e293b;--sub:#64748b;--bdr:#e2e8f0}
@@ -98,11 +105,64 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .review-card .rv-my{font-size:14px;color:var(--no);margin-bottom:8px}
 .review-card .rv-exp{font-size:13px;color:var(--sub);line-height:1.5}
 
+/* THEORY */
+#theory-select{padding:24px;gap:12px}
+#theory-select h2{font-size:20px;font-weight:700}
+.sec-group{margin-bottom:16px}
+.sec-group-title{font-size:14px;color:var(--sub);font-weight:600;padding:4px 0 6px;border-bottom:1px solid var(--bdr);margin-bottom:8px}
+.sec-btn{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;font-size:14px;font-weight:500;cursor:pointer;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;transition:all .15s;width:100%}
+.sec-btn:active{transform:scale(.97)}
+.sec-btn .cnt{font-size:12px;color:var(--sub)}
+
+#theory{padding:0}
+.th-header{padding:12px 20px;background:var(--card);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:10}
+.th-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.th-top .th-num{font-size:14px;font-weight:700;color:var(--pri)}
+.th-top .th-sec{font-size:12px;color:var(--sub);background:var(--bg);padding:3px 10px;border-radius:20px}
+
+.th-body{flex:1;padding:20px;overflow-y:auto;padding-bottom:100px}
+.th-card-title{font-size:18px;font-weight:700;line-height:1.5;margin-bottom:14px;color:var(--pri);word-break:keep-all}
+.th-content{font-size:15px;line-height:1.7;word-break:keep-all}
+.th-content ul{list-style:none;padding:0;margin:0}
+.th-content li{padding:6px 0 6px 16px;position:relative}
+.th-content li::before{content:'•';position:absolute;left:0;color:var(--pri);font-weight:700}
+.th-content li.indent{padding-left:32px}
+.th-content li.indent::before{left:16px;color:var(--sub)}
+.th-content p{margin:8px 0}
+.th-content b{color:var(--txt)}
+.th-content code{background:#e0e7ff;color:#4338ca;padding:1px 5px;border-radius:4px;font-size:13px}
+.th-content .th-flow{background:#f8fafc;border:1px solid var(--bdr);border-radius:8px;padding:12px;font-size:14px;line-height:1.6;margin:8px 0;white-space:pre-wrap;font-family:inherit}
+.th-content table.th-table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+.th-content .th-table td,.th-content .th-table th{border:1px solid var(--bdr);padding:8px 10px;text-align:left}
+.th-content .th-table tr:first-child td,.th-content .th-table th{background:#f1f5f9;font-weight:600}
+
+.th-blank{background:var(--pri);color:var(--pri);border-radius:4px;padding:1px 6px;cursor:pointer;transition:all .2s;user-select:none;-webkit-user-select:none}
+.th-blank.rv{background:#dbeafe;color:#1e40af}
+
+.th-footer{position:fixed;bottom:0;left:0;right:0;padding:12px 20px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--bdr);display:flex;gap:10px}
+.th-footer button{flex:1;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.th-footer button:active{transform:scale(.97)}
+.th-footer .th-prev{background:var(--bg);color:var(--sub);flex:.4}
+.th-footer .th-next{background:var(--pri);color:#fff}
+.th-footer .th-quiz-link{background:var(--ok);color:#fff}
+.th-reveal-all{background:none;border:1px dashed var(--bdr);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--sub);cursor:pointer;margin-top:12px;width:100%}
+.th-reveal-all:active{background:#f8fafc}
+
+/* INSTALL BANNER */
+#install-banner{width:100%;max-width:360px;display:none}
+#install-banner .install-btn{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:14px;padding:14px 20px;font-size:15px;font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;box-shadow:0 2px 8px rgba(37,99,235,.25)}
+#install-banner .install-btn:active{transform:scale(.97);opacity:.9}
+#install-banner .install-btn .dl-icon{font-size:20px}
+#ios-install-guide{display:none;width:100%;max-width:360px;background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:14px 16px;font-size:13px;color:var(--sub);line-height:1.6;text-align:center}
+#ios-install-guide b{color:var(--txt)}
+
 /* UTILS */
 .mt8{margin-top:8px}.mt16{margin-top:16px}
 @media(min-width:500px){
   .quiz-body,.quiz-header,.quiz-footer{max-width:500px;margin-left:auto;margin-right:auto}
   #home,#topic-select,#result,#review{max-width:500px;margin-left:auto;margin-right:auto}
+  .th-body,.th-header,.th-footer{max-width:500px;margin-left:auto;margin-right:auto}
+  #theory-select{max-width:500px;margin-left:auto;margin-right:auto}
 }
 </style>
 </head>
@@ -120,6 +180,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
   </div>
   <div id="resume-banner" class="menu" style="display:none"></div>
   <div class="menu">
+    <button class="menu-btn" onclick="showScreen('theory-select')">
+      <span class="icon purple" style="background:#fce7f3;color:#db2777">T</span>
+      <span class="info">이론 학습<small>개념 카드 + 빈칸 암기</small></span>
+    </button>
     <button class="menu-btn" onclick="startMode('all')">
       <span class="icon blue">ALL</span>
       <span class="info">전체 학습<small>모든 문제 순서대로</small></span>
@@ -140,6 +204,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
       <span class="icon red">X</span>
       <span class="info">오답 복습<small>틀린 문제만 다시</small></span>
     </button>
+  </div>
+  <div id="install-banner">
+    <button class="install-btn" onclick="installApp()">
+      <span class="dl-icon">+</span>
+      홈 화면에 추가
+    </button>
+  </div>
+  <div id="ios-install-guide">
+    Safari 하단의 <b>공유</b> 버튼을 누른 뒤<br><b>홈 화면에 추가</b>를 선택하세요
   </div>
 </div>
 
@@ -194,6 +267,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
       <span class="icon blue">H</span>
       <span class="info">홈으로</span>
     </button>
+  </div>
+</div>
+
+<!-- THEORY SELECT SCREEN -->
+<div id="theory-select" class="screen">
+  <button class="back-btn" onclick="showScreen('home')">&larr; 뒤로</button>
+  <h2>이론 학습</h2>
+  <div id="theory-topic-list"></div>
+</div>
+
+<!-- THEORY CARD SCREEN -->
+<div id="theory" class="screen">
+  <div class="th-header">
+    <div class="th-top">
+      <span class="th-num" id="th-num">1/10</span>
+      <span class="th-sec" id="th-sec">Topic 1 > 1.1</span>
+      <button class="quit-btn" onclick="showScreen('theory-select')">나가기</button>
+    </div>
+    <div class="progress-bar"><div class="fill" id="th-progress"></div></div>
+  </div>
+  <div class="th-body">
+    <div class="th-card-title" id="th-title"></div>
+    <div class="th-content" id="th-content"></div>
+    <button class="th-reveal-all" onclick="revealAllBlanks()">빈칸 모두 보기</button>
+  </div>
+  <div class="th-footer">
+    <button class="th-prev" id="th-prev-btn" onclick="prevCard()">이전</button>
+    <button class="th-next" id="th-next-btn" onclick="nextCard()">다음</button>
   </div>
 </div>
 
@@ -6541,6 +6642,7 @@ function showScreen(id){
   document.getElementById(id).classList.add('active');
   if(id==='home') updateHome();
   if(id==='topic-select') buildTopicList();
+  if(id==='theory-select') buildTheoryTopicList();
   window.scrollTo(0,0);
 }
 
@@ -6866,6 +6968,256 @@ function showReview(){
 
   showScreen('review');
 }
+
+
+// ===== THEORY DATA =====
+const THEORY_DATA = [{"t":1,"s":"1.1","st":"마케팅이란?","title":"마케팅과 생산의 관계","md":"- Marketing: 소비자 만족도를 파악하여 알맞는 제품을 생산할 수 있도록\n- Production: 재화 생산, 서비스 수행"},{"t":1,"s":"1.1","st":"마케팅이란?","title":"마케팅이 극복하는 불일치와 분리 (7가지)","md":"- 불일치: 수량의 불일치, 종류의 불일치\n- 분리: 공간 분리, 시간 차이, 정보 격차, 가치 차이, 소유권 차이"},{"t":1,"s":"1.1","st":"마케팅이란?","title":"마케팅의 총괄적 기능 (Universal Functions) — 8가지","md":"- 구입, 판매, 운송, 보관, 상품 표준화 및 품질, 자금조달, 위험 부담, 시장 정보"},{"t":1,"s":"1.1","st":"마케팅이란?","title":"거시마케팅 (Macro-marketing)","md":"- 생산과 소비를 연결해주는 가교 역할 (사회적 유통 현상)\n- 수량 및 종류의 **`불일치`** → 마케팅의 보편적, 총괄적 기능\n- **`경제체제`**의 종류: 명령경제(정부) vs. 시장경제(시장참여자)\n- 정의: a social process that directs an economy's flow of goods and services from producers to consumers in a way that effectively matches heterogeneous supply and demand and accomplishes the objectives of society"},{"t":1,"s":"1.1","st":"마케팅이란?","title":"마케팅의 정의 (AMA 2017)","md":"- \"Marketing is the activity, set of institutions, and processes for creating, communicating, delivering, and exchanging offerings that have value for customers, clients, partners, and society at large.\"\n- 거시(사회적 유통) < 미시(기업 활동)"},{"t":1,"s":"1.1","st":"마케팅이란?","title":"마케팅의 핵심은 고객","md":"- 고객(customer): 기업이 개발, 가격 책정, 유통, 판매하는 제품을 구매하는 사람들\n- **`목표시장(target market)`**: 기업이 자사의 마케팅 활동을 전개하고자 하는 고객집단"},{"t":1,"s":"1.2","st":"4Ps: Product, Place, Promotion, Price","title":"마케팅믹스 (Marketing Mix)","md":"- Product: 제품을 개발하고 관리하는 것\n- Place: 제품을 고객이 구매하기에 적합한 장소에 제공하는 것\n- Price: 제품을 합리적인 가격에 제공하는 것\n- Promotion: 제품이 고객을 만족시킬 수 있도록 고객과의 합리적인 의사소통을 하는 것"},{"t":1,"s":"1.2","st":"4Ps: Product, Place, Promotion, Price","title":"제품 (Product)","md":"- 재화: 물리적인 개체\n- **`서비스`**: 인간 및 기계 작동을 사용하여 고객에게 무형의 가치를 제공\n- 아이디어: 개념, 철학, 이미지, 쟁점이나 사안"},{"t":1,"s":"1.2","st":"4Ps: Product, Place, Promotion, Price","title":"유통 (Place)","md":"- **`인터넷`**의 출현은 전통적 방식의 유통에 큰 영향"},{"t":1,"s":"1.2","st":"4Ps: Product, Place, Promotion, Price","title":"촉진 (Promotion)","md":"- **`정보제공(커뮤니케이션)`**, 설득, 관심 부여"},{"t":1,"s":"1.2","st":"4Ps: Product, Place, Promotion, Price","title":"가격 (Price)","md":"- 고객이 구매할 제품의 가치에 대하여 민감\n- 경쟁을 위한 도구로 사용"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"가치 (Value)","md":"- 가치 = 혜택 - 비용\n- 가치는 비용과 이득 간의 **`주관적`** 평가\n- 우월한 고객가치: 혜택 High / 비용 Low\n- 열등한 고객가치: 혜택 Low / 비용 High"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"고객과의 관계 — 교환","md":"- **`교환`**: 두 명 이상의 이해당사자 참여, 양쪽 만족, 가치에 대한 확신, 신뢰"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"이해관계자(stakeholder)와의 관계","md":"- 고객, 종업원, 투자자와 주주, 공급자, 정부/지역사회"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"역동적 마케팅 환경 (marketing environment)","md":"- 경쟁적, 경제적, 정치적, 법률적, 기술적, 사회문화적 요소\n- 미래에 대한 예측을 불투명하게 (**`불확실성`**)\n- 마케팅믹스 변수는 통제 가능 vs. 환경변수는 통제 불가 → 계획 및 대비"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"마케팅 개념 (marketing concept)","md":"- 고객의 욕구 충족 + 기업의 목표 달성을 위한 총체적이고 조직화된 기업의 활동\n- 3요소: 고객만족, 기업의 총체적 활동, 기업의 목표실적 → **`마케팅 개념`**"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"마케팅 개념의 발전","md":"| 시기 | 관점 | 핵심 |\n|------|------|------|\n| 19세기 후반 | **`생산`** 관점 | 산업혁명, 대량생산, 효율성 |\n| 20세기 전반 | **`판매`** 관점 | 경쟁 치열, 인적판매/광고/유통 강조 |\n| 20세기 중반 | **`마케팅`** 관점 | 시장지향(market orientation), 고객만족 중심 |"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"고객관계관리 (CRM)","md":"- 고객 정보 획득 → 마케팅 전략 적용 → 바람직한 고객관계 유지\n- **`고객생애가치(고객평생가치)`**를 극대화"},{"t":1,"s":"1.3","st":"마케팅 개념과 소비자 가치","title":"고객평생가치 (Customer Lifetime Value)","md":"- 고객이 회사에 가져올 수 있는 평생 이익 공헌도\n- **`브랜드`** 자산\n- 시장점유율 → 고객점유율\n- 구전효과 (WOM; word-of-mouth)"},{"t":1,"s":"1.4","st":"세계경제에서의 마케팅의 중요성","title":"세계경제에서의 마케팅의 중요성","md":"- 마케팅 비용은 구매자 비용에서 큰 부분\n- 비영리단체에도 사용\n- 기술력으로 사람들을 연결 (이메일/웹사이트/앱)\n- **사회책임적 마케팅**: 기업과 고객, 주주의 복지를 증진하는 공생관계"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"전략적 마케팅 관리 (strategic marketing management)","md":"- 사업계획 단계부터 실행, 성과 평가까지 모든 마케팅 활동을 **`통합적`**이며 **`체계적`**으로 운영\n- 장기적 관점에서 고객관계 → 조직 목표와 부합\n- 자원의 최소화"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"전략적 계획 (strategic planning) 과정","md":"```\n사명(Mission) → 기업 단계 전략 → 사업 단계 전략 → 마케팅 전략 → 마케팅 믹스(4P)\n```"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"조직의 미션과 목표","md":"- Mission statement: 현재 조직의 임무 목적 (purpose for being)\n- Vision statement: 조직의 미래 (positioning의 시작)\n- Value statement: 조직의 근간을 이루는 가치체계 (윤리적 정책)\n- \"우리의 고객은 누구인가\" & \"우리의 핵심역량은 무엇인가\""},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"기업 아이덴티티 (Corporate Identity)","md":"- 고유의 symbol, 개성, 철학을 통해 모든 기업활동\n- CIM (corporate identity management): 다학문적 접근\n- 이해관계자들에게 **`일관적`**인 메시지 전달\n- 조직 전체의 정체성 vs. brand image (특정 제품/서비스에 집중)"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"기업전략 (Corporate Strategy)","md":"- 각 업무 분야에 소요되는 자원을 적절하게 분배하여 목표 달성\n- 자원을 외부 환경적 기회 활용 + 위험 최소화에 사용"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"전략적 사업단위 (SBU; Strategic Business Unit)","md":"- 하나의 기업 내부에서 독립적인 전략을 수립하고 실행하는 사업 단위\n- 자체적인 제품·시장 범위, 경쟁자, 목표, 전략"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"시장 관련 지표","md":"- 시장(market): 제품에 대한 필요성 + 구매 능력 + 의지 + 권한을 가진 상태\n- 시장성장률 = (market size t − market size t-1) / market size t-1 × 100\n- **`시장점유율`**(market share) = business sales / market sales × 100"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"BCG 매트릭스 (시장성장률/시장점유율 도표)","md":"- Boston Consulting Group, Bruce Henderson (1968)\n- **`SBU`**가 주요 분석 대상 (portfolio management)\n\n|  | 시장점유율 High | 시장점유율 Low |\n|--|----------------|----------------|\n| **성장률 High** | ★ Stars (유망/성장사업): 시장 리더, 적극적 투자 | ? Question Marks (문제/개발사업): 성장가능성 있으나 경쟁 치열 |\n| **성장률 Low** | 💰 Cash Cows (자금원천/수익사업): 안정적 수익, 비용절감 유지 | 🐕 Pets/Dogs (쇠퇴/사양사업): 수익성 낮아 철수/구조조정 |\n\n- 한계: 마케팅 전략 처방전 아님, 시장점유율 ≠ 지속적 성과의 직접 예측변수, 급변하는 시장 적응능력"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"핵심역량 (Core Competencies)","md":"- 경쟁사보다 월등히 뛰어나게 수행할 수 있는 특정 역량/기술\n- 조건: 고객가치 창출, 경쟁사 모방 어려움, 다양한 시장에서 응용 가능"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"시장기회 (Market Opportunity)","md":"- 소비자 니즈 변화, 기술혁신, 법규/정책 변화, 경쟁환경 변화"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"경쟁우위 (Competitive Advantage)","md":"- 기업의 핵심역량이 시장의 기회를 잘 맞출 수 있을 때"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"SWOT 분석","md":"- **`내부적`** 요소: 강점(S), 약점(W) — 조직의 능력\n- **`외부적`** 문제: 기회(O), 위협(T) — 해당 조직뿐만 아닌 모든 조직 당면"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"시장기회의 4가지 유형 (Ansoff 매트릭스)","md":"|  | 기존 제품 | 새 제품 |\n|--|----------|---------|\n| **기존 시장** | 시장침투 (Market Penetration) | 제품개발 (Product Development) |\n| **새 시장** | 시장개발 (Market Development) | 다각화 (Diversification) |"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"선발 vs. 후발 진입 기업","md":"| | 선발 진입 기업 | 후발 진입 기업 |\n|--|--------------|--------------|\n| 이점 | 장기간 경쟁우위, 고객 선점, 브랜드 로열티, 특허 | 검증된 시장, 선발의 사례 학습, 적은 초기비용 |\n| 위험 | 높은 개발비용, 불확실한 시장, 예기치 못한 고객반응 | 특허 장벽, 고객 선점(brand switching 비용) |"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"SMART 목표","md":"- Specific (구체적), Measurable (정량화), Achievable (실현가능), Realistic (현실적), Time-specific (시간계획)"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"마케팅 전략 (Marketing Strategy)","md":"- 목표고객 선정 + 마케팅 믹스 구성\n- SWOT 분석 선행 → 강점을 기회와 연결, 약점/위협 최소화\n- 지속가능한 경쟁우위 (sustainable competitive advantage) 발견"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"목표고객 선정","md":"- 요구나 성향이 **`유사한`** 특정 그룹의 고객\n- mass marketing (생산중심) vs. target marketing (시장중심)"},{"t":2,"s":"2.1","st":"전략적 계획 과정","title":"마케팅 계획서 (Marketing Plan)","md":"- 마케팅 전략을 수행하기 위한 구체적 수행 활동의 가이드라인\n- Marketing Program = Marketing Plan + Marketing Strategy + Marketing Mix + Target Market"},{"t":3,"s":"3.1","st":"3C","title":"시장 (Market) 정의","md":"- 특정 제품/서비스에 대해 a) 욕구 b) 구매 능력 c) 구매 의지 d) 구매 권한을 가진 개인/조직의 집합\n- 소비자시장 (B2C): 개인/가계가 자신의 소비와 편익을 위해 구매\n- 비즈니스시장 (B2B): 재판매, 생산, 조직운영 목적으로 구매"},{"t":3,"s":"3.1","st":"3C","title":"3C와 STP","md":"- 3C: Customer(소비자), Competitors(경쟁자), Company(자사)\n- STP: Segmentation(세분화), Targeting(표적화), Positioning(위치화)"},{"t":3,"s":"3.1","st":"3C","title":"PESTEL 분석","md":"- Political(정치), Economic(경제), Social(사회), Technological(기술), Environmental(환경), Legal(법률)\n- 거시환경은 기업의 입장에서 **`통제`**가 거의 불가능"},{"t":3,"s":"3.1","st":"3C","title":"소비자 분석 (Consumer Analysis)","md":"- 소비자 니즈 분석: inside out(기업 중심) vs. outside in(고객 중심)\n- 시장분석: 시장 규모, 성장률, 수익성, 경쟁강도, 트렌드"},{"t":3,"s":"3.1","st":"3C","title":"경쟁자 분석 (Competitor Analysis)","md":"- 경쟁자의 전략, 강점/약점, 시장 내 위치 파악\n- 경쟁구조:\n\n| 유형 | 설명 |\n|------|------|\n| 완전독점 (monopoly) | 단일 기업이 공급 |\n| 과점 (oligopoly) | 소수 대형 기업 지배 (순수과점 / 차별적 과점) |\n| **`독점적 경쟁`** (monopolistic competition) | 다수 기업, 유사하지만 차별화된 제품 |\n| 완전경쟁 (pure competition) | 다수 공급자/수요자, 동질적 제품, 가격수용자 |"},{"t":3,"s":"3.1","st":"3C","title":"Porter's 5 Forces (경쟁 요인)","md":"- 산업 내 경쟁자\n- 잠재적 진입자의 위협\n- 대체품의 위협 → **`덜`** 매력적인 시장\n- 구매자의 교섭력 → 강하면 **`덜`** 매력적\n- 공급자의 교섭력"},{"t":3,"s":"3.1","st":"3C","title":"자사 분석 (Company Analysis)","md":"- 성과분석: 매출성장률, 시장점유율, 수익성, 고객지표\n- 원가분석: 비용우위는 **`경쟁우위`**의 중요한 원천\n- 브랜드 자산 분석\n- 강점/약점 분석: 경쟁 시장 조건하에서 **`상대적`**인 의미"},{"t":3,"s":"3.2","st":"Segmentation","title":"시장세분화 (Segmentation)","md":"- 전체 시장을 유사한 제품 니즈를 갖는 소비자들로 구성된 하위집단으로 나누는 과정\n- 세분시장(market segment): 한 개 혹은 더 많은 **`공통적인`** 특성을 공유하는 집단"},{"t":3,"s":"3.2","st":"Segmentation","title":"성공적 시장세분화 조건","md":"- 고객 니즈는 **`이질적`**이어야 함\n- 세분시장은 식별되고 나눌 수 있어야 함\n- 충분한 이익 잠재성\n- 기업이 선택한 세분시장에 접근 가능해야 함"},{"t":3,"s":"3.2","st":"Segmentation","title":"시장세분화 절차 4단계","md":"1. 조사단계 (research): 소비자 동기, 태도, 행동 파악\n2. 분석단계 (analysis): 요인분석(factor analysis) → **`군집분석`**(cluster analysis)\n3. 세부요약설명단계 (profiling): 각 군집의 특성 설명\n4. 전략 연결 (STP): 표적시장 선택과 포지셔닝의 시작"},{"t":3,"s":"3.2","st":"Segmentation","title":"소비자시장 세분화 변수","md":"| 변수 유형 | 예시 |\n|-----------|------|\n| 인구통계적 (demographic) | 연령, 성별, 인종, 소득, 교육, **`가족생활주기`** |\n| 지리통계적 (geographic) | 기후, 지형, 도시 규모, 시장밀도 |\n| 심리통계적 (psychographic) | 개성, 동기, 라이프스타일(AOI), 가치관 |\n| 행동적 (behavioral) | 사용여부, 사용량, 충성도, 이점/혜택 |\n\n- **`지리인구통계적`** 세분화 (geodemographic segmentation): lifestyle과 인구통계학적 정보를 바탕으로 지역 단위로 군집화\n- 심리통계적 변수: 경쟁제품 간에 **`실질적 차이`**가 없고 소비자 니즈가 다른 변수와 의미 있게 연결되지 않을 때 활용"},{"t":3,"s":"3.2","st":"Segmentation","title":"세분화 전략 기준","md":"- homogeneous (similar) within: 세분시장 내 유사\n- heterogeneous (different) between: 세분시장 간 상이\n- substantial: 충분히 큰 규모\n- operational: 실용적으로 식별 가능"},{"t":3,"s":"3.3","st":"Targeting","title":"표적시장 선정 5가지 유형","md":"| 유형 | 설명 |\n|------|------|\n| 단일세분시장 집중 | 단일 제품 → 단일 세분시장 |\n| **`선택적`** 전문화 | 매력적인 몇 개의 세분시장에 진입 |\n| 제품 전문화 | 단일 제품 → 여러 세분시장 |\n| **`시장`** 전문화 | 특정 고객집단의 여러 욕구 충족 위해 다양한 제품 |\n| 전체시장 확보 | 대기업이 전체 시장을 커버 |"},{"t":3,"s":"3.4","st":"Positioning","title":"위치화 전략 (Positioning)","md":"- 마케팅 믹스를 이용하여 소비자의 의식에 자사 제품의 정확한 위치를 심어주는 것\n- 유형: 속성/효익, 사용상황, 제품사용자, 경쟁"},{"t":3,"s":"3.4","st":"Positioning","title":"재포지셔닝 (Repositioning)","md":"- 경쟁환경과 소비자 인식 변화에 대응하여 위치를 재설정\n- when: 경쟁 심화, 소비자 니즈 변화, 브랜드 노후화, 기존 포지셔닝 실패\n- how: 속성/혜택 변경, 타겟 변경, 경쟁기준 변경\n- risk: 기존 고객 이탈, 브랜드 정체성 혼란, 커뮤니케이션 비용 증가"},{"t":3,"s":"3.4","st":"Positioning","title":"포지셔닝맵 (Perceptual Map)","md":"- 소비자의 **`지각`**/인식을 기반으로 자사/경쟁 제품의 위치를 시각적으로 표현\n- 차원 선택 → 제품 위치 설정 (mapping) → 이상점 도출 (ideal point)\n- 활용: 시장 공백 규명, 현재 위치 파악, 경쟁 상황 파악, 이상점 거리 분석, 마케팅 효과 측정"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"소비자 구매 의사결정 과정 5단계","md":"```\n문제인식 → 정보탐색 → 대안평가 → 구매 → 구매후평가\n```"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"1단계: 문제인식 (Problem Recognition)","md":"- 현재 상태와 바람직한 상태 간의 **`차이(gap)`**를 인식할 때 시작\n- 내적 자극: 제품 고갈, 생리적 욕구\n- 외적 자극: 광고, 신제품 출시, 사회적 영향"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"2단계: 정보탐색 (Information Search)","md":"- 내적 탐색: 과거 경험, **`기억`**, 지식\n- 외적 탐색: 개인적/상업적/공적/경험적 정보원\n- 지각된 위험과 관여도 수준이 높을수록 더 많은 외적 탐색"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"3단계: 대안평가 (Evaluation of Alternatives)","md":"- 전체집합 → 인지집합 → **`고려`** 집합 → 선택집합 → 의사결정\n- 평가기준: 객관적 (가격, 크기, 성능) + 주관적 (스타일, 이미지)\n- **`프레이밍(틀)`** 효과: 동일 정보라도 제시방식에 따라 판단이 달라짐"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"다속성 태도모델 (Fishbein Model)","md":"- A₀ = Σ(Bᵢ × Iᵢ)\n  - A₀: 특정 대상에 대한 태도\n  - Bᵢ: 특정 대상이 속성 i를 갖고 있다는 **`신념`** 정도\n  - Iᵢ: 소비자가 속성 i에 부여하는 중요성 정도\n- 활용 전략: 신념 변화, 중요도 조정, 새로운 속성 도입, 비교광고"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"4단계: 구매 (Purchase)","md":"- 상황적 요인, 예기치 못한 요인, 경쟁적 영향"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"5단계: 구매후평가 (Post-purchase Evaluation)","md":"- **`기대-성과 불일치`** 이론: 기대(E) 대비 성과(P)\n  - P > E → 만족 / P < E → 불만족\n  - 핵심: 적절한 기대 수준을 갖게 하는 것이 관건\n- VOC(Voice of Customer) 수집, A/S 보강"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"관여도 (Involvement)","md":"- 소비자가 특정 제품/구매 상황에 대해 느끼는 개인적 중요성과 관심 수준\n- 고관여 (high involvement): 적극적 정보탐색과 평가\n- 저관여 (low involvement): 제한된 정보탐색, 단순한 의사결정\n- 지속적 관여 (enduring): 장기적이고 지속적인 관심\n- 상황적 관여 (situational): 일시적으로 유발"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"소비자 의사결정 유형","md":"| 유형 | 관여도 | 특징 |\n|------|--------|------|\n| 확장적 의사결정 | 고관여 | 비싸고 친숙하지 않은 제품, 많은 시간과 노력 |\n| 한정적 의사결정 | 중간 | 친숙한 제품군 내 새 브랜드 |\n| 반복반응행동 | 저관여 | 저가격 반복구매, 습관적 |\n| 충동구매 | - | 강한 즉각적 욕구, 비계획적 |"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"4가지 구매행동 매트릭스","md":"|  | **`지각된 제품 차별화`** High | 차별화 Low |\n|--|---------------------------|------------|\n| **`관여도`** High | 복잡하고 신중한 구매행동 | 부조화 감소 구매행동 |\n| 관여도 Low | 다양성 추구 구매행동 | 습관적 구매행동 |"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"경제적 영향","md":"- **`재량`** 소득 (discretionary income): 가처분소득에서 기본 생활비 제외\n- 가처분소득 (disposable income): 세금 제외 후 사용 가능한 소득"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"상황적 영향 (Situational Influence)","md":"- 물리적 환경, 사회적 환경, 시간, 구매 목적, 기분/조건"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"심리적 영향 (Psychological Influence)","md":""},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"지각 (Perception)","md":"- 선택적 지각: 선택적 **`주의`** / 선택적 왜곡 / 선택적 저장\n- **`지각적 조직화`**: 형상-배경 (figure-ground), 완결성 (closure)\n- 해석: 개인의 경험과 기대를 반영하여 의미 부여"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"동기 (Motive)","md":"- **`매슬로우의 욕구단계이론`** (Maslow's Hierarchy of Needs)\n  1. 생리적 욕구 (physiological)\n  2. 안전의 욕구 (security)\n  3. 사회적 욕구 (social)\n  4. 존경의 욕구 (esteem)\n  5. 자아실현의 욕구 (self-actualization)"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"학습 (Learning): 경험과 정보에 의해 지식과 행동이 변화","md":""},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"태도 (Attitude)","md":"- 인지적 (cognitive) / 감정적 (affective) / 행동적 (behavioral)\n- 행동에 **`지속적`**인 영향\n- **`태도척도`** (attitude scale): 형용사 구절/문장에 대한 반응으로 태도 측정"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"성격 (Personality): 특정 상황에서 일관된 행동을 유도하는 고유한 심리적 특성","md":"- 자아개념 (self-concept), 라이프스타일 (lifestyle)"},{"t":4,"s":"4.1","st":"소비자 구매행동","title":"사회적 영향 (Social Influence)","md":"- 역할: 특정 위치에 걸맞는 행동/활동\n- 준거집단 (reference group): 1차(primary, 가까운 관계) / 2차(secondary, 덜 친밀)\n- **`의견선도자`** (opinion leader): 비공식 집단에서 정보를 제공하는 구성원\n- 문화 (culture): 한 사회의 가치관, 지식, 신념, 관습의 총체\n- **`하위문화`** (subculture): 동질적 특성/가치관/행동패턴을 공유하는 하위집단"},{"t":4,"s":"4.2","st":"비즈니스 시장과 구매행동","title":"비즈니스 시장 4가지 유형","md":"| 유형 | 설명 |\n|------|------|\n| 생산자시장 (producer) | 다른 제품 생산 위해 원자재/부품/설비 구매 |\n| 재판매자시장 (reseller) | 이윤 붙여 재판매 (도매상, 소매상) |\n| 정부시장 (government) | 공공서비스 제공 위해 구매, 경쟁입찰/협상계약 |\n| 기관시장 (institutional) | 교육/의료/복지 등 비영리조직 |"},{"t":4,"s":"4.2","st":"비즈니스 시장과 구매행동","title":"비즈니스 거래 특성","md":"- 대규모 거래, 경제적 가치 중심, 고위험·고가, 맞춤형 요구, 장기적 관계"},{"t":4,"s":"4.2","st":"비즈니스 시장과 구매행동","title":"비즈니스 고객 속성","md":"- **`전문적`** 구매자\n- 조직 목표 + 개인 목표 동시 추구\n- 합리적/가치 극대화 의사결정\n- 신뢰 기반 장기적 파트너십"},{"t":4,"s":"4.2","st":"비즈니스 시장과 구매행동","title":"구매 유형","md":"| 유형 | 설명 |\n|------|------|\n| 신규구매 (new-task) | 처음 구매, **`불확실성`**과 위험 높음 |\n| 수정재구매 (modified rebuy) | 기존 경험 바탕으로 사양/가격/공급자 변경 |\n| 단순재구매 (straight rebuy) | 변경 없이 반복, 루틴화 |"},{"t":4,"s":"4.2","st":"비즈니스 시장과 구매행동","title":"비즈니스 제품의 산업수요","md":"- 집중된 수요: 소수 대형 고객이 상당 부분 차지\n- **`파생수요`** (derived demand): 최종 소비자 수요로부터 파생\n- 공통수요 (joint demand): 둘 이상의 품목이 조합\n- 비탄력적 수요: 가격 변화에 수요 변화 작음\n- 변동적 수요: 소비재보다 수요 변동성 큼"},{"t":4,"s":"4.2","st":"비즈니스 시장과 구매행동","title":"구매센터 (Buying Center / Decision-Making Unit)","md":"- 사용자 (user): 실제 사용하는 구성원\n- 영향력행사자 (influencer): 기술 관련 직원, 제품명세서/대안비교 관여\n- 구매자 (buyer): 공급자 선정, 조건 협상\n- 의사결정자 (decider): 실제 선정 결정\n- 문지기 (gatekeeper): 정보 흐름 통제"},{"t":5,"s":"5.1","st":"마케팅조사의 중요성","title":"마케팅정보시스템 (MIS)","md":"- 내부/외부 환경으로부터 정보를 지속적으로 수집·분석·저장·배포하는 체계\n- 구성: 사람(people), 장비(equipment), 절차(procedures)\n- 데이터베이스 (database): 조직 내외부 데이터를 체계적으로 관리\n- 빅데이터 (big data): 대규모·고속·다양한 형태의 데이터"},{"t":5,"s":"5.1","st":"마케팅조사의 중요성","title":"마케팅조사 (Marketing Research)","md":"- 마케팅 의사결정 관련 문제 해결/기회 탐색을 위해 정보를 체계적으로 설계·수집·분석·해석·보고하는 과정\n- 관리자의 직관 의존을 줄이고 데이터 기반 의사결정"},{"t":5,"s":"5.1","st":"마케팅조사의 중요성","title":"조사 분류","md":"- 문제확인조사: 현재/잠재적 문제와 기회 파악\n- 문제해결조사: 특정 마케팅 문제 해결, 의사결정 지원"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"두 가지 형식의 자료","md":"| | 질적 자료 (qualitative) | 양적 자료 (quantitative) |\n|--|------------------------|------------------------|\n| 형태 | 서술적, 묘사적 정보 | 수치로 나타낼 수 있는 정보 |\n| 목적 | 왜(why), 어떻게(how) | 무엇(what), 누가(who), 언제(when) |\n| 활용 | 탐색적 조사 | 결론적 조사 |"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"마케팅조사의 종류","md":""},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"탐색적 조사 (Exploratory)","md":"- 명확하게 정의되지 않은 문제를 이해하는 **`초기`** 단계의 조사\n- 방법: 문헌조사, 전문가 인터뷰, 고객자문위원회\n- 개별 인터뷰 (in-depth interview): 1대1로 **`심층적`**으로 탐색\n  - 구조화 / 반구조화 / 비구조화\n- 포커스 그룹 인터뷰 (FGI): 6~10명, 집단 상호작용\n  - **`진행자/사회자`** (moderator): 중립적 태도, 균형 있게 유도"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"결론적 조사 (Conclusive)","md":"- **`기술적`** 조사 (descriptive): 특성/분포/행동을 체계적으로 파악\n  - 변수 간 관계 설명 가능하나 인과관계 규명에는 한계\n- 실험적 조사 (experimental): **`인과관계`** 규명\n  - 독립변수(IV): 연구자가 조작하는 원인변수\n  - 종속변수(DV): IV에 따라 영향받는 결과변수\n  - 외생변수: IV 외에 DV에 영향 미칠 수 있는 변수"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"마케팅조사 5단계","md":"```\n문제점 규명 및 정의 → 상황분석 및 조사 설계 → 자료 수집 → 조사결과 해석 → 결과 보고\n```"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"조사 설계","md":"- **`가설`** 설정 (hypothesis): 두 개 이상의 변수 간 관계에 대한 검증 가능한 예측"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"자료 수집","md":"- 1차 자료 (primary data): 특정 연구 목적을 위해 **`직접`** 수집\n- 2차 자료 (secondary data): 기존에 다른 목적으로 수집된 자료"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"표본추출 (Sampling)","md":"- 모집단 (population): 전체 대상 집합\n- 표본 (sample): 모집단을 대표하는 일부"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"확률 표본추출법","md":"- 단순무작위 (random): 모든 구성원이 동일한 확률\n- **`층화`** (stratified): 모집단을 층(strata)으로 나눈 뒤 각 층에서 추출"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"비확률 표본추출법","md":"- 편의 (convenience): 가장 쉽게 접근 가능한 대상\n- **`할당`** (quota): 모집단 비율 반영하되 비확률적으로 추출\n- 눈덩이 (snowball): 초기 응답자가 다음 응답자를 소개"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"설문조사 방법","md":"- 우편설문: 낮은 비용, 익명성 높음, 응답률 낮음\n- 전화설문: 즉시 수정 가능, 시각적 자료 불가\n- 개인면접: 심층정보 수집, 비용/시간 최다, **`면접자 편향`** (interviewer bias) 발생 가능"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"설문지 작성","md":"- 한 문항에 하나의 내용 (double-barreled question 지양)\n- 응답 범주는 **`상호배타적`** (mutually exclusive)이고 포괄적(exhaustive)\n- 질문 순서: 일반→구체, 비민감→민감"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"주요 척도 유형","md":"- 양자택일형 (Dichotomous): 예/아니오\n- 선다형 (Multiple Choice): 단일/복수 응답\n- 리커트 (Likert Scale): 동의 정도 (5점/7점)\n- 의미차이 (Semantic Differential): 반대 형용사 쌍\n- 중요도 (Importance Scale)\n- 구매의도 (Intention-to-Buy Scale)"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"신뢰도 vs. 타당도","md":"- 신뢰도 (reliability): 반복 측정 시 일관된 결과\n- 타당도 (validity): 의도한 개념을 정확하게 측정\n- **신뢰도가 높다고 반드시 타당도가 높은 것은 아님**\n- 타당한 측정을 위해서는 일정 수준 이상의 신뢰성이 전제"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"관찰조사 (Observational Research)","md":"- 실제 행동을 직접 관찰 → **`응답편향`** (response bias) 감소\n- 안구추적장치, 생체측정모니터(**`감정적`** 반응), fMRI, EEG"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"조사결과 해석","md":"- **`기술`** 통계 (descriptive): 평균, 중앙값, 최빈값, 분산, 표준편차\n- **`추론`** 통계 (inferential): 가설검정, 상관관계, 회귀분석"},{"t":5,"s":"5.2","st":"마케팅조사 방법론","title":"결과 보고","md":"- 핵심 인사이트 중심으로 전달\n- Executive summary를 보고서 앞부분에 배치\n- 한계(limitations) 명시, 실행 가능한 제안(actionable recommendations) 포함"}];
+
+// ===== THEORY STATE =====
+let theoryState = { cards: [], idx: 0, topic: 0, section: '' };
+
+// ===== THEORY MD RENDERER =====
+function renderInline(text){
+  // **`text`** -> blank
+  text = text.replace(/\*\*`([^`]+)`\*\*/g, '<span class="th-blank" onclick="this.classList.toggle(&#39;rv&#39;)">$1</span>');
+  // **text** -> bold
+  text = text.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+  // `text` -> code
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  return text;
+}
+
+function renderTable(tableLines){
+  let h = '<table class="th-table">';
+  let isHeader = true;
+  for(const line of tableLines){
+    if(line.includes('---')){ isHeader = false; continue; }
+    const cells = line.split('|').slice(1,-1);
+    if(cells.length === 0) continue;
+    const tag = isHeader ? 'td' : 'td';
+    h += '<tr>' + cells.map((c,i) => {
+      const styled = (isHeader || i===0) ? ' style="font-weight:600;background:#f1f5f9"' : '';
+      return '<td' + styled + '>' + renderInline(c.trim()) + '</td>';
+    }).join('') + '</tr>';
+  }
+  return h + '</table>';
+}
+
+function renderTheoryMd(md){
+  const lines = md.split('\n');
+  let html = '';
+  let inList = false;
+  let inCode = false;
+  let tableBuffer = [];
+
+  function flushTable(){
+    if(tableBuffer.length > 0){
+      if(inList){ html += '</ul>'; inList = false; }
+      html += renderTable(tableBuffer);
+      tableBuffer = [];
+    }
+  }
+
+  for(const line of lines){
+    // Table line
+    if(line.trim().startsWith('|')){
+      if(inList){ html += '</ul>'; inList = false; }
+      tableBuffer.push(line);
+      continue;
+    }
+    flushTable();
+
+    // Code block
+    if(line.trim().startsWith('```')){
+      if(inCode){ html += '</div>'; inCode = false; }
+      else { if(inList){ html += '</ul>'; inList = false; } html += '<div class="th-flow">'; inCode = true; }
+      continue;
+    }
+    if(inCode){ html += renderInline(line) + '<br>'; continue; }
+
+    // List item (- or numbered)
+    const listMatch = line.match(/^(\s*)[-\u2022]\s(.+)/);
+    const numMatch = line.match(/^(\s*)\d+\.\s(.+)/);
+    if(listMatch || numMatch){
+      if(!inList){ html += '<ul>'; inList = true; }
+      const m = listMatch || numMatch;
+      const indent = m[1].length > 0 ? ' class="indent"' : '';
+      html += '<li' + indent + '>' + renderInline(m[2]) + '</li>';
+      continue;
+    }
+
+    // Empty line
+    if(!line.trim()){
+      if(inList){ html += '</ul>'; inList = false; }
+      continue;
+    }
+
+    // Regular text
+    if(inList){ html += '</ul>'; inList = false; }
+    html += '<p>' + renderInline(line) + '</p>';
+  }
+
+  flushTable();
+  if(inList) html += '</ul>';
+  if(inCode) html += '</div>';
+  return html;
+}
+
+// ===== THEORY NAVIGATION =====
+function buildTheoryTopicList(){
+  const el = document.getElementById('theory-topic-list');
+  el.innerHTML = '';
+  const topics = {};
+  THEORY_DATA.forEach(c => {
+    if(!topics[c.t]) topics[c.t] = {};
+    if(!topics[c.t][c.s]) topics[c.t][c.s] = { title: c.st, count: 0 };
+    topics[c.t][c.s].count++;
+  });
+
+  for(let t = 1; t <= 5; t++){
+    if(!topics[t]) continue;
+    const grp = document.createElement('div');
+    grp.className = 'sec-group';
+    grp.innerHTML = '<div class="sec-group-title">Topic ' + t + '. ' + TOPIC_NAMES[t] + '</div>';
+    for(const s of Object.keys(topics[t]).sort()){
+      const info = topics[t][s];
+      const btn = document.createElement('button');
+      btn.className = 'sec-btn';
+      btn.innerHTML = '<span>' + s + ' ' + info.title + '</span><span class="cnt">' + info.count + '장</span>';
+      btn.onclick = () => startTheory(t, s);
+      grp.appendChild(btn);
+    }
+    // "Topic 전체" button
+    const allBtn = document.createElement('button');
+    allBtn.className = 'sec-btn';
+    allBtn.style.borderColor = 'var(--pri)';
+    allBtn.style.color = 'var(--pri)';
+    const totalCards = Object.values(topics[t]).reduce((a,b) => a + b.count, 0);
+    allBtn.innerHTML = '<span>Topic ' + t + ' 전체</span><span class="cnt">' + totalCards + '장</span>';
+    allBtn.onclick = () => startTheory(t, null);
+    grp.appendChild(allBtn);
+    el.appendChild(grp);
+  }
+}
+
+function startTheory(topicNum, sectionId){
+  let cards;
+  if(sectionId){
+    cards = THEORY_DATA.filter(c => c.t === topicNum && c.s === sectionId);
+  } else {
+    cards = THEORY_DATA.filter(c => c.t === topicNum);
+  }
+  if(cards.length === 0) return;
+  theoryState.cards = cards;
+  theoryState.idx = 0;
+  theoryState.topic = topicNum;
+  theoryState.section = sectionId;
+  showScreen('theory');
+  renderTheoryCard();
+}
+
+function renderTheoryCard(){
+  const c = theoryState.cards[theoryState.idx];
+  if(!c) return;
+  document.getElementById('th-num').textContent = (theoryState.idx + 1) + '/' + theoryState.cards.length;
+  document.getElementById('th-sec').textContent = 'Topic ' + c.t + ' > ' + c.s;
+  document.getElementById('th-progress').style.width = ((theoryState.idx + 1) / theoryState.cards.length * 100) + '%';
+  document.getElementById('th-title').textContent = c.title;
+  document.getElementById('th-content').innerHTML = renderTheoryMd(c.md);
+
+  // Footer buttons
+  const prevBtn = document.getElementById('th-prev-btn');
+  const nextBtn = document.getElementById('th-next-btn');
+  prevBtn.disabled = theoryState.idx === 0;
+  prevBtn.style.opacity = theoryState.idx === 0 ? '.4' : '1';
+
+  if(theoryState.idx >= theoryState.cards.length - 1){
+    nextBtn.textContent = '문제 풀기';
+    nextBtn.className = 'th-quiz-link';
+    nextBtn.onclick = () => startTheoryQuiz();
+  } else {
+    nextBtn.textContent = '다음';
+    nextBtn.className = 'th-next';
+    nextBtn.onclick = () => nextCard();
+  }
+}
+
+function nextCard(){
+  if(theoryState.idx < theoryState.cards.length - 1){
+    theoryState.idx++;
+    renderTheoryCard();
+    window.scrollTo(0,0);
+  }
+}
+
+function prevCard(){
+  if(theoryState.idx > 0){
+    theoryState.idx--;
+    renderTheoryCard();
+    window.scrollTo(0,0);
+  }
+}
+
+function revealAllBlanks(){
+  document.querySelectorAll('#th-content .th-blank').forEach(el => el.classList.add('rv'));
+}
+
+function startTheoryQuiz(){
+  // Start quiz with questions from the same topic/section
+  const topicNum = theoryState.topic;
+  const sectionId = theoryState.section;
+  if(sectionId){
+    // Filter questions by section
+    const qs = ALL_QUESTIONS.filter(q => q.topic === topicNum && q.section === sectionId);
+    if(qs.length === 0){ alert('이 섹션의 문제가 없습니다'); return; }
+    quiz.mode = 'theory';
+    quiz.topicNum = topicNum;
+    quiz.questions = [...qs];
+    quiz.idx = 0;
+    quiz.answers = new Array(qs.length).fill(null);
+    showScreen('quiz');
+    renderQuestion();
+  } else {
+    startMode('topic', topicNum);
+  }
+}
+
+// ===== PWA INSTALL =====
+let deferredPrompt = null;
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').style.display = '';
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  document.getElementById('install-banner').style.display = 'none';
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('install-banner').style.display = 'none';
+    });
+  }
+}
+
+// iOS detection
+(function(){
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (isIOS && !isStandalone) {
+    document.getElementById('ios-install-guide').style.display = '';
+  }
+})();
 
 // ===== INIT =====
 updateHome();
