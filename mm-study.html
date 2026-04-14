@@ -118,6 +118,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
     <div class="stat"><div class="num" id="s-rate">-</div><div class="label">정답률</div></div>
     <div class="stat"><div class="num" id="s-wrong">0</div><div class="label">오답 문제</div></div>
   </div>
+  <div id="resume-banner" class="menu" style="display:none"></div>
   <div class="menu">
     <button class="menu-btn" onclick="startMode('all')">
       <span class="icon blue">ALL</span>
@@ -155,7 +156,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
     <div class="quiz-top">
       <span class="qnum" id="q-num">1/250</span>
       <span class="topic-tag" id="q-topic">Topic 1</span>
-      <button class="quit-btn" onclick="endQuiz()">나가기</button>
+      <button class="quit-btn" onclick="quitQuiz()">나가기</button>
     </div>
     <div class="progress-bar"><div class="fill" id="q-progress"></div></div>
   </div>
@@ -6452,6 +6453,23 @@ function updateHome(){
   document.getElementById('s-done').textContent = s.done.size;
   document.getElementById('s-rate').textContent = s.total > 0 ? Math.round(s.correct/s.total*100)+'%' : '-';
   document.getElementById('s-wrong').textContent = s.wrong.size;
+
+  // resume banner
+  const banner = document.getElementById('resume-banner');
+  const session = loadSession();
+  if(session && session.qIds && session.qIds.length > 0){
+    const modeNames = {all:'전체 학습',topic:'토픽 '+session.topicNum,mock:'모의고사',blank:'빈칸 학습',wrong:'오답 복습'};
+    const label = modeNames[session.mode] || session.mode;
+    const progress = session.idx + 1;
+    const total = session.qIds.length;
+    banner.innerHTML = `<button class="menu-btn" onclick="resumeSession(loadSession())" style="border-color:var(--pri);background:#eff6ff">
+      <span class="icon blue">▶</span>
+      <span class="info">이어서 풀기: ${label}<small>${progress}/${total} 문제부터</small></span>
+    </button>`;
+    banner.style.display = '';
+  } else {
+    banner.style.display = 'none';
+  }
 }
 
 // ===== NAVIGATION =====
@@ -6478,9 +6496,51 @@ function buildTopicList(){
   }
 }
 
+// ===== SESSION SAVE/RESTORE =====
+const SESSION_KEY = 'mm_session_v1';
+
+function saveSession(){
+  const data = {
+    mode: quiz.mode,
+    topicNum: quiz.topicNum,
+    idx: quiz.idx,
+    answers: quiz.answers,
+    qIds: quiz.questions.map(q=>q.id)
+  };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+}
+
+function clearSession(){
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function loadSession(){
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  } catch { return null; }
+}
+
+function resumeSession(session){
+  const qMap = new Map(ALL_QUESTIONS.map(q=>[q.id, q]));
+  const qs = session.qIds.map(id=>qMap.get(id)).filter(Boolean);
+  if(qs.length === 0) { clearSession(); return; }
+
+  quiz.mode = session.mode;
+  quiz.topicNum = session.topicNum;
+  quiz.questions = qs;
+  quiz.answers = session.answers || new Array(qs.length).fill(null);
+  quiz.idx = Math.min(session.idx || 0, qs.length - 1);
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
 // ===== START QUIZ =====
 function startMode(mode, topicNum){
   quiz.mode = mode;
+  quiz.topicNum = topicNum;
   quiz.idx = 0;
   quiz.answers = [];
   let qs = [];
@@ -6508,6 +6568,7 @@ function startMode(mode, topicNum){
 
   quiz.questions = qs;
   quiz.answers = new Array(qs.length).fill(null);
+  saveSession();
   showScreen('quiz');
   renderQuestion();
 }
@@ -6669,6 +6730,7 @@ function recordAnswer(q, correct){
 function nextQ(){
   quiz.idx++;
   if(quiz.idx >= quiz.questions.length) return endQuiz();
+  saveSession();
   renderQuestion();
   window.scrollTo(0,0);
 }
@@ -6676,11 +6738,18 @@ function nextQ(){
 function skipQ(){
   quiz.idx++;
   if(quiz.idx >= quiz.questions.length) return endQuiz();
+  saveSession();
   renderQuestion();
   window.scrollTo(0,0);
 }
 
+function quitQuiz(){
+  saveSession();
+  showScreen('home');
+}
+
 function endQuiz(){
+  clearSession();
   const answered = quiz.answers.filter(a=>a!==null).length;
   const correct = quiz.answers.filter((a,i)=>{
     const q = quiz.questions[i];
