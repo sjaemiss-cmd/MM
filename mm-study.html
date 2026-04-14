@@ -274,7 +274,7 @@ const ALL_QUESTIONS = [
 "topic": 1,
 "section": "1.1",
 "type": "mc",
-"q": "마케팅이 극복해야 하는 생산과 소비 사이의 '분리(separation)'에 해당하는 것을 모두 고르면?",
+"q": "마케팅이 극복해야 하는 생산과 소비 사이의 '불일치와 분리' 7가지를 모두 포함한 것은?",
 "options": [
 "①공간 분리, 시간 차이, 정보 격차",
 "②공간 분리, 시간 차이, 정보 격차, 가치 차이, 소유권 차이",
@@ -6947,6 +6947,19 @@ function startMode(mode, topicNum){
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} }
 
+function matchBlank(userVal, accepts){
+  const norm = s => s.replace(/[\s,./·\-()（）]/g,'').toLowerCase().replace(/\u200b/g,'');
+  const nVal = norm(userVal);
+  return accepts.some(a => {
+    const nA = norm(a);
+    if(nVal === nA) return true;
+    const tokens = a.replace(/[,./·\-()（）]/g,' ').split(/\s+/).filter(t=>t.length>0).map(t=>t.toLowerCase());
+    if(tokens.length > 1 && tokens.every(t => userVal.toLowerCase().includes(t))) return true;
+    if(nVal.includes(nA) || nA.includes(nVal)) return true;
+    return false;
+  });
+}
+
 // ===== RENDER QUESTION =====
 function renderQuestion(){
   const q = quiz.questions[quiz.idx];
@@ -7023,9 +7036,18 @@ function checkBlank(){
   if(!val) return;
 
   const accepts = q.accept || [q.answer];
+  const norm = s => s.replace(/[\s,./·\-()（）]/g,'').toLowerCase().replace(/\u200b/g,'');
+  const nVal = norm(val);
   const isCorrect = accepts.some(a => {
-    const norm = s => s.replace(/\s/g,'').toLowerCase();
-    return norm(val) === norm(a);
+    const nA = norm(a);
+    // exact match after normalization
+    if(nVal === nA) return true;
+    // check if all key tokens from answer exist in user input (order-independent)
+    const tokens = a.replace(/[,./·\-()（）]/g,' ').split(/\s+/).filter(t=>t.length>0).map(t=>t.toLowerCase());
+    if(tokens.length > 1 && tokens.every(t => val.toLowerCase().includes(t))) return true;
+    // check if user input contains the core answer
+    if(nVal.includes(nA) || nA.includes(nVal)) return true;
+    return false;
   });
 
   quiz.answers[quiz.idx] = val;
@@ -7107,7 +7129,7 @@ function endQuiz(){
     if(a===null) return false;
     if(q.type==='mc') return a===q.answer;
     const accepts = q.accept || [q.answer];
-    return accepts.some(ac=>ac.replace(/\s/g,'').toLowerCase()===String(a).replace(/\s/g,'').toLowerCase());
+    return matchBlank(String(a), accepts);
   }).length;
 
   const pct = answered>0 ? Math.round(correct/answered*100) : 0;
@@ -7131,7 +7153,7 @@ function showReview(){
     if(q.type==='mc') isCorrect = a===q.answer;
     else {
       const accepts = q.accept || [q.answer];
-      isCorrect = accepts.some(ac=>ac.replace(/\s/g,'').toLowerCase()===String(a).replace(/\s/g,'').toLowerCase());
+      isCorrect = matchBlank(String(a), accepts);
     }
     if(isCorrect) return;
 
