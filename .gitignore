@@ -5,3 +5,5 @@ KakaoTalk_*.txt
 # 작업 임시
 _*.py
 _*.js
+build/
+.gstack/
