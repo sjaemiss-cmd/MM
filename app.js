@@ -1,5 +1,5 @@
 // ===== MM 기말 학습앱 =====
-import { SUPA_ENABLED, signUp, signIn, signOut, currentUser, onAuth, displayId, pullState, pushState, saveResult } from './supabase.js';
+import { SUPA_ENABLED, rpcSignup, rpcLogin, rpcResume, rpcSave } from './supabase.js';
 
 const TOPICS = {
   5: { name: '마케팅 조사', short: 'T5' },
@@ -16,14 +16,14 @@ const byId = {};
 // ----- 상태 -----
 const DEFAULT_STATE = () => ({ answered: {}, correct: {}, lastAnswer: {}, wrong: [], bookmarks: [], session: null, updatedAt: 0 });
 let state = DEFAULT_STATE();
-let user = null;
-let localOnly = false;
+let auth = null;       // { username, token } 로그인 시
+let localOnly = false; // 둘러보기
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 
 // ===== 저장 / 동기화 =====
-const LS_KEY = 'mmf_state', THEME_KEY = 'mmf_theme';
+const LS_KEY = 'mmf_state', THEME_KEY = 'mmf_theme', AUTH_KEY = 'mmf_auth';
 let pushTimer = null;
 
 function loadLocal() {
@@ -35,33 +35,36 @@ function saveLocal() {
   scheduleSync();
 }
 function scheduleSync() {
-  if (!user) return;
+  if (!auth) return;
   setSync('syncing');
   clearTimeout(pushTimer);
   pushTimer = setTimeout(async () => {
-    await pushState(state);
-    setSync('on');
+    const { error } = await rpcSave(auth.username, auth.token, state);
+    setSync(error ? '' : 'on');
   }, 1500);
 }
 function setSync(s) {
   const d = $('syncDot'); if (!d) return;
   d.className = 'sync-dot' + (s === 'on' ? ' on' : s === 'syncing' ? ' syncing' : '');
-  d.title = user ? (s === 'syncing' ? '동기화 중…' : '동기화됨') : '로컬 저장';
+  d.title = auth ? (s === 'syncing' ? '동기화 중…' : '동기화됨') : '로컬 저장';
 }
-
-async function mergeFromServer() {
-  const remote = await pullState();
-  if (remote && remote.state) {
-    const rUpdated = remote.state.updatedAt || (remote.updated_at ? Date.parse(remote.updated_at) : 0);
-    if (rUpdated >= (state.updatedAt || 0)) {
-      state = Object.assign(DEFAULT_STATE(), remote.state);
-      localStorage.setItem(LS_KEY, JSON.stringify(state));
-    } else {
-      await pushState(state); // 로컬이 더 최신
+// 서버 상태 병합 (최신 우선)
+function applyServerState(remote) {
+  if (remote && typeof remote === 'object' && Object.keys(remote).length) {
+    const rU = remote.updatedAt || 0;
+    if (rU >= (state.updatedAt || 0)) {
+      state = Object.assign(DEFAULT_STATE(), remote);
+      try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch {}
+      return;
     }
-  } else {
-    await pushState(state); // 서버에 없음 → 초기 적재
   }
+  scheduleSync(); // 로컬이 더 최신 → 서버로 올림
+}
+async function doLoginSuccess(username, token, serverState) {
+  auth = { username: String(username).trim().toLowerCase(), token };
+  localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+  applyServerState(serverState);
+  goHome(); showScreen('home'); setSync('on');
 }
 
 // ===== 라우팅 =====
@@ -98,19 +101,17 @@ function topicStat(n) {
 
 // ===== HOME =====
 function renderHome() {
-  setSync(user ? 'on' : '');
-  $('avatarBtn').textContent = user ? displayId(user).slice(0, 2).toUpperCase() : (localOnly ? '👤' : '?');
+  setSync(auth ? 'on' : '');
+  $('avatarBtn').textContent = auth ? auth.username.slice(0, 2).toUpperCase() : (localOnly ? '👤' : '?');
   const s = stats();
   const body = $('homeBody');
   body.innerHTML = '';
 
-  // greeting
   const greet = el('div', 'greet');
-  greet.innerHTML = `<div><div class="hi">안녕하세요${user ? ', ' + displayId(user) : ''} 👋</div>
+  greet.innerHTML = `<div><div class="hi">안녕하세요${auth ? ', ' + auth.username : ''} 👋</div>
     <div class="sub">마케팅관리 기말 · T5~T9 · 6/16 시험</div></div>`;
   body.appendChild(greet);
 
-  // progress hero
   const hero = el('div', 'card pad');
   hero.innerHTML = `<div class="progress-hero">
     <div class="ring" style="--p:${s.total ? Math.round(s.done / s.total * 100) : 0};position:relative">
@@ -124,7 +125,6 @@ function renderHome() {
     </div></div>`;
   body.appendChild(hero);
 
-  // mastery
   const mast = el('div', 'card pad');
   let mh = `<h2 class="sec" style="margin-bottom:14px">토픽별 숙련도</h2><div class="mastery">`;
   for (const n of TOPIC_NUMS) {
@@ -138,7 +138,6 @@ function renderHome() {
   mast.innerHTML = mh;
   body.appendChild(mast);
 
-  // resume
   if (state.session && state.session.qids && state.session.qids.length) {
     const ss = state.session;
     const r = el('div', 'resume-card');
@@ -147,7 +146,6 @@ function renderHome() {
     body.appendChild(r);
   }
 
-  // menu
   const menu = el('div', 'menu');
   menu.appendChild(menuItem('violet', '📖', '이론 학습', '개념 카드 + 빈칸 암기', () => nav(renderTheoryTopics)));
   menu.appendChild(menuItem('amber', '📝', '모의고사', '기말형식 55문항 (객관식46 + 주관식9)', () => startMode('mock')));
@@ -158,7 +156,7 @@ function renderHome() {
   menu.appendChild(menuItem('amber', '⭐', '즐겨찾기', '저장한 문제 다시', () => startMode('bookmark'), state.bookmarks.length));
   body.appendChild(menu);
 
-  body.appendChild(el('div', 'tiny', `<div style="text-align:center;padding:8px 0 12px">총 ${QUESTIONS.length}문항 · ${THEORY.length} 이론카드 · ${user ? '☁ 진도 동기화 중' : (localOnly ? '이 기기에만 저장 (로그인 시 동기화)' : '')}</div>`));
+  body.appendChild(el('div', 'tiny', `<div style="text-align:center;padding:8px 0 12px">총 ${QUESTIONS.length}문항 · ${THEORY.length} 이론카드 · ${auth ? '☁ ' + auth.username + ' 진도 동기화 중' : (localOnly ? '이 기기에만 저장 (로그인 시 동기화)' : '')}</div>`));
 }
 
 function menuItem(color, icon, title, desc, onClick, badge) {
@@ -215,7 +213,7 @@ function buildQueue(mode, topic) {
 }
 
 // ===== 퀴즈 =====
-let qz = null; // { mode, topic, queue, idx, checked, selected, score }
+let qz = null;
 
 function startMode(mode, topic) {
   const queue = buildQueue(mode, topic);
@@ -237,7 +235,7 @@ function resumeSession() {
   renderQ();
 }
 function saveSession() {
-  if (!qz || qz.mode === 'wrong') { return; }
+  if (!qz || qz.mode === 'wrong') return;
   state.session = { mode: qz.mode, topic: qz.topic, qids: qz.queue.map(q => q.id), idx: qz.idx, score: qz.score, scored: qz.scored };
   saveLocal();
 }
@@ -253,7 +251,6 @@ function renderQ() {
   $('qMulti').style.display = (q.type === 'multi') ? '' : 'none';
   $('qText').innerHTML = renderQText(q.q);
   $('qExplain').style.display = 'none';
-  // bookmark
   const bm = $('qBookmark');
   bm.textContent = state.bookmarks.includes(q.id) ? '★' : '☆';
   bm.classList.toggle('on', state.bookmarks.includes(q.id));
@@ -420,10 +417,8 @@ function endQuiz() {
 // ===== 결과 =====
 function showResult() {
   const tot = qz.queue.length;
-  const answered = qz.queue.filter(q => state.answered[q.id]).length;
   const correct = qz.queue.filter(q => state.correct[q.id]).length;
   const pct = tot ? Math.round(correct / tot * 100) : 0;
-  if (qz.scored) saveResult('mock', correct, tot);
   const body = $('resultBody');
   let msg = pct >= 90 ? '완벽해요! 🏆' : pct >= 70 ? '좋아요! 👍' : pct >= 50 ? '조금만 더! 💪' : '복습이 필요해요 📖';
   body.innerHTML = `
@@ -460,7 +455,6 @@ function renderTheorySections(topic) {
   const cards = THEORY.filter(t => t.t === topic);
   const secs = [...new Set(cards.map(c => c.s))];
   const list = el('div', 'list');
-  // 전체 보기
   const all = el('button', 'lrow');
   all.innerHTML = `<div><div class="lt">📚 전체 보기</div><div class="lsub">이 토픽 ${cards.length}장 모두</div></div><div class="lcnt">›</div>`;
   all.onclick = () => nav(() => openTheory(cards, `${TOPICS[topic].short} 전체`));
@@ -494,7 +488,6 @@ function renderTheoryCard() {
   const reveal = el('button', 'reveal-all', '🔍 빈칸 전체 공개 / 가리기');
   reveal.onclick = () => { const all = card.querySelectorAll('.bkt'); const anyHidden = [...all].some(x => !x.classList.contains('show')); all.forEach(x => x.classList.toggle('show', anyHidden)); };
   b.appendChild(reveal);
-  // blank toggle delegation
   card.querySelectorAll('.bkt').forEach(s => s.onclick = () => s.classList.toggle('show'));
   $('thPrev').disabled = idx === 0;
   $('thPrev').style.opacity = idx === 0 ? .4 : 1;
@@ -529,10 +522,10 @@ function renderMd(md) {
 }
 function inline(s) {
   const blanks = [];
-  s = s.replace(/\*\*`([^`]+)`\*\*/g, (_, m) => { blanks.push(m); return ` ${blanks.length - 1} `; });
+  s = s.replace(/\*\*`([^`]+)`\*\*/g, (_, m) => { blanks.push(m); return ` ${blanks.length - 1} `; });
   s = s.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
   s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-  s = s.replace(/ (\d+) /g, (_, i) => `<span class="bkt">${blanks[+i]}</span>`);
+  s = s.replace(/ (\d+) /g, (_, i) => `<span class="bkt">${blanks[+i]}</span>`);
   return s;
 }
 
@@ -546,46 +539,40 @@ function setupAuth() {
     toggle.innerHTML = authMode === 'login' ? '계정이 없나요? <b>회원가입</b>' : '이미 계정이 있나요? <b>로그인</b>';
     msg.textContent = '';
   };
-  btn.onclick = async () => {
+  btn.onclick = doAuth;
+  pwIn.onkeydown = (e) => { if (e.key === 'Enter') doAuth(); };
+  $('skipLogin').onclick = () => { localOnly = true; goHome(); showScreen('home'); };
+
+  async function doAuth() {
     const id = idIn.value.trim(), pw = pwIn.value;
     msg.className = 'auth-msg';
     if (!id || !pw) { msg.classList.add('err'); msg.textContent = '아이디와 비밀번호를 입력하세요'; return; }
-    if (pw.length < 6) { msg.classList.add('err'); msg.textContent = '비밀번호는 6자 이상이어야 합니다'; return; }
-    btn.disabled = true; btn.textContent = '처리 중…';
-    const fn = authMode === 'login' ? signIn : signUp;
-    const { data, error } = await fn(id, pw);
-    btn.disabled = false; btn.textContent = authMode === 'login' ? '로그인' : '회원가입';
-    if (error) {
-      msg.classList.add('err');
-      msg.textContent = translateAuthError(error.message);
-      return;
+    if (pw.length < 4) { msg.classList.add('err'); msg.textContent = '비밀번호는 4자 이상이어야 합니다'; return; }
+    btn.disabled = true; const orig = btn.textContent; btn.textContent = '처리 중…';
+    try {
+      if (authMode === 'signup') {
+        const { result, error, setup } = await rpcSignup(id, pw);
+        if (error) { msg.classList.add('err'); msg.textContent = setup ? '서버 설정 필요: SUPABASE_SETUP.md의 SQL을 실행하세요' : '오류: ' + error.message; return; }
+        if (result === 'ERR_EXISTS') { msg.classList.add('err'); msg.textContent = '이미 가입된 아이디입니다'; return; }
+        if (result === 'ERR_INPUT') { msg.classList.add('err'); msg.textContent = '아이디 2자+, 비밀번호 4자+ 입력'; return; }
+        // 가입 성공 → 바로 로그인
+      }
+      const { data, error, setup } = await rpcLogin(id, pw);
+      if (error) { msg.classList.add('err'); msg.textContent = setup ? '서버 설정 필요: SUPABASE_SETUP.md의 SQL을 실행하세요' : '오류: ' + error.message; return; }
+      if (!data || !data.ok) { msg.classList.add('err'); msg.textContent = '아이디 또는 비밀번호가 올바르지 않습니다'; return; }
+      await doLoginSuccess(id, data.token, data.state);
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
     }
-    if (authMode === 'signup' && !data.session) {
-      msg.classList.add('ok'); msg.textContent = '가입 완료! 로그인해 주세요.';
-      authMode = 'login'; btn.textContent = '로그인';
-      return;
-    }
-    // 성공 → onAuth가 처리
-  };
-  $('skipLogin').onclick = () => { localOnly = true; goHome(); showScreen('home'); };
-}
-function translateAuthError(m) {
-  m = (m || '').toLowerCase();
-  if (m.includes('invalid login')) return '아이디 또는 비밀번호가 올바르지 않습니다';
-  if (m.includes('already registered') || m.includes('already been')) return '이미 가입된 아이디입니다';
-  if (m.includes('not confirmed')) return '이메일 확인 설정을 꺼야 합니다 (Supabase Auth 설정)';
-  if (m.includes('signup') && m.includes('disabled')) return '회원가입이 비활성화되어 있습니다';
-  if (m.includes('email') && m.includes('invalid')) return '아이디는 영문/숫자로 입력하세요';
-  if (m.includes('rate limit')) return '잠시 후 다시 시도해 주세요';
-  return '오류: ' + m;
+  }
 }
 
-// ===== 헤더 버튼 =====
+// ===== 헤더 =====
 function setupHeader() {
   $('themeBtn').onclick = toggleTheme;
-  $('avatarBtn').onclick = async () => {
-    if (user) {
-      if (confirm(`${displayId(user)} 로그아웃 할까요?`)) { await signOut(); user = null; location.reload(); }
+  $('avatarBtn').onclick = () => {
+    if (auth) {
+      if (confirm(`${auth.username} 로그아웃 할까요?`)) { localStorage.removeItem(AUTH_KEY); auth = null; location.reload(); }
     } else { showScreen('login'); }
   };
   $('listBack').onclick = back;
@@ -625,13 +612,16 @@ async function init() {
   try { await loadData(); } catch (e) { document.body.innerHTML = '<p style="padding:40px;text-align:center">데이터 로드 실패. 로컬 서버에서 열어주세요.</p>'; return; }
 
   if (SUPA_ENABLED) {
-    onAuth(async (u) => {
-      const wasNull = !user;
-      user = u;
-      if (u && wasNull) { await mergeFromServer(); goHome(); showScreen('home'); setSync('on'); }
-    });
-    user = await currentUser();
-    if (user) { await mergeFromServer(); goHome(); showScreen('home'); setSync('on'); }
+    let resumed = false;
+    try {
+      const saved = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
+      if (saved && saved.username && saved.token) {
+        const { data } = await rpcResume(saved.username, saved.token);
+        if (data && data.ok) { auth = saved; applyServerState(data.state); resumed = true; }
+        else localStorage.removeItem(AUTH_KEY);
+      }
+    } catch {}
+    if (resumed) { goHome(); showScreen('home'); setSync('on'); }
     else showScreen('login');
   } else {
     showScreen('login');
