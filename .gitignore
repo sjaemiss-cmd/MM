@@ -1,0 +1,7 @@
+# 개인정보 보호 — 공개 레포에 올리지 않음
+KakaoTalk_*.txt
+*_group.txt
+
+# 작업 임시
+_*.py
+_*.js
