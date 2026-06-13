@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>MM 기말 학습</title>
+<meta name="theme-color" content="#5b6cff">
+<link rel="manifest" href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MM기말">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== LOGIN ===== -->
+  <section id="login" class="screen active">
+    <div class="content center">
+      <div style="width:100%;max-width:380px">
+        <div class="login-hero">
+          <div class="login-logo">MM</div>
+          <h1 class="page">마케팅관리 기말</h1>
+          <p class="muted" style="margin-top:6px">T5~T9 · 6/16 시험 대비 학습</p>
+        </div>
+        <div class="card pad" style="margin-top:22px">
+          <div class="field">
+            <label for="loginId">아이디</label>
+            <input class="input" id="loginId" autocomplete="username" placeholder="아이디" autocapitalize="off">
+          </div>
+          <div class="field">
+            <label for="loginPw">비밀번호</label>
+            <input class="input" id="loginPw" type="password" autocomplete="current-password" placeholder="비밀번호">
+          </div>
+          <div class="auth-msg" id="authMsg"></div>
+          <button class="btn primary block lg" id="authBtn">로그인</button>
+          <div class="auth-toggle" id="authToggle">계정이 없나요? <b>회원가입</b></div>
+        </div>
+        <div class="skip-login"><span id="skipLogin">로그인 없이 둘러보기</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOME ===== -->
+  <section id="home" class="screen">
+    <div class="topbar">
+      <div class="title">MM 기말</div>
+      <div class="spacer"></div>
+      <div class="sync-dot" id="syncDot" title="동기화 상태"></div>
+      <button class="icon-btn" id="themeBtn" title="테마">🌙</button>
+      <div class="avatar" id="avatarBtn" title="계정">?</div>
+    </div>
+    <div class="content" id="homeBody"></div>
+  </section>
+
+  <!-- ===== LIST (topic pick / theory topics / sections / review) ===== -->
+  <section id="list" class="screen">
+    <div class="topbar">
+      <button class="back" id="listBack">‹ 뒤로</button>
+      <div class="title" id="listTitle"></div>
+      <div class="spacer"></div>
+    </div>
+    <div class="content" id="listBody"></div>
+  </section>
+
+  <!-- ===== QUIZ ===== -->
+  <section id="quiz" class="screen">
+    <div class="quiz-head">
+      <div class="row">
+        <div class="qmeta">
+          <span class="qnum" id="qNum">1 / 1</span>
+          <span class="tag" id="qTopic">T6</span>
+          <span class="tag star" id="qStar" style="display:none">★</span>
+          <span class="tag multi" id="qMulti" style="display:none">정답 2개</span>
+        </div>
+        <button class="quit" id="quitBtn">나가기</button>
+      </div>
+      <div class="pbar"><div class="pfill" id="qProg"></div></div>
+    </div>
+    <div class="qbody">
+      <div class="qtext" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="blank-wrap" id="qBlankWrap" style="display:none">
+        <div class="blank-row">
+          <input class="blank-in" id="qBlank" placeholder="답을 입력하세요" autocomplete="off" autocapitalize="off">
+        </div>
+        <div class="hint-line" id="qHint"></div>
+      </div>
+      <div class="explain" id="qExplain" style="display:none"></div>
+    </div>
+    <div class="qfoot">
+      <button class="bookmark" id="qBookmark" title="즐겨찾기">☆</button>
+      <button class="btn ghost sec" id="qSkip">건너뛰기</button>
+      <button class="btn primary" id="qPrimary" disabled>다음</button>
+    </div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="result" class="screen">
+    <div class="content center" id="resultBody"></div>
+  </section>
+
+  <!-- ===== THEORY VIEW ===== -->
+  <section id="theory" class="screen">
+    <div class="topbar">
+      <button class="back" id="thBack">‹ 뒤로</button>
+      <div class="title" id="thTitle">이론</div>
+      <div class="spacer"></div>
+      <span class="tag" id="thNum"></span>
+    </div>
+    <div class="content" id="thBody"></div>
+    <div class="qfoot">
+      <button class="btn ghost sec" id="thPrev">이전</button>
+      <button class="btn primary" id="thNext">다음</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

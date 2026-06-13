@@ -1,18 +1,21 @@
-const CACHE_NAME = 'mm-study-v2';
+const CACHE_NAME = 'mm-final-v1';
 const ASSETS = [
   './',
-  './mm-study.html',
+  './index.html',
+  './styles.css',
+  './app.js',
+  './supabase.js',
   './manifest.json',
   './icon.svg',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './data/questions.json',
+  './data/theory.json'
 ];
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())
   );
 });
 
@@ -25,6 +28,9 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  if (e.request.method !== 'GET') return;
+  // Supabase API 호출은 항상 네트워크
+  if (e.request.url.includes('supabase.co')) return;
   e.respondWith(
     caches.match(e.request).then(cached => {
       const fetched = fetch(e.request).then(res => {
