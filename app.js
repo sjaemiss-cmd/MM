@@ -74,9 +74,32 @@ function showScreen(id) {
   window.scrollTo(0, 0);
 }
 let navStack = [];
-function nav(renderFn) { navStack.push(renderFn); renderFn(); }
-function back() { navStack.pop(); const prev = navStack[navStack.length - 1]; if (prev) prev(); else goHome(); }
-function goHome() { navStack = []; renderHome(); showScreen('home'); }
+function activeScreen() { const a = document.querySelector('.screen.active'); return a ? a.id : ''; }
+// 깊은 화면 진입 시 브라우저 히스토리 항목을 쌓는다.
+function nav(renderFn) { try { history.pushState({ app: true }, ''); } catch {} navStack.push(renderFn); renderFn(); }
+function pushHist() { try { history.pushState({ app: true }, ''); } catch {} }
+// 모든 뒤로가기(앱 버튼/하드웨어)는 history.back()으로 통일 → popstate가 실제 이동 처리
+function back() { history.back(); }
+function goHome() { navStack = []; renderHome(); showScreen('home'); try { history.replaceState({ app: true, root: true }, ''); } catch {} }
+
+// 브라우저/하드웨어 뒤로가기 처리
+let rootBackAt = 0;
+window.addEventListener('popstate', () => {
+  const s = activeScreen();
+  if (s === 'quiz') { saveSession(); toast('진행 상황 저장됨'); goHome(); return; }
+  if (s === 'result') { goHome(); return; }
+  if (s === 'list' || s === 'theory') {
+    navStack.pop();
+    const prev = navStack[navStack.length - 1];
+    if (prev) prev(); else goHome();
+    return;
+  }
+  // 루트(home/login): 사이트 이탈 방지 — 항목을 다시 쌓아 머무른다
+  const now = Date.now();
+  try { history.pushState({ app: true, root: true }, ''); } catch {}
+  if (s === 'home' && now - rootBackAt > 1500) toast('첫 화면입니다');
+  rootBackAt = now;
+});
 
 function toast(msg) {
   const t = $('toast'); t.textContent = msg; t.classList.add('show');
@@ -222,6 +245,7 @@ function startMode(mode, topic) {
     return;
   }
   qz = { mode, topic, queue, idx: 0, checked: false, selected: [], score: 0, scored: (mode === 'mock') };
+  pushHist();
   showScreen('quiz');
   renderQ();
 }
@@ -231,6 +255,7 @@ function resumeSession() {
   const queue = ss.qids.map(id => byId[id]).filter(Boolean);
   if (!queue.length) { state.session = null; saveLocal(); goHome(); return; }
   qz = { mode: ss.mode, topic: ss.topic, queue, idx: Math.min(ss.idx, queue.length - 1), checked: false, selected: [], score: ss.score || 0, scored: ss.scored };
+  pushHist();
   showScreen('quiz');
   renderQ();
 }
@@ -429,7 +454,7 @@ function showResult() {
       <button class="btn primary block lg" id="rHome">홈으로</button>
       ${tot - correct > 0 ? '<button class="btn ghost block" id="rWrong">오답만 다시 풀기</button>' : ''}
     </div>`;
-  $('rHome').onclick = goHome;
+  $('rHome').onclick = () => history.back();
   if ($('rWrong')) $('rWrong').onclick = () => startMode('wrong');
   showScreen('result');
 }
@@ -577,7 +602,7 @@ function setupHeader() {
   };
   $('listBack').onclick = back;
   $('thBack').onclick = back;
-  $('quitBtn').onclick = quitQuiz;
+  $('quitBtn').onclick = () => history.back();
   $('thNext').onclick = thNext;
   $('thPrev').onclick = thPrev;
 }
@@ -627,6 +652,7 @@ async function init() {
     showScreen('login');
   }
 
+  try { history.replaceState({ app: true, root: true }, ''); } catch {}
   if ('serviceWorker' in navigator) { try { navigator.serviceWorker.register('./sw.js'); } catch {} }
 }
 init();
